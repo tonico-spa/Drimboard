@@ -1,0 +1,460 @@
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+.mainContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+}
+
+.separator {
+  height: 15vh;
+}
+
+/* The parent container for the cover section */
+.coverContainer {
+  /* This is crucial for positioning children within it */
+  height: 100vh;
+  /* Makes the container take the full height of the screen */
+  width: 100%;
+
+  /* --- Flexbox Properties --- */
+  display: flex;
+  /* 1. Turns this container into a flexbox container */
+  flex-direction: column;
+  /* 2. Stacks the children vertically (logo on top of subtitle) */
+  justify-content: flex-end;
+  /* 3. Pushes all children to the bottom of the container */
+  align-items: flex-start;
+  /* 4. Aligns all children to the left of the container */
+
+  /* Optional: Add some padding so the content isn't stuck to the very edge */
+  padding: 40px;
+  box-sizing: border-box;
+  /* Ensures padding is included in the element's total width and height */
+
+  /* You might want a background image or color */
+  /* Example background color */
+}
+
+/* Styling for your logo */
+.coverLogo {
+  width: clamp(10%, 20%, 550px);
+  /* Example width */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+.coverSubtitleLogo {
+  height: auto;
+  width: 5%;
+}
+
+.coverSubtitleText {
+  width: 15%;
+  align-items: center;
+  font-weight: 500;
+  justify-content: center;
+  color: black;
+}
+
+/* The container for your subtitle and arrow */
+.coverSubtitleContainer {
+  /* Optional: Add a small margin to create space between the logo and the subtitle */
+  font-family: "Geist Mono", monospace !important;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: left;
+}
+
+/* The parent container for the cover section */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* The parent container for section 2 */
+
+.sectionTwoContainer {
+  height: 60vh;
+  color: black;
+  width: 80%;
+  font-family: "Geist Mono", monospace !important;
+}
+
+.sectionTwoTitleContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.sectionTwoTitleLogo {
+  height: auto;
+  width: 8%;
+  color: black;
+}
+
+.sectionTwoTitleText {
+  text-align: left;
+  display: flex;
+  align-items: flex-end;
+  margin: 0.5em;
+  font-size: 29px;
+  font-weight: 600;
+}
+
+.sectionTwoCards {
+  height: 80%;
+  width: 100%;
+}
+
+/* The parent container for section 2 */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* The parent container for section 3 */
+
+.sectionThreeContainer {
+  position: relative;
+  padding-top: 5rem;
+  height: 75vh;
+  width: 80%;
+  font-family: "Geist Mono", monospace !important;
+  /* --- FIX: Add will-change for performance --- */
+  will-change: transform;
+}
+
+.splitScrollTitle {
+  font-size: 20px;
+  color: #F397C1;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  text-align: left;
+  width: 80%;
+  font-family: "Geist Mono", monospace !important;
+}
+
+
+/* Main container for the two columns */
+.splitScrollContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Left column (Text content) --- */
+.scrollContainer {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  overflow-y: hidden;
+  position: relative;
+  color: black;
+
+  /* RESPONSIVE CHANGE: Use vw for padding that scales with screen width. */
+  /* clamp() ensures padding doesn't get too small or too large. */
+  padding-top: clamp(2rem, 10vh, 6rem);
+  /* vh for vertical padding */
+
+  /* Center the scrollContent div within this container */
+  display: flex;
+  justify-content: center;
+}
+
+/* This is the inner div that we will animate */
+.scrollContent {
+  /* Let's use max-width to prevent text lines from becoming too long on wide screens, */
+  /* which is better for readability. Width is 100% of its parent up to a max. */
+  width: 100%;
+  text-align: left;
+}
+
+/* --- Right column (Video) --- */
+.videoContainer {
+  flex: 1;
+  width: 100%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+
+  justify-content: center;
+}
+
+.videoPlaceholder {
+  width: 100%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+
+  /* RESPONSIVE CHANGE: Fluid font size for the placeholder text */
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+/* --- Text Styling --- */
+.scrollSectionTextContainer {
+  /* RESPONSIVE CHANGE: Use vh for the margin to scale with viewport height. */
+  /* This keeps the "scroll-to-reveal" feeling consistent across screen sizes. */
+
+  /* This ensures that even with the parent's text-align:left, */
+  /* the block itself can be centered if the parent container uses flex. */
+  /* No changes needed here from your previous setup. */
+  width: 80%;
+  padding-bottom: clamp(2rem, 18vh, 15rem);
+  /* vh for vertical padding */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Aligns the block to the left */
+}
+
+.scrollSectionTitle {
+  /* RESPONSIVE CHANGE: Fluid font size using clamp(). */
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  /* Min 32px, Preferred 5% of width, Max 56px */
+  font-weight: bold;
+  position: sticky;
+  margin-bottom: 1rem;
+}
+
+.scrollSectionText {
+  /* RESPONSIVE CHANGE: A more subtle fluid font size. */
+  /* This formula (vw + rem) provides a stable base size and adds a scalable factor. */
+  font-size: clamp(1rem, 0.5vw + 0.9rem, 1.15rem);
+  line-height: 1.5;
+  font-family: "Geist", sans-serif !important;
+}
+
+/* --- Media Query for Mobile --- */
+/* This applies when the screen is 768px wide or less */
+@media (max-width: 768px) {
+  .splitScrollContainer {
+    /* Stack the columns vertically */
+    flex-direction: column;
+  }
+
+  /* On mobile, we typically want the video/image first, then the text. */
+  /* Use order to swap them visually without changing the HTML. */
+  .videoContainer {
+    order: 1;
+    /* Appears first */
+    flex: 0 0 50vh;
+    /* Give it a fixed height of 50% of the viewport height */
+  }
+
+  .scrollContainer {
+    order: 2;
+    /* Appears second */
+    overflow-y: auto;
+    /* Allow normal scrolling on mobile */
+    height: auto;
+    padding: 2rem 1.5rem;
+    /* Use simpler padding for mobile */
+  }
+
+  .scrollContent {
+    max-width: 100%;
+    /* Take full width on mobile */
+  }
+
+  /* You may want to reduce the large margin on mobile for better flow */
+  .scrollSectionTextContainer {
+    margin-bottom: 5rem;
+  }
+}
+
+/* The parent container for section 3 */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/* The parent container for section 4 */
+/* --- Section Four: Staggered Stacking Cards --- */
+
+.sectionFourContainer {
+  position: relative;
+  /* This container helps center the card setup */
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  /* Add some padding so the pinned section has space */
+}
+
+/* This is the element that will be pinned */
+.cards {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  height: 70vh;
+  /* --- FIX: Add will-change for performance --- */
+  will-change: transform;
+}
+
+
+.customCard {
+  position: absolute;
+  width: 100% !important;
+  height: clamp(10%, 80%, 90%);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  font-family: "Geist", sans-serif;
+  font-size: 2rem;
+  flex-direction: column;
+}
+
+/* Staggered positioning for the initial "deck" look */
+.card1 {
+  top: 0;
+  background-color: #53C68E;
+}
+
+.card2 {
+  background-color: #FFB71A;
+  top: 30px;
+}
+
+.card3 {
+  background-color: #F397C1;
+  top: 60px;
+}
+
+.card4 {
+  background-color: #DED900;
+  top: 90px;
+}
+
+.sectionFourTitleContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: clamp(1em, 1em, 2em);
+  margin-left: clamp(1em, 1em, 2em);
+}
+
+.sectionFourActivityTitle {
+  font-family: "Geist Mono", monospace !important;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 10px;
+  width: 50%;
+  padding: 0.5em;
+  text-align: center;
+  font-size: 18px;
+}
+
+.sectionFourActivitySubTitle {
+  font-family: "Geist", sans-serif;
+  text-align: center;
+  color: black;
+  margin-top: clamp(0.3em, 0.3em, 1em);
+
+}
+
+.sectionFourActivityInformationContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: clamp(1em, 1em, 2em);
+  margin-left: clamp(1em, 1.5em, 2em);
+}
+
+.sectionFourActivityButton {
+  font-family: "Geist Mono", monospace !important;
+  width: 15%;
+  height: 3em;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.sectionFourActivityArrow{
+    margin-left: clamp(0.2em, 0.5em, 2em);
+}
+
+.sectionFourActivityInformation {
+  width: 40%;
+  font-size: 18px;
+  text-align: left;
+  color: black;
+  margin-bottom: 1em;
+
+}
+
+.sectionFourActivityInformationPicture {
+  background-color: black;
+  width: 40%;
+  height: 70%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-right: clamp(1em, 1.5em, 2em);
+  margin-bottom: clamp(1em, 1em, 2em);
+}
+.sectionFourActivityArrow{
+  width: 20%;
+}
+
+/* The parent container for section 4 */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* The parent container for section 5 */
+
+.sectionFiveContainer {
+  position: relative;
+  height: 90vh;
+  /* This container helps center the card setup */
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1em, 1.5em, 2em);
+  margin-bottom: clamp(1em, 2em, 2.5em);
+  flex-direction: column;
+}
+
+.sectionFiveVideoContainer {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #F397C1;
+}
+
+/* The parent container for section 5 */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* The parent container for section 6 */
+
+.sectionSixContainer {
+  position: relative;
+  height: 80vh;
+  /* This container helps center the card setup */
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1em, 1.5em, 2em);
+  margin-bottom: clamp(1em, 2em, 2.5em);
+  flex-direction: column;
+}
+
+
+/* The parent container for section 5 */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */

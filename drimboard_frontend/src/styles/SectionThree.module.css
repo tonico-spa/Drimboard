@@ -1,0 +1,120 @@
+/* This is the container passed from the parent component */
+.sectionThreeContainer {
+    height: 100%;
+}
+
+/* Main container for the two columns */
+.splitScrollContainer {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Left column (Text content) --- */
+.scrollContainer {
+    flex: 1;
+    height: 100%;
+    overflow-y: hidden;
+    position: relative;
+    color: black;
+    
+    /* RESPONSIVE CHANGE: Use vw for padding that scales with screen width. */
+    /* clamp() ensures padding doesn't get too small or too large. */
+    padding-right: clamp(1rem, 4vw, 3rem);
+    padding-top: clamp(2rem, 10vh, 6rem); /* vh for vertical padding */
+    
+    /* Center the scrollContent div within this container */
+    display: flex;
+    justify-content: center;
+}
+
+/* This is the inner div that we will animate */
+.scrollContent {
+    /* Let's use max-width to prevent text lines from becoming too long on wide screens, */
+    /* which is better for readability. Width is 100% of its parent up to a max. */
+    width: 100%;
+    text-align: left;
+}
+
+/* --- Right column (Video) --- */
+.videoContainer {
+    flex: 1;
+    background-color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.videoPlaceholder {
+    width: 100%;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    
+    /* RESPONSIVE CHANGE: Fluid font size for the placeholder text */
+    font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+/* --- Text Styling --- */
+.scrollSectionTextContainer {
+    /* RESPONSIVE CHANGE: Use vh for the margin to scale with viewport height. */
+    /* This keeps the "scroll-to-reveal" feeling consistent across screen sizes. */
+    margin-bottom: clamp(10rem, 30vh, 20rem);
+    
+    /* This ensures that even with the parent's text-align:left, */
+    /* the block itself can be centered if the parent container uses flex. */
+    /* No changes needed here from your previous setup. */
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns the block to the left */
+}
+
+.scrollSectionTitle {
+    /* RESPONSIVE CHANGE: Fluid font size using clamp(). */
+    font-size: clamp(2rem, 5vw, 3.5rem); /* Min 32px, Preferred 5% of width, Max 56px */
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.scrollSectionText {
+    /* RESPONSIVE CHANGE: A more subtle fluid font size. */
+    /* This formula (vw + rem) provides a stable base size and adds a scalable factor. */
+    font-size: clamp(1rem, 0.5vw + 0.9rem, 1.15rem); 
+    line-height: 1.5;
+    font-family: "Geist", sans-serif !important;
+}
+
+/* --- Media Query for Mobile --- */
+/* This applies when the screen is 768px wide or less */
+@media (max-width: 768px) {
+    .splitScrollContainer {
+        /* Stack the columns vertically */
+        flex-direction: column;
+    }
+
+    /* On mobile, we typically want the video/image first, then the text. */
+    /* Use order to swap them visually without changing the HTML. */
+    .videoContainer {
+        order: 1; /* Appears first */
+        flex: 0 0 50vh; /* Give it a fixed height of 50% of the viewport height */
+    }
+    
+    .scrollContainer {
+        order: 2; /* Appears second */
+        overflow-y: auto; /* Allow normal scrolling on mobile */
+        height: auto;
+        padding: 2rem 1.5rem; /* Use simpler padding for mobile */
+    }
+
+    .scrollContent {
+        max-width: 100%; /* Take full width on mobile */
+    }
+
+    /* You may want to reduce the large margin on mobile for better flow */
+    .scrollSectionTextContainer {
+        margin-bottom: 5rem;
+    }
+}

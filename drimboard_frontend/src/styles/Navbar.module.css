@@ -1,0 +1,27 @@
+.navContainer {
+    font-family: "Geist Mono", monospace !important;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+  background-color: #f4ede5ab;
+
+    width: 100%;
+}
+
+.navbarContainer {
+    padding: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbarLink {
+    padding: 20px;
+    color: black;
+}
+
+.logoImg {
+    width: 70%;
+}

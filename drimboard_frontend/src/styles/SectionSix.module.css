@@ -1,0 +1,90 @@
+.sectionSixContainer {
+    display: grid;
+    grid-template-rows: 0.5fr 2fr;
+    gap: 20px;
+    height: 100%;
+    border-radius: 10px;
+
+}
+
+.sectionSixContainerTitle {
+    font-family: "Geist Mono", monospace !important;
+    color: black;
+    border-radius: 5px;
+    margin: 0.5em;
+    padding: 0.2em;
+    text-align: left;
+    font-size: 43px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+}
+
+.sectionTwoTitleLogo {
+    height: auto;
+    width: 8%;
+    color: black;
+    margin-right: 0.5em;
+}
+
+.sectionSixContainerInfo {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    justify-content: center;
+    align-items: center;
+    margin: 1em;
+}
+
+.sectionSixContainerInfoCard {
+    background-color: #f7f4f1;
+    height: 100%;
+    width: 70%;
+     position: relative; 
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border: 6px solid #53C68E;
+}
+
+.cardRaised {
+    /* Moves the card up by 20 pixels. Adjust the value as needed. */
+    transform: translateY(-40px);
+    border: 6px solid #FFB71A;
+}
+
+.sectionSixTitle {
+    font-family: "Geist Mono", monospace !important;
+    color: black;
+    border-radius: 5px;
+    margin: 0.5em;
+    padding: 0.2em;
+    text-align: left;
+    font-size: 23px;
+    font-weight: 600;
+
+}
+
+.highlightText {
+    font-weight: 800;
+    /* Bolder */
+    font-size: 1.5em;
+    /* Bigger */
+}
+
+.sectionSixButton {
+    font-family: "Geist Mono", monospace !important;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 5px;
+    width: 23%;
+    margin: 0.5em;
+    padding: 0.4em;
+    text-align: center;
+    font-size: 13px;
+    justify-self: flex-end;
+    position: absolute; /* Positions the button relative to the parent card */
+    bottom: 20px;       /* Aligns it 20px from the bottom */
+    left: 20px;         /* Aligns it 20px from the left */
+}

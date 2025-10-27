@@ -1,0 +1,83 @@
+.sectionFiveContainer {
+    width: 100%;
+    height: 70%;
+    border-radius: 10px;
+}
+
+.sectionFiveContentContainer {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    gap: 20px;
+    height: 100%;
+}
+
+.sectionFiveRightSide {
+    display: grid;
+    grid-template-rows: 2fr 2fr 2fr;
+    gap: 10px;
+    margin: 1em;
+}
+
+.sectionFiveLeftSide {
+    display: grid;
+    grid-template-rows: 2fr 2fr;
+    height: 100%;
+    margin: 1em;
+}
+
+.sectionFiveRightSideBlock {
+    background-color: #f397c1;
+    border-radius: 10px;
+}
+
+.sectionFiveLeftSideTitle {
+    text-align: left;
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 700;
+    font-size: 40px;
+
+}
+
+.sectionFiveLeftSideContent {
+    text-align: left;
+    font-family: "Geist", sans-serif;
+    display: flex;
+    align-items: flex-start;
+    width: 60%;
+    font-weight: 400;
+    font-size: 20px;
+    margin-top: 0.6em;
+
+
+}
+
+.sectionFiveLeftSideSmallTitle {
+    font-family: "Geist Mono", monospace !important;
+    background-color: #f397c1;
+    color: rgb(255, 255, 255);
+    border-radius: 5px;
+    font-weight: 600;
+    width: 20%;
+    padding: 0.2em;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 0.6em;
+}
+
+.sectionFiveRightSideSmallTitle {
+    font-family: "Geist Mono", monospace !important;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 5px;
+    width: 13%;
+    margin: 0.5em;
+    padding: 0.2em;
+    text-align: center;
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .sectionFiveContentContainer {
+        grid-template-columns: 1fr;
+    }
+}

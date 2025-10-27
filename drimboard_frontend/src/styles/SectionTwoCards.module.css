@@ -1,0 +1,45 @@
+.cardsContainer {
+    padding-top: 4em;
+    height: 30%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    /* Adjust the gap between cards as needed */
+}
+
+.singleCardContainer {
+    background-color: #f7f4f1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    
+}
+
+.singleCardContainer:hover {
+    cursor: pointer;
+}
+
+.svgContainer {
+    width: 50%;
+    align-self: center;
+}
+
+.singleCardTitle{
+    font-weight: 600;
+    font-size: 20px;
+    margin-top: 1em;
+    color: black;
+    margin-bottom: 1em;
+}
+
+.singleCardText{
+    font-family: "Geist", sans-serif !important;
+    font-size: 16px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: black;
+}
