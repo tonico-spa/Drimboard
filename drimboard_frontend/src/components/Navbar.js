@@ -2,8 +2,24 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Navbar.module.css";
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+    const { user, loading, login } = useAuth();
+
+        const handleSubmit = async () => {
+        const result = await login({ email: "ignaciabaeza.i@gmail.com", kit_code: "p0s31d0n" });
+
+        if (result.success) {
+            console.log(user)
+        } else {
+            setError(result.message);
+        }
+    };
+
+ useEffect(() => {
+    handleSubmit()
+ }, [])
 
 
     return (
@@ -19,16 +35,16 @@ const Navbar = () => {
                 </div>
                 <div className={styles.linksContainer}>
                     <Link href="/" className={styles.navbarLink}>
-                    Por que drim
+                        Por que drim
                     </Link>
                     <Link href="/" className={styles.navbarLink}>
-                    Actividades
+                        Actividades
                     </Link>
                     <Link href="/" className={styles.navbarLink}>
-                    Quiero mi drim
+                        Quiero mi drim
                     </Link>
                     <Link href="/" className={styles.navbarLink}>
-                    Login
+                        Login
                     </Link>
                 </div>
             </div>

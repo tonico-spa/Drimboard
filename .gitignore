@@ -1,0 +1,6 @@
+drimboard_backend/.venv
+drimboard_backend/.env
+drimboard_frontend/.env
+drimboard_frontend/node_modules
+drimboard_frontend/.next
+drimboard_backend/.idea

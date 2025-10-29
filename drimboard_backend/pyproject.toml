@@ -1,0 +1,33 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "drimboard"
+version = "0.1.0"
+description = "A Flask API to manage activation codes and user accounts for robotics kits."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Your Name", email = "youremail@example.com" },
+]
+
+# --- Project Dependencies ---
+# These are the libraries required for the project to run.
+dependencies = [
+    "Flask",
+    "Flask-Bcrypt",
+    "Flask-Cors",
+    "psycopg2-binary", # Use "PyMySQL" if you have a MySQL database
+    "PyJWT",
+    "python-dotenv",
+    "sqlalchemy"
+]
+
+[tool.setuptools.packages.find]
+where = ["app"]     # directory where your Python packages live
+include = ["app*"]
