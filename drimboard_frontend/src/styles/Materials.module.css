@@ -1,0 +1,115 @@
+.logoUser {
+    width: 33%;
+}
+
+.materialsContainer {
+    display: flex;
+    /* Or whatever layout you need for the main wrapper */
+    flex-direction: column;
+    /* If you want nav and content to stack vertically */
+    min-height: 100vh;
+    /* Ensure there's enough height to scroll if content is short */
+}
+
+
+.navContainer {
+    font-family: "Geist Mono", monospace !important;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #f4ede5ab;
+
+    width: 100%;
+}
+
+.navbarContainer {
+    padding: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbarLink {
+    color: black;
+    background-color: #f4ede5ab;
+    border: 0px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.logoImg {
+    width: 70%;
+}
+
+/* src/pages/materials/CustomTabs.module.css */
+
+.tabsContainer {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    padding-top: 2em;
+}
+
+.tabList {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    /* Separator for the tab list */
+    margin-bottom: 16px;
+    border-radius: 4px;
+    padding: 0 8px;
+}
+
+.tabButton {
+    background: none;
+    font-family: "Geist Mono", monospace !important;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    position: relative;
+    /* For the active indicator */
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 4px 4px 0 0;
+    /* Rounded top corners */
+}
+
+.tabButton:hover {
+    color: #F397C1;
+    /* Blue on hover */
+}
+
+.tabButton.active {
+    color: black;
+    /* Active tab color */
+    font-weight: bold;
+    border-bottom: 5px solid #F397C1;
+    
+    border-radius: 4px;
+
+    /* Active indicator */
+    margin-bottom: -2px;
+    /* Pull it slightly down to cover the bottom border of tabList */
+    z-index: 1;
+    /* Ensure active tab is above border */
+}
+
+/* Optional: remove bottom border for active tab */
+.tabButton.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    /* Position it to cover the bottom border */
+    left: 0;
+    right: 0;
+    height: 2px;
+}
+
+
+.tabPanel {
+    padding: 16px 0;
+    /* You can add more styles specific to the panel content */
+}

@@ -1,0 +1,62 @@
+.footerContainer {
+    background-color: #F397C1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 1em;
+    border-radius: 10px;
+}
+
+.footerContent {
+  display: grid;
+  align-content: end;   /* Vertical alignment to the bottom */
+  justify-content: end; /* Horizontal alignment to the right */
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+
+}
+
+.footerLogo {
+    width: 40%;
+    margin-top: 2em;
+}
+
+.footerTitle {
+    font-family: "Geist Mono", monospace !important;
+    color: black;
+    border-radius: 5px;
+    padding: 0.2em;
+    text-align: right;
+    font-size: 39px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.footerEmailLogo {
+    width: 15%;
+    margin: 0.5em;
+}
+
+.footerContactInfo {
+    display: flex;
+    flex-direction: row;
+    text-align: right;
+    justify-content: flex-end;
+
+}
+
+.footerEmail {
+    margin: 0.5em;
+    font-family: "Geist Mono", monospace !important;
+    color: black;
+    font-weight: 600;
+    text-align: right;
+}
+
+.footerLogin {
+    justify-content: left;
+    text-align: left;
+}

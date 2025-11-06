@@ -3,7 +3,7 @@
     position: fixed;
     top: 0;
     z-index: 1000;
-  background-color: #f4ede5ab;
+    background-color: #f4ede5ab;
 
     width: 100%;
 }
@@ -20,6 +20,11 @@
 .navbarLink {
     padding: 20px;
     color: black;
+    font-family: "Geist Mono", monospace !important;
+    background-color: #f4ede5ab;
+    border: 0px;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .logoImg {

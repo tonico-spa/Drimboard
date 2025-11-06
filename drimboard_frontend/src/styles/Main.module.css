@@ -383,8 +383,8 @@
 
 }
 
-.sectionFourActivityArrow{
-    margin-left: clamp(0.2em, 0.5em, 2em);
+.sectionFourActivityArrow {
+  margin-left: clamp(0.2em, 0.5em, 2em);
 }
 
 .sectionFourActivityInformation {
@@ -406,7 +406,8 @@
   margin-right: clamp(1em, 1.5em, 2em);
   margin-bottom: clamp(1em, 1em, 2em);
 }
-.sectionFourActivityArrow{
+
+.sectionFourActivityArrow {
   width: 20%;
 }
 
@@ -458,3 +459,27 @@
 /* The parent container for section 5 */
 
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* The parent container for section 5 */
+
+/* The parent container for login */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* The parent container for section 5 */
+
+
+.loginFormContainer {
+  background-color: #ffffff;
+  height: 35vh;
+  width: 50%;
+  position: fixed;
+  transform: translate(0%, 50%);
+  z-index: 9999;
+  border-radius: 10px;
+  border: 7px solid #F397C1;
+
+}
+
+/* The parent container for login */
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* The parent container for section 5 */

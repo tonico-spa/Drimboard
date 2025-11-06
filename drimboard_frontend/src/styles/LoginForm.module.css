@@ -1,0 +1,106 @@
+.loginFormContainer {
+    font-family: "Geist Mono", monospace !important;
+    margin: 1em;
+}
+
+.loginFormTitle {
+    font-family: "Geist Mono", monospace !important;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 10px;
+    padding: 0.5em;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+/* styles/LoginForm.module.css */
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Space between elements */
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+}
+
+.form h2 {
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.subtitle {
+    margin: 0 0 8px 0;
+    text-align: center;
+    color: #666;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 6px;
+    margin: 2em;
+}
+
+.inputGroup label {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    /* Important for padding */
+}
+
+.input:focus {
+    outline: none;
+    border-color: #f07aaf;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.submitButton {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #F397C1;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+    background-color: #f07aaf;
+}
+
+.submitButton:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+.error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    border: 1px solid #d32f2f;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.loginFormClose {
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    font-weight: 600;
+    cursor: pointer;
+}

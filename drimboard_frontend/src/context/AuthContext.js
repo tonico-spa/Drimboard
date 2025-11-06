@@ -2,33 +2,46 @@
 "use client";
 import axios from 'axios';
 import { createContext, useState, useContext, useEffect } from 'react';
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+// Use environment variable for the API URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // Start as true on initial load
 
+    // Create a reusable axios instance
     const api = axios.create({
-        baseURL: API_URL,
-        withCredentials: true  // This is crucial for cookies
+        // IMPORTANT: Point to the proxy path.
+        // Do NOT include the host (http://localhost:3000). The browser will handle that.
+        baseURL: '/',
+        withCredentials: true
     });
+    // --- IMPROVEMENT 1: Check session on initial app load ---
+    useEffect(() => {
+        checkUserStatus();
+    }, []); // Empty dependency array means this runs only once on mount
 
-    // Login user
-    const login = async () => {
+
+    // --- IMPROVEMENT 2 & 3: Parameterized and efficient login ---
+    const login = async (credentials) => {
         try {
-            const response = await api.post('/login', {
-                "email": "ignaciabaeza.i@gmail.com",
-                "kit_code": "p0s31d0n"
-            });
+            // The `credentials` object should be { email, kit_code }
+            const response = await api.post('/login', credentials);
 
-            if (response.status === 200) {
-                await checkUserLoggedIn();
-                console.log("logged");
-                return { success: true };
+            if (response.status === 200 && response.data) {
+                // FIX: Set the user state DIRECTLY from the login response.
+                // No need to call /profile again.
+                setUser({ email: response.data.user }); // Our /profile route returns { email: ... } so let's be consistent
+                console.log("Login successful, user set:", response.data);
+
+                // FIX: Return the user data to the component that called login.
+                return { success: true, data: response.data };
             }
         } catch (error) {
+            console.error("Login failed:", error.response?.data?.message);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Login failed'
@@ -37,30 +50,40 @@ export function AuthProvider({ children }) {
     };
 
     const logout = async () => {
-        await api.post('/logout');
-        setUser(null);
-    };
-
-    const checkUserLoggedIn = async () => {
-        setLoading(true);
         try {
-            const response = await api.get('/profile');  // Remove the fetch API options
-
-            if (response.status === 200) {
-                setUser(response.data);
-            } else {
-                setUser(null);
-            }
+            await api.post('/logout');
         } catch (error) {
-            setUser(null);
+            console.error("Logout failed, but clearing user state anyway.", error);
         } finally {
-            setLoading(false);
+            setUser(null); // Always clear the user state on logout
         }
     };
 
+ const checkUserStatus = async () => {
+            try {
+                const response = await api.get('/profile');
+                    console.log(response.data)
+
+                if (response.status === 200 && response.data) {
+                    setUser(response.data); // User is already logged in
+                }
+            } catch (error) {
+                // No valid cookie or server is down; user is not logged in.
+                setUser(null);
+            } finally {
+                setLoading(false); // Stop loading after the check is complete
+            }
+        };
+
+
+    // Note: We don't need to export checkUserLoggedIn anymore as it's handled internally.
     const value = { user, loading, login, logout };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 // Custom hook to easily use the auth context

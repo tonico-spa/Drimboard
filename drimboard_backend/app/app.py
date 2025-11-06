@@ -1,7 +1,11 @@
 # app.py
 import os
-from datetime import datetime, timedelta
 import jwt
+import aws_utils
+import boto3
+
+from datetime import datetime, timedelta
+from sqlalchemy import create_engine, text
 from flask import Flask, request, jsonify, make_response
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
@@ -28,18 +32,68 @@ ENV = os.getenv("FLASK_ENV")
 # database.Base.metadata.create_all(bind=database.engine)
 # print("Tables created.")
 
+@app.route("/get_single_pdf", methods=["POST"])
+def generate_presigned_url():
+    try:
+        data = request.get_json()
+        file_key = data.get("course_name")
+        import pdb; pdb.set_trace()
+
+        key_id = os.getenv("S3_AWS_ACCESS_KEY_ID")
+        access_key = os.getenv("S3_AWS_SECRET_ACCESS_KEY")
+        region = os.getenv("AWS_REGION")
+        bucket = os.getenv("S3_BUCKET_NAME")
+
+        s3_client = aws_utils.get_s3_client(key_id=key_id, access_key=access_key, region=region)
+
+        sts = boto3.client(
+            'sts',
+            aws_access_key_id=key_id,
+            aws_secret_access_key=access_key
+        )
+        response = s3_client.head_object(
+            Bucket='drim-material-files',
+            Key='colores.pdf'
+        )
+        print("File exists!")
+        print(f"Size: {response['ContentLength']} bytes")
+        print(f"Content-Type: {response['ContentType']}")
+        if not file_key:
+            return jsonify({"error": "file_key is required"}), 400
+
+        params = {
+            "Bucket": bucket,
+            "Key": file_key
+        }
+
+        url = s3_client.generate_presigned_url(
+            "get_object",
+            Params=params,
+        )
+
+        return jsonify({"url": url})
+
+    except Exception as e:
+        print(f"Error generating URL: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
+
+
 @app.route("/login", methods=["POST"])
 def login():
-    # ... (your existing code to get email, kit_code, and user) ...
     payload = request.json
-    email = payload["email"]
-    kit_code = payload["kit_code"]
-    db = database.SessionLocal()
+    email = payload.get("email")
+    kit_code = payload.get("kit_code")
 
+    if not email or not kit_code:
+        return jsonify({"message": "Email and kit_code are required"}), 400
+
+    db = database.SessionLocal()
     try:
         user = db.query(models.DrimKits).filter(
-            models.DrimKits.user == email,
-            models.DrimKits.code == kit_code
+            models.DrimKits.user_email == email,
+            models.DrimKits.kit_code == kit_code
         ).first()
     finally:
         db.close()
@@ -47,32 +101,36 @@ def login():
     if not user:
         return jsonify({"message": "Invalid credentials"}), 401
 
+    # Create the JWT token
     token = jwt.encode({
-        "email": user.user,
-        "iat": datetime.utcnow(),  # Issued At (good practice)
-        "exp": datetime.utcnow() + timedelta(days=1)  # Expiration (e.g., 1 day from now)
+        "email": user.user_email,
+        "iat": datetime.utcnow(),
+        "exp": datetime.utcnow() + timedelta(days=1)
     }, app.config["SECRET_KEY"], algorithm="HS256")
 
-    response = make_response(jsonify({"user": user.user}))
+    response = make_response(jsonify({"user": user.user_email, "name": user.user_name, "message": "Login successful"}))
+
+    # Set the token in an HTTPOnly cookie
     if ENV == "prod":
         response.set_cookie(key="token", value=token, httponly=True, secure=True, samesite="Lax")
     else:
-        response.set_cookie(key="token", value=token, httponly=True, secure=False, samesite="Lax",)
+        response.set_cookie(key="token", value=token, httponly=True, secure=False, samesite="Lax")
 
     return response
 
-
-@app.route("/profile", methods=["GET"])  # <-- Use GET
+@app.route("/profile", methods=["GET"])
 def profile():
     token = request.cookies.get("token")
-    print(request.cookies)
     if not token:
-        return jsonify({"message": "Not authorized"}), 401
+        return jsonify({"message": "Not authorized, no token provided"}), 401
+
     try:
         data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
         return jsonify({"email": data["email"], "message": "This is your profile."})
-    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-        return jsonify({"message": "Invalid or expired token"}), 401
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Invalid token"}), 401
 
 
 @app.route("/logout", methods=["POST"])

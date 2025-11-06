@@ -10,6 +10,8 @@ import Tape from './svgs/tape/Tape';
 import Lenis from '@studio-freight/lenis'; // Import Lenis
 import SectionFive from './SectionFive';
 import SectionSix from './SectionSix';
+import useAppStore from '@/store/useAppStore';
+import LoginForm from './LoginForm';
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -20,6 +22,7 @@ const Main = () => {
   const scrollContainerRef = useRef(null);
   const mainScrollContainerRef = useRef(null);
 
+
   // --- REFS FOR SECTION FOUR CARDS ---
   const cardsContainerRef = useRef(null);
   const card1Ref = useRef(null);
@@ -27,6 +30,7 @@ const Main = () => {
   const card3Ref = useRef(null);
   const card4Ref = useRef(null);
   // ------------------------------------
+  const openLoginForm = useAppStore((state) => state.openLoginForm);
 
   const [activeCard, setActiveCard] = useState(0);
 
@@ -81,6 +85,10 @@ const Main = () => {
     };
   }, []); // Empty dependency array ensures this runs only once
 
+  useEffect(() => {
+    console.log(openLoginForm)
+
+  }, [openLoginForm])
 
   // Effect for Section Three (Split Scroll)
   useEffect(() => {
@@ -195,7 +203,6 @@ const Main = () => {
 
   return (
     <div className={styles.mainContainer} ref={mainContainerRef}>
-      {/* ... (Cover and Section Two JSX remains the same) ... */}
       <div className={styles.coverContainer}>
         <img
           src="/cover_logo.png"
@@ -470,6 +477,14 @@ const Main = () => {
       <div className={styles.sectionSixContainer}>
         <SectionSix />
       </div>
+
+      {
+        openLoginForm &&
+        <div className={styles.loginFormContainer}>
+          <LoginForm />
+          </div>
+        
+      }
     </div>
   )
 }

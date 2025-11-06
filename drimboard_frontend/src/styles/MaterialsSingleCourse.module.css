@@ -1,0 +1,10 @@
+.materialsSingleCourseContainer{
+    width: 90%;
+    height: 70hv;
+    background-color: rgb(192, 116, 23);
+    position: absolute;
+    
+}
+.closeButton{
+    cursor:pointer;
+}

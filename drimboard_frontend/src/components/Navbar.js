@@ -1,25 +1,19 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Navbar.module.css";
-import { useAuth } from '../context/AuthContext';
+import useAppStore from '@/store/useAppStore';
 
 const Navbar = () => {
-    const { user, loading, login } = useAuth();
 
-        const handleSubmit = async () => {
-        const result = await login({ email: "ignaciabaeza.i@gmail.com", kit_code: "p0s31d0n" });
+    const { setOpenLoginForm } = useAppStore((state) => state);
+    const logged = useAppStore((state) => state.logged);
 
-        if (result.success) {
-            console.log(user)
-        } else {
-            setError(result.message);
-        }
-    };
 
- useEffect(() => {
-    handleSubmit()
- }, [])
+    const openLoginForm = (e) => {
+        e.preventDefault()
+        setOpenLoginForm(true)
+    }
+
 
 
     return (
@@ -27,11 +21,13 @@ const Navbar = () => {
         <nav className={styles.navContainer}>
             <div className={styles.navbarContainer}>
                 <div className={styles.logoContainer}>
-                    <img
-                        src="/black_logo.png"
-                        alt="Duolab Logo"
-                        className={styles.logoImg}
-                    />
+                    <Link href="/" className={styles.navbarLink}>
+                        <img
+                            src="/black_logo.png"
+                            alt="Duolab Logo"
+                            className={styles.logoImg}
+                        />
+                    </Link>
                 </div>
                 <div className={styles.linksContainer}>
                     <Link href="/" className={styles.navbarLink}>
@@ -43,9 +39,16 @@ const Navbar = () => {
                     <Link href="/" className={styles.navbarLink}>
                         Quiero mi drim
                     </Link>
-                    <Link href="/" className={styles.navbarLink}>
+
+                    {
+                        logged["user_email"] &&
+                        <Link href="/materials" className={styles.navbarLink}>
+                            Ver material
+                        </Link>
+                    }
+                    <button className={styles.navbarLink} onClick={(e) => openLoginForm(e)}>
                         Login
-                    </Link>
+                    </button>
                 </div>
             </div>
         </nav>

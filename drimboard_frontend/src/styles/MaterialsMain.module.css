@@ -1,0 +1,130 @@
+.materialsMainContainer {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.materiasMainTitleContainer {
+    font-family: "Geist Mono", monospace !important;
+    margin-top: 1em;
+}
+
+.materiasMainTitle {
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.materiasMainSubtitle {
+    font-family: "Geist", sans-serif;
+    margin-top: 1em;
+}
+
+.materiasMainContentContainer {
+    margin-top: 3em;
+}
+
+
+.materiasMainSectionOneTitle {
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.coverLogo {
+    width: 3%;
+}
+
+.materiasMainSectionOneMaterial {
+    font-family: "Geist", sans-serif;
+    border: 3px solid #53C68E;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 1em;
+    padding: 0.5em;
+    text-align: left;
+    align-items: center;
+    gap: 10px;
+}
+
+.materiasMainSectionTwo {
+    font-family: "Geist", sans-serif;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+    padding: 0.5em;
+    align-items: left;
+}
+
+.materiasMainSectionTwoContent {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1em;
+    margin-top: 1em;
+
+
+}
+
+.materiasMainSectionTwoTitle {
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.materiasMainSectionTwoMaterial {
+    border: 3px solid #F397C1;
+    border-radius: 15px;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sectionTwoPdf {
+    width: 15%;
+    margin-bottom: 0.5em;
+}
+
+
+
+
+.materiasMainSectionThree {
+    font-family: "Geist", sans-serif;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+    padding: 0.5em;
+    align-items: left;
+}
+
+.materiasMainSectionThreeContent {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1em;
+    margin-top: 1em;
+
+
+}
+
+.materiasMainSectionThreeTitle {
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.materiasMainSectionThreeMaterial {
+    border: 3px solid #DED900;
+    border-radius: 15px;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sectionThreePdf {
+    width: 15%;
+    margin-bottom: 0.5em;
+}

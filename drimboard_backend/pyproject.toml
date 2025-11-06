@@ -25,7 +25,8 @@ dependencies = [
     "psycopg2-binary", # Use "PyMySQL" if you have a MySQL database
     "PyJWT",
     "python-dotenv",
-    "sqlalchemy"
+    "sqlalchemy",
+    "boto3"
 ]
 
 [tool.setuptools.packages.find]
