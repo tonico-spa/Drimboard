@@ -37,7 +37,6 @@ def generate_presigned_url():
     try:
         data = request.get_json()
         file_key = data.get("course_name")
-        import pdb; pdb.set_trace()
 
         key_id = os.getenv("S3_AWS_ACCESS_KEY_ID")
         access_key = os.getenv("S3_AWS_SECRET_ACCESS_KEY")
@@ -46,11 +45,7 @@ def generate_presigned_url():
 
         s3_client = aws_utils.get_s3_client(key_id=key_id, access_key=access_key, region=region)
 
-        sts = boto3.client(
-            'sts',
-            aws_access_key_id=key_id,
-            aws_secret_access_key=access_key
-        )
+
         response = s3_client.head_object(
             Bucket='drim-material-files',
             Key='colores.pdf'
@@ -70,6 +65,7 @@ def generate_presigned_url():
             "get_object",
             Params=params,
         )
+        import pdb; pdb.set_trace()
 
         return jsonify({"url": url})
 

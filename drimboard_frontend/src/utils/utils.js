@@ -15,9 +15,20 @@ export function capitalizeWords(str) {
 
   return capitalizedWords.join(" ");
 }
-    const api = axios.create({
-        // IMPORTANT: Point to the proxy path.
-        // Do NOT include the host (http://localhost:3000). The browser will handle that.
-        baseURL: '/',
-    });
+const api = axios.create({
+  // IMPORTANT: Point to the proxy path.
+  // Do NOT include the host (http://localhost:3000). The browser will handle that.
+  baseURL: '/',
+});
+
+
+export  function PDFViewer({ pdfUrl }) {
+  return (
+    <iframe
+      src={pdfUrl}
+      className="w-full h-screen border-0"
+      title="PDF Viewer"
+    />
+  );
+}
 

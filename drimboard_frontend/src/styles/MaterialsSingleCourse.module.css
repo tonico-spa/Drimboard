@@ -1,10 +1,50 @@
-.materialsSingleCourseContainer{
-    width: 90%;
-    height: 70hv;
-    background-color: rgb(192, 116, 23);
-    position: absolute;
-    
+.materialsSingleCourseContainer {
+    width: 95%;
+    height: 95%;
 }
-.closeButton{
-    cursor:pointer;
+
+.closeButton {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-family: "Geist Mono", monospace !important;
+    margin: 1em;
+}
+
+
+.materialCourse {
+    display: grid;
+    width: 100%;
+    height: 70%;
+    grid-template-columns: 2fr 2fr;
+}
+
+.materialCoursePdf {
+    height: 100%;
+}
+
+.materialCourseVideo {
+    height: 100%;
+}
+
+.pdfContainer {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.container {
+    position: 'relative';
+    width: 100%;
+    height: 100%;
+}
+
+.iframe {
+    position: 'absolute';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
