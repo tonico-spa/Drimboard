@@ -9,6 +9,8 @@ const Navbar = () => {
     const logged = useAppStore((state) => state.logged);
 
 
+
+
     const openLoginForm = (e) => {
         e.preventDefault()
         setOpenLoginForm(true)

@@ -19,8 +19,10 @@
     "@sanity/image-url": "^1.1.0",
     "@studio-freight/lenis": "^1.0.42",
     "axios": "^1.13.1",
+    "groq": "^4.14.2",
     "gsap": "^3.13.0",
     "next": "15.5.4",
+    "next-sanity": "^11.6.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zustand": "^5.0.8"

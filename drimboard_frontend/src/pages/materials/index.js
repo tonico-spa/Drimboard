@@ -6,11 +6,49 @@ import { useAuth } from '../../context/AuthContext';
 import useAppStore from '@/store/useAppStore';
 import MaterialsMain from "@/components/materials/MaterialsMain";
 import MaterialsCourses from "@/components/materials/MaterialsCourses";
+import axios from 'axios';
+import { groq } from 'next-sanity';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
+import { client } from '../../lib/sanity.js'; // Your Sanity client
 
 const Materials = () => {
     const [tab, setTab] = useState("inicio");
+    const { setMaterialCourseChat } = useAppStore((state) => state);
+    const { setCourses } = useAppStore((state) => state);
+
+    useEffect(() => {
+
+        const getMessages = async () => {
+            const response = await axios.get(`${API_URL}/get_course_messages`);
+            setMaterialCourseChat(response.data["messages"])
+        }
+        const getLatestPosts = async () => {
+
+            const postsQuery = groq`
+                            *[_type == "post"]{
+                            _id,
+                            title,
+                            "pdfFile": pdf.asset->url,
+                            youtubeUrl,
+                            description
+                            } | order(_createdAt desc)
+                            `;
+
+            const data =  await client.fetch('*[_type == "post"]')
+            setCourses(data)
+
+        }
+
+        getMessages()
+        getLatestPosts()
+
+
+    }, [])
+
+
+
 
     // Function to handle tab clicks
     const handleTabClick = (tabValue) => {
@@ -73,8 +111,8 @@ const Materials = () => {
             {tab === "inicio" &&
                 <MaterialsMain />
             }
-            {tab === "material" && 
-                <MaterialsCourses/>
+            {tab === "material" &&
+                <MaterialsCourses />
             }
 
         </div>

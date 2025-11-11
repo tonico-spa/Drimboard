@@ -178,7 +178,7 @@
     left: 0;
     width: 90%;
     height: 90vh;
-    background-color: white; /* Semi-transparent backdrop */
+    background-color:#53C68E; /* Semi-transparent backdrop */
     border: 3px solid #53C68E;
     display: flex;
     justify-content: center;
@@ -186,6 +186,7 @@
     transform: translate(5%, 5%);
     z-index: 1000; /* Ensures it's above everything else */
     border-radius: 15px;
+    overflow: scroll;
 
     
 }

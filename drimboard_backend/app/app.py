@@ -31,6 +31,53 @@ ENV = os.getenv("FLASK_ENV")
 # print("Creating database tables...")
 # database.Base.metadata.create_all(bind=database.engine)
 # print("Tables created.")
+@app.route("/create_course_message", methods=["POST"])
+def create_course_message():
+    db = database.SessionLocal()
+
+    data = request.get_json()
+    try:
+        new_message = models.CourseMessage(
+            user_name=data["name"],
+            user_email=data["email"],
+            message=data["message"],
+            course_id=data["course_id"]
+        )
+
+        db.add(new_message)
+        db.commit()
+        db.refresh(new_message)
+
+        print(f"Message inserted with ID: {new_message.id}")
+        return jsonify({"result": f"Message inserted with ID: {new_message.id}"})
+
+    except Exception as e:
+        db.rollback()
+        print(f"Error inserting message: {e}")
+        raise
+    finally:
+        db.close()
+
+@app.route("/get_course_messages", methods=["GET"])
+def get_course_messages():
+
+    db = database.SessionLocal()
+    message_ls = db.query(models.CourseMessage).all()
+    return_ls = list()
+
+    for message in message_ls:
+        aux_dd = {"name": message.user_name,
+                  "email": message.user_email,
+                  "message": message.message,
+                  "created_time": message.created_time,
+                  "course_id": message.course_id}
+        return_ls.append(aux_dd)
+
+    return jsonify({"messages": return_ls})
+
+
+
+
 
 @app.route("/get_single_pdf", methods=["POST"])
 def generate_presigned_url():
@@ -65,7 +112,6 @@ def generate_presigned_url():
             "get_object",
             Params=params,
         )
-        import pdb; pdb.set_trace()
 
         return jsonify({"url": url})
 
@@ -86,25 +132,25 @@ def login():
         return jsonify({"message": "Email and kit_code are required"}), 400
 
     db = database.SessionLocal()
-    try:
-        user = db.query(models.DrimKits).filter(
-            models.DrimKits.user_email == email,
-            models.DrimKits.kit_code == kit_code
-        ).first()
-    finally:
-        db.close()
-
-    if not user:
-        return jsonify({"message": "Invalid credentials"}), 401
+    # try:
+    #     user = db.query(models.Kits).filter(
+    #         models.Kits.user_email == email,
+    #         models.Kits.kit_code == kit_code
+    #     ).first()
+    # finally:
+    #     db.close()
+    #
+    # if not user:
+    #     return jsonify({"message": "Invalid credentials"}), 401
 
     # Create the JWT token
     token = jwt.encode({
-        "email": user.user_email,
+        "email": email,
         "iat": datetime.utcnow(),
         "exp": datetime.utcnow() + timedelta(days=1)
     }, app.config["SECRET_KEY"], algorithm="HS256")
 
-    response = make_response(jsonify({"user": user.user_email, "name": user.user_name, "message": "Login successful"}))
+    response = make_response(jsonify({"user": email, "name": "ignacia baeza", "message": "Login successful"}))
 
     # Set the token in an HTTPOnly cookie
     if ENV == "prod":

@@ -9,9 +9,15 @@ const useAppStore = create(
             logged: {user_email: null, kit_code: null, user_name: null},
             openLoginForm: false,
             openMaterialCourse: {course_name: null, open: false, pdf_url: null, video_url: null},
+            materialCourseChat: [],
+            openCourseId: null,
+            courses: [],
             setLogged: (log_info) => set({logged: log_info}),
             setOpenLoginForm: (open) => set({openLoginForm: open}),
             setOpenMaterialCourse: (open) => set({openMaterialCourse: open}),
+            setMaterialCourseChat: (chat) => set({materialCourseChat: chat}),
+            setOpenCourseId: (id) => set({openCourseId: id}),
+            setCourses: (courses) => set({courses: courses})
 
         }),
         {
