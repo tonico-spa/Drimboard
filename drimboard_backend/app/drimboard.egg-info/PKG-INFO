@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: drimboard
+Version: 0.1.0
+Summary: A Flask API to manage activation codes and user accounts for robotics kits.
+Author-email: Your Name <youremail@example.com>
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: Flask
+Requires-Dist: Flask-Bcrypt
+Requires-Dist: Flask-Cors
+Requires-Dist: psycopg2-binary
+Requires-Dist: PyJWT
+Requires-Dist: python-dotenv
+Requires-Dist: sqlalchemy
+Requires-Dist: boto3
+Requires-Dist: gunicorn

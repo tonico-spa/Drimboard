@@ -7,6 +7,6 @@ build:
       - pip install .
 run:
   runtime-version: 3.11
-  command: gunicorn --bind :8000 --workers 4 app:app
+  command: gunicorn --bind :8000 --workers 4 app.app:app
   network:
     port: 8000
