@@ -10,9 +10,3 @@ run:
   command: gunicorn --bind :8000 --workers 4 app:app
   network:
     port: 8000
-    env: APP_PORT
-  env:
-    - name: FLASK_ENV
-      value: "production"
-    - name: PYTHONUNBUFFERED
-      value: "1"
