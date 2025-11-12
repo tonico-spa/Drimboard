@@ -135,7 +135,7 @@ const MaterialsSingleCourse = () => {
                     }
                 </div>
                 {messages.length > 0 && messages.map((element) => (
-                    <div className={styles.materialCourseMessage}>
+                    <div className={styles.materialCourseMessage} key={element["_id"]}>
                         <div className={styles.materialCourseTitleContainer}>
                             <div className={styles.materialCourseMessageTitle}>
                                 {capitalizeWords(element["name"])}

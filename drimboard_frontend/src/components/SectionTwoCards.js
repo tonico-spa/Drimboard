@@ -81,8 +81,8 @@ const SectionTwoCards = () => {
       cards.forEach(card => {
         gsap.to(card, {
           rotation: gsap.utils.random(-15, 15),
-          duration: 0.5,
-          ease: 'power3.out',
+          duration: 0.8,
+          ease: 'elastic.out(1, 0.5)', // Smooth elastic bounce
         });
       });
     };
@@ -103,8 +103,8 @@ const SectionTwoCards = () => {
           rotation: 0,      // Make it straight
           scale: 1.1,       // Make it bigger
           y: -20,           // Move it up to separate it
-          duration: 0.1,
-          ease: 'power3.out',
+          duration: 0.6,
+          ease: 'elastic.out(1, 0.4)', // Smooth elastic bounce on hover
           overwrite: 'auto' // Prevents conflicting animations on the same element
         });
 
@@ -112,8 +112,8 @@ const SectionTwoCards = () => {
         otherCards.forEach(otherCard => {
           gsap.to(otherCard, {
             rotation: gsap.utils.random(-15, 15),
-            duration: 0.1,
-            ease: 'power3.out',
+            duration: 0.5,
+            ease: 'back.out(1.2)', // Smooth back easing with slight overshoot
             overwrite: 'auto'
           });
         });
@@ -125,13 +125,15 @@ const SectionTwoCards = () => {
         gsap.to(card, {
           scale: 1,
           y: 0,
-          duration: 0.1,
-          ease: 'power3.out',
+          duration: 0.6,
+          ease: 'elastic.out(1, 0.5)', // Smooth elastic bounce when returning
           overwrite: 'auto'
         });
 
         // And then give ALL cards a new random rotation
-        setInitialRotations();
+        setTimeout(() => {
+          setInitialRotations();
+        }, 100); // Small delay for better visual flow
       });
     });
 
@@ -144,6 +146,7 @@ const SectionTwoCards = () => {
       });
     };
   }, []); // Empty dependency array ensures this runs only once on mount
+  
   return (
     <div className={styles.cardsContainer} ref={containerRef}>
       <div className={`${styles.singleCardContainer} singleCardContainer`} ref={blockContainerRef}>

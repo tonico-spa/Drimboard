@@ -26,7 +26,8 @@ dependencies = [
     "PyJWT",
     "python-dotenv",
     "sqlalchemy",
-    "boto3"
+    "boto3",
+    "gunicorn",
 ]
 
 [tool.setuptools.packages.find]

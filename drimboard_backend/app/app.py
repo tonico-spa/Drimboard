@@ -132,16 +132,16 @@ def login():
         return jsonify({"message": "Email and kit_code are required"}), 400
 
     db = database.SessionLocal()
-    # try:
-    #     user = db.query(models.Kits).filter(
-    #         models.Kits.user_email == email,
-    #         models.Kits.kit_code == kit_code
-    #     ).first()
-    # finally:
-    #     db.close()
-    #
-    # if not user:
-    #     return jsonify({"message": "Invalid credentials"}), 401
+    try:
+        user = db.query(models.Kits).filter(
+            models.Kits.user_email == email,
+            models.Kits.kit_code == kit_code
+        ).first()
+    finally:
+        db.close()
+
+    if not user:
+        return jsonify({"message": "Invalid credentials"}), 401
 
     # Create the JWT token
     token = jwt.encode({

@@ -48,7 +48,7 @@ const Navbar = () => {
                             Ver material
                         </Link>
                     }
-                    <button className={styles.navbarLink} onClick={(e) => openLoginForm(e)}>
+                    <button className={styles.navbarLoginLink} onClick={(e) => openLoginForm(e)}>
                         Login
                     </button>
                 </div>

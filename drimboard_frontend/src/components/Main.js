@@ -10,8 +10,11 @@ import Tape from './svgs/tape/Tape';
 import Lenis from '@studio-freight/lenis'; // Import Lenis
 import SectionFive from './SectionFive';
 import SectionSix from './SectionSix';
+import { Suspense } from 'react';
 import useAppStore from '@/store/useAppStore';
 import LoginForm from './LoginForm';
+import StepViewer from './SetpViewer';
+import VideoEmbed from "./VideoEmbed";
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -204,12 +207,15 @@ const Main = () => {
   return (
     <div className={styles.mainContainer} ref={mainContainerRef}>
       <div className={styles.coverContainer}>
+
         <img
           src="/cover_logo.png"
           alt="Duolab Logo"
           className={styles.coverLogo}
         />
+
         <div className={styles.coverSubtitleContainer}>
+
           <div className={styles.coverSubtitleLogo}>
             <RightArrow styles={arrowStyles} />
           </div>
@@ -298,7 +304,14 @@ const Main = () => {
           {/* The right column that stays fixed */}
 
           <div className={styles.videoContainer}>
-            <div className={styles.videoPlaceholder}>VIDEO</div>
+            <div className={styles.videoPlaceholder}>
+
+
+              <Suspense fallback={<div>Loading 3D model...</div>}>
+                <StepViewer fileUrl="/models/kit_sim.glb" initialAngle={-Math.PI / 2} />
+              </Suspense>
+
+            </div>
           </div>
 
         </div>
@@ -309,6 +322,63 @@ const Main = () => {
 
       <div className={styles.sectionFiveContainer}>
         <div className={styles.sectionFiveVideoContainer}>
+          <div className={styles.sectionFiveTextContainer}>
+            <div>
+              <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
+            </div>
+            <div className={styles.sectionFiveTitle}>
+              Sofía
+            </div>
+            <div className={styles.sectionFiveSubTitle}>
+              9 años - Futura Botánica
+            </div>
+
+            <div className={styles.sectionFiveText}>
+              Siempre me encantaron las plantas, pero se me olvidaba regarlas.
+              Con el kit armé un sistema que riega mis plantas solo cuando la tierra está seca.
+              ¡No tuve que programar nada complicado! Solo seguí los pasos y conecté el sensor de
+              humedad. Ahora mis plantas están más verdes que nunca.
+            </div>
+
+          </div>
+          <div className={styles.sectionFiveTextContainer}>
+            <div>
+              <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
+            </div>
+            <div className={styles.sectionFiveTitle}>
+              Mateo
+            </div>
+            <div className={styles.sectionFiveSubTitle}>
+              10 años - Futuro Músico
+            </div>
+
+            <div className={styles.sectionFiveText}>
+              Quiero ser músico como mi papá, pero nunca imaginé que podría crear mis propios instrumentos.
+              Con el kit construí una guitarra que hace sonidos cuando tocas los botones.
+              Lo mejor es que el kit ya trae todo listo para empezar, no necesitas saber programar.
+              
+            </div>
+
+          </div>
+          <div className={styles.sectionFiveTextContainer}>
+            <div>
+              <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
+            </div>
+            <div className={styles.sectionFiveTitle}>
+              Valentina
+            </div>
+            <div className={styles.sectionFiveSubTitle}>
+              11 años - Futura Geóloga
+            </div>
+
+            <div className={styles.sectionFiveText}>
+              Los terremotos siempre me dieron curiosidad. ¿Cómo los detectan?
+              Con el kit pude construir mi propio detector de movimientos sísmicos para mi proyecto de ciencias.
+              Pensé que sería súper difícil, pero las instrucciones son tan claras que lo armé en una
+              tarde.
+            </div>
+
+          </div>
 
 
         </div>
@@ -482,8 +552,8 @@ const Main = () => {
         openLoginForm &&
         <div className={styles.loginFormContainer}>
           <LoginForm />
-          </div>
-        
+        </div>
+
       }
     </div>
   )

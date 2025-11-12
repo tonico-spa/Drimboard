@@ -19,7 +19,7 @@ body {
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background-color: white;
 font-family: var(--font-roboto-mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
