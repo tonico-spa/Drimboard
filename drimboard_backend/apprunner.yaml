@@ -3,8 +3,10 @@ runtime: python311
 build:
   commands:
     build:
-      - pip install --upgrade pip
-      - pip install -e drimboard_backend
+      - ls -la
+      - cat pyproject.toml
+      - pip install --upgrade pip setuptools wheel
+      - pip install -e . --verbose
 run:
   runtime-version: 3.11
   command: gunicorn --bind :8000 --workers 4 app.app:app
