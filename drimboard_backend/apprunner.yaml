@@ -3,10 +3,8 @@ runtime: python311
 build:
   commands:
     build:
-      - ls -la
-      - cat pyproject.toml
       - pip install --upgrade pip setuptools wheel
-      - pip install -e . --verbose
+      - pip install -e .
 run:
   runtime-version: 3.11
   command: gunicorn --bind :8000 --workers 4 app.app:app

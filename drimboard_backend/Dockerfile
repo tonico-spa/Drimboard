@@ -1,21 +1,30 @@
-FROM python:3.11-slim
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-WORKDIR /app
+[project]
+name = "drimboard"
+version = "0.1.0"
+description = "A Flask API to manage activation codes and user accounts for robotics kits."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Your Name", email = "youremail@example.com" },
+]
 
-# Copy pyproject.toml and install dependencies
-COPY pyproject.toml ./
-COPY README.md ./
+dependencies = [
+    "Flask",
+    "Flask-Bcrypt",
+    "Flask-Cors",
+    "psycopg2-binary",
+    "PyJWT",
+    "python-dotenv",
+    "sqlalchemy",
+    "boto3",
+    "gunicorn",
+]
 
-# Install build dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir .
-
-# Copy the rest of the application
-COPY . .
-COPY .env .
-
-# Expose the port Flask will run on
-EXPOSE 8000
-
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "app:app"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
