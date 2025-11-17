@@ -1,315 +1,216 @@
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* MAIN CONTAINER */
 .mainContainer {
   display: flex;
   align-items: center;
   flex-direction: column;
   background-color: white;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .separator {
-  height: 15vh;
+  height: clamp(2vh, 5vh, 15vh);
 }
 
-/* The parent container for the cover section */
+/* COVER SECTION */
 .coverContainer {
-  /* This is crucial for positioning children within it */
   height: 100vh;
-  /* Makes the container take the full height of the screen */
   width: 100%;
-
-  /* --- Flexbox Properties --- */
   display: flex;
-  /* 1. Turns this container into a flexbox container */
   flex-direction: column;
-  /* 2. Stacks the children vertically (logo on top of subtitle) */
   justify-content: flex-end;
-  /* 3. Pushes all children to the bottom of the container */
   align-items: flex-start;
-  /* 4. Aligns all children to the left of the container */
-
-  /* Optional: Add some padding so the content isn't stuck to the very edge */
-  padding: 40px;
+  padding: clamp(20px, 5vw, 40px);
   box-sizing: border-box;
-  /* Ensures padding is included in the element's total width and height */
-
-  /* You might want a background image or color */
-  /* Example background color */
 }
 
-/* Styling for your logo */
 .coverLogo {
-  width: clamp(10%, 20%, 550px);
-  /* Example width */
+  width: clamp(200px, 30vw, 550px);
   height: auto;
-  /* Maintain aspect ratio */
+  margin-bottom: clamp(1rem, 3vh, 2rem);
 }
 
-.coverSubtitleLogo {
-  height: auto;
-  width: 5%;
-}
-
-.coverSubtitleText {
-  width: 15%;
-  align-items: center;
-  font-weight: 500;
-  justify-content: center;
-  color: black;
-}
-
-/* The container for your subtitle and arrow */
 .coverSubtitleContainer {
-  /* Optional: Add a small margin to create space between the logo and the subtitle */
   font-family: "Geist Mono", monospace !important;
   display: flex;
   flex-direction: row;
   width: 100%;
   align-items: center;
-  justify-content: left;
+  justify-content: flex-start;
+  gap: clamp(0.5rem, 2vw, 1rem);
 }
 
-/* The parent container for the cover section */
+.coverSubtitleLogo {
+  height: auto;
+  width: clamp(30px, 5vw, 50px);
+  flex-shrink: 0;
+}
 
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* The parent container for section 2 */
-
-.sectionTwoContainer {
-  height: 60vh;
+.coverSubtitleText {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 500;
   color: black;
-  width: 80%;
+}
+
+/* SECTION TWO */
+.sectionTwoContainer {
+  min-height: 60vh;
+  color: black;
+  width: 90%;
+  max-width: 1400px;
   font-family: "Geist Mono", monospace !important;
+  padding: clamp(1rem, 3vh, 2rem) 0;
 }
 
 .sectionTwoTitleContainer {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  gap: clamp(0.5rem, 2vw, 1rem);
+  margin-bottom: clamp(1rem, 3vh, 2rem);
 }
 
 .sectionTwoTitleLogo {
   height: auto;
-  width: 8%;
-  color: black;
+  width: clamp(40px, 8vw, 80px);
+  flex-shrink: 0;
 }
 
 .sectionTwoTitleText {
   text-align: left;
   display: flex;
   align-items: flex-end;
-  margin: 0.5em;
-  font-size: 29px;
+  font-size: clamp(1.25rem, 3.5vw, 2rem);
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .sectionTwoCards {
-  height: 80%;
   width: 100%;
+  min-height: 300px;
 }
 
-/* The parent container for section 2 */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* The parent container for section 3 */
-
+/* SECTION THREE */
 .sectionThreeContainer {
   position: relative;
-  padding-top: 5rem;
+  padding-top: clamp(2rem, 5vh, 5rem);
   height: 75vh;
-  width: 80%;
+  width: 90%;
   font-family: "Geist Mono", monospace !important;
-  /* --- FIX: Add will-change for performance --- */
   will-change: transform;
 }
 
 .splitScrollTitle {
-  font-size: 20px;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   color: #F397C1;
   font-weight: bold;
-  margin-bottom: 3rem;
+  margin-bottom: clamp(1.5rem, 3vh, 3rem);
   text-align: left;
-  width: 80%;
   font-family: "Geist Mono", monospace !important;
 }
 
-
-/* Main container for the two columns */
 .splitScrollContainer {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 60vh;
+  min-height: 60vh;
+  gap: clamp(1rem, 3vw, 3rem);
 }
 
-/* --- Left column (Text content) --- */
 .scrollContainer {
   flex: 1;
+  min-width: 0;
   height: 100%;
-  width: 100%;
   overflow-y: hidden;
   position: relative;
   color: black;
-
-  /* RESPONSIVE CHANGE: Use vw for padding that scales with screen width. */
-  /* clamp() ensures padding doesn't get too small or too large. */
-  padding-top: clamp(2rem, 10vh, 6rem);
-  /* vh for vertical padding */
-
-  /* Center the scrollContent div within this container */
+  padding-top: clamp(1rem, 5vh, 3rem);
   display: flex;
   justify-content: center;
 }
 
-/* This is the inner div that we will animate */
 .scrollContent {
-  /* Let's use max-width to prevent text lines from becoming too long on wide screens, */
-  /* which is better for readability. Width is 100% of its parent up to a max. */
   width: 100%;
   text-align: left;
 }
 
-/* --- Right column (Video) --- */
 .videoContainer {
   flex: 1;
-  width: 100%;
+  min-width: 0;
   background-color: #ffffff;
   display: flex;
   align-items: center;
-
   justify-content: center;
 }
 
 .videoPlaceholder {
   width: 100%;
+  height: 100%;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   color: black;
-
-  /* RESPONSIVE CHANGE: Fluid font size for the placeholder text */
-  font-size: clamp(1.5rem, 5vw, 3rem);
+  font-size: clamp(1rem, 3vw, 2rem);
 }
 
-/* --- Text Styling --- */
 .scrollSectionTextContainer {
-  /* RESPONSIVE CHANGE: Use vh for the margin to scale with viewport height. */
-  /* This keeps the "scroll-to-reveal" feeling consistent across screen sizes. */
-
-  /* This ensures that even with the parent's text-align:left, */
-  /* the block itself can be centered if the parent container uses flex. */
-  /* No changes needed here from your previous setup. */
-  width: 80%;
-  padding-bottom: clamp(2rem, 18vh, 15rem);
-  /* vh for vertical padding */
+  width: 100%;
+  max-width: 600px;
+  padding-bottom: clamp(3rem, 15vh, 12rem);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* Aligns the block to the left */
 }
 
 .scrollSectionTitle {
-  /* RESPONSIVE CHANGE: Fluid font size using clamp(). */
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  /* Min 32px, Preferred 5% of width, Max 56px */
+  font-size: clamp(1.5rem, 4vw, 3rem);
   font-weight: bold;
-  position: sticky;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+  line-height: 1.2;
 }
 
 .scrollSectionText {
-  /* RESPONSIVE CHANGE: A more subtle fluid font size. */
-  /* This formula (vw + rem) provides a stable base size and adds a scalable factor. */
-  font-size: clamp(1rem, 0.5vw + 0.9rem, 1.15rem);
-  line-height: 1.5;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  line-height: 1.6;
   font-family: "Geist", sans-serif !important;
 }
 
-/* --- Media Query for Mobile --- */
-/* This applies when the screen is 768px wide or less */
-@media (max-width: 768px) {
-  .splitScrollContainer {
-    /* Stack the columns vertically */
-    flex-direction: column;
-  }
-
-  /* On mobile, we typically want the video/image first, then the text. */
-  /* Use order to swap them visually without changing the HTML. */
-  .videoContainer {
-    order: 1;
-    /* Appears first */
-    flex: 0 0 50vh;
-    /* Give it a fixed height of 50% of the viewport height */
-  }
-
-  .scrollContainer {
-    order: 2;
-    /* Appears second */
-    overflow-y: auto;
-    /* Allow normal scrolling on mobile */
-    height: auto;
-    padding: 2rem 1.5rem;
-    /* Use simpler padding for mobile */
-  }
-
-  .scrollContent {
-    max-width: 100%;
-    /* Take full width on mobile */
-  }
-
-  /* You may want to reduce the large margin on mobile for better flow */
-  .scrollSectionTextContainer {
-    margin-bottom: 5rem;
-  }
-}
-
-/* The parent container for section 3 */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* The parent container for section 4 */
-/* --- Section Four: Staggered Stacking Cards --- */
-
+/* SECTION FOUR */
 .sectionFourContainer {
   position: relative;
-  /* This container helps center the card setup */
-  width: 80%;
+  width: 90%;
+  max-width: 1400px;
   display: flex;
   justify-content: center;
-  /* Add some padding so the pinned section has space */
+  padding: clamp(2rem, 5vh, 4rem) 0;
 }
 
-/* This is the element that will be pinned */
 .cards {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  height: 70vh;
-  /* --- FIX: Add will-change for performance --- */
+  min-height: 70vh;
   will-change: transform;
 }
 
-
 .customCard {
   position: absolute;
-  width: 100% !important;
-  height: clamp(10%, 80%, 90%);
+  width: 100%;
+  height: clamp(500px, 70vh, 800px);
   color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 15px;
+  border-radius: clamp(10px, 2vw, 15px);
   font-family: "Geist", sans-serif;
-  font-size: 2rem;
   flex-direction: column;
+  padding: clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
 }
 
-/* Staggered positioning for the initial "deck" look */
 .card1 {
   top: 0;
   background-color: #53C68E;
@@ -332,10 +233,9 @@
 
 .sectionFourTitleContainer {
   position: absolute;
-  top: 0;
-  left: 0;
-  margin-top: clamp(1em, 1em, 2em);
-  margin-left: clamp(1em, 1em, 2em);
+  top: clamp(1rem, 3vh, 2rem);
+  left: clamp(1rem, 3vw, 2rem);
+  max-width: 80%;
 }
 
 .sectionFourActivityTitle {
@@ -343,138 +243,158 @@
   background-color: #ffffff;
   color: black;
   border-radius: 10px;
-  width: 50%;
-  padding: 0.5em;
+  padding: clamp(0.4em, 1vw, 0.6em) clamp(0.6em, 2vw, 1em);
   text-align: center;
-  font-size: 18px;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  display: inline-block;
+  width: auto;
+  min-width: 100px;
 }
 
 .sectionFourActivitySubTitle {
   font-family: "Geist", sans-serif;
-  text-align: center;
+  text-align: left;
   color: black;
-  margin-top: clamp(0.3em, 0.3em, 1em);
-
+  margin-top: clamp(0.5rem, 1.5vh, 1rem);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 600;
 }
 
 .sectionFourActivityInformationContainer {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: clamp(1rem, 3vh, 2rem);
+  left: clamp(1rem, 3vw, 2rem);
   display: flex;
   flex-direction: column;
-  margin-bottom: clamp(1em, 1em, 2em);
-  margin-left: clamp(1em, 1.5em, 2em);
+  gap: clamp(0.75rem, 2vh, 1.5rem);
+  max-width: 90%;
+}
+
+.sectionFourActivityInformation {
+  width: 100%;
+  max-width: 500px;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  text-align: left;
+  color: black;
+  line-height: 1.5;
+  font-family: "Geist", sans-serif;
 }
 
 .sectionFourActivityButton {
   font-family: "Geist Mono", monospace !important;
-  width: 15%;
-  height: 3em;
+  width: auto;
+  min-width: 120px;
+  max-width: 200px;
+  height: clamp(2.5em, 5vh, 3.5em);
   background-color: #ffffff;
   color: black;
   border-radius: 10px;
   text-align: center;
-  font-size: 15px;
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
+  gap: clamp(0.3em, 1vw, 0.75em);
+  padding: 0 clamp(0.75em, 2vw, 1.5em);
+  cursor: pointer;
 }
 
 .sectionFourActivityArrow {
-  margin-left: clamp(0.2em, 0.5em, 2em);
-}
-
-.sectionFourActivityInformation {
-  width: 40%;
-  font-size: 18px;
-  text-align: left;
-  color: black;
-  margin-bottom: 1em;
-
+  width: clamp(15px, 3vw, 25px);
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sectionFourActivityInformationPicture {
   background-color: black;
-  width: 40%;
-  height: 70%;
+  width: clamp(150px, 35vw, 400px);
+  height: clamp(200px, 40vh, 450px);
   position: absolute;
-  right: 0;
-  bottom: 0;
-  margin-right: clamp(1em, 1.5em, 2em);
-  margin-bottom: clamp(1em, 1em, 2em);
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vh, 2rem);
+  border-radius: 10px;
 }
 
-.sectionFourActivityArrow {
-  width: 20%;
-}
-
-/* The parent container for section 4 */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-/* The parent container for section 5 */
-
+/* SECTION FIVE */
 .sectionFiveContainer {
   position: relative;
-  /* This container helps center the card setup */
   width: 90%;
+  max-width: 1400px;
   display: flex;
   justify-content: center;
-  margin-top: clamp(1em, 1.5em, 2em);
-  margin-bottom: clamp(1em, 2em, 2.5em);
+  margin: clamp(2rem, 5vh, 4rem) 0;
   flex-direction: column;
+  min-height: 60vh;
 }
-
 
 .sectionFiveVideoContainer {
   width: 100%;
-  height: 100%;
-  border-radius: 10px;
+  min-height: 500px;
+  border-radius: clamp(10px, 2vw, 15px);
   background-color: #F397C1;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.5rem);
   color: black;
   font-family: "Geist", sans-serif;
-  padding: 1em;
+  padding: clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
+}
+
+.sectionFiveTextContainer {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.5vh, 1rem);
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sectionFiveVideo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  min-height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .sectionFiveTitle {
   font-family: "Geist Mono", monospace !important;
-  font-size: 18px;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
   font-weight: 600;
   text-align: center;
-    margin-top: 0.8em;
+  margin-top: clamp(0.5rem, 1.5vh, 1rem);
 }
 
 .sectionFiveSubTitle {
   font-family: "Geist Mono", monospace !important;
-  font-size: 15px;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
   font-weight: 700;
   text-align: center;
-  margin-bottom: 0.8em;
+  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
 }
 
-.sectionFiveTextContainer {
-
+.sectionFiveText {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  line-height: 1.6;
   text-align: justify;
-  margin: 0.5em;
-  display: grid;
-  grid-template-rows: 3fr 0.55fr 0.55fr;
-  height: 100%;
-  padding: 1em;
 }
 
 .container {
-  position: 'relative';
+  position: relative;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .iframe {
-  position: 'absolute';
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -482,54 +402,126 @@
   border: none;
 }
 
-
-
-
-/* The parent container for section 5 */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-/* The parent container for section 6 */
-
+/* SECTION SIX */
 .sectionSixContainer {
   position: relative;
-  height: 80vh;
-  /* This container helps center the card setup */
+  min-height: 60vh;
   width: 90%;
+  max-width: 1400px;
   display: flex;
   justify-content: center;
-  margin-top: clamp(1em, 1.5em, 2em);
-  margin-bottom: clamp(1em, 2em, 2.5em);
+  margin: clamp(2rem, 5vh, 4rem) 0;
   flex-direction: column;
 }
 
-
-/* The parent container for section 5 */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-/* The parent container for section 5 */
-
-/* The parent container for login */
-
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-/* The parent container for section 5 */
-
-
+/* LOGIN FORM */
 .loginFormContainer {
   background-color: #ffffff;
-  height: 55%;
-  width: 50%;
+  width: clamp(300px, 90vw, 600px);
+  max-height: 90vh;
   position: fixed;
-  transform: translate(0%, 50%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 9999;
-  border-radius: 10px;
-  border: 7px solid #F397C1;
-
+  border-radius: clamp(10px, 2vw, 15px);
+  border: clamp(3px, 0.75vw, 7px) solid #F397C1;
+  overflow-y: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
 }
 
-/* The parent container for login */
+/* TABLET */
+@media (max-width: 1024px) {
+  .sectionFourActivityInformationPicture {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    right: auto;
+    bottom: auto;
+    margin: 1rem auto 0;
+  }
 
-/* ------------------------------------------------------------------------------------------------------------------------------------------- */
-/* The parent container for section 5 */
+  .sectionFourActivityInformationContainer {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .customCard {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: clamp(4rem, 10vh, 6rem);
+  }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .splitScrollContainer {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .videoContainer {
+    order: 1;
+    width: 100%;
+    min-height: 300px;
+    max-height: 50vh;
+  }
+
+  .scrollContainer {
+    order: 2;
+    overflow-y: visible;
+    height: auto;
+    padding: 1rem 0;
+  }
+
+  .scrollSectionTextContainer {
+    padding-bottom: 3rem;
+  }
+
+  .cards {
+    min-height: 600px;
+  }
+
+  .customCard {
+    height: auto;
+    min-height: 550px;
+  }
+
+  .card2 { top: 20px; }
+  .card3 { top: 40px; }
+  .card4 { top: 60px; }
+
+  .sectionFourActivityInformationPicture {
+    display: none;
+  }
+
+  .sectionFiveVideoContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .separator {
+    height: clamp(3vh, 5vh, 8vh);
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+  .coverLogo {
+    width: clamp(150px, 50vw, 300px);
+  }
+
+  .customCard {
+    min-height: 500px;
+    padding: 1rem;
+  }
+
+  .loginFormContainer {
+    width: 95vw;
+    padding: 1rem;
+  }
+}

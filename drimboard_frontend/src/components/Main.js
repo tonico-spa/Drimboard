@@ -304,14 +304,12 @@ const Main = () => {
           {/* The right column that stays fixed */}
 
           <div className={styles.videoContainer}>
-            <div className={styles.videoPlaceholder}>
 
 
               <Suspense fallback={<div>Loading 3D model...</div>}>
                 <StepViewer fileUrl="/models/kit_sim.glb" initialAngle={-Math.PI / 2} />
               </Suspense>
 
-            </div>
           </div>
 
         </div>
@@ -323,7 +321,7 @@ const Main = () => {
       <div className={styles.sectionFiveContainer}>
         <div className={styles.sectionFiveVideoContainer}>
           <div className={styles.sectionFiveTextContainer}>
-            <div>
+            <div className={styles.sectionFiveVideo}>
               <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
             </div>
             <div className={styles.sectionFiveTitle}>
@@ -342,7 +340,7 @@ const Main = () => {
 
           </div>
           <div className={styles.sectionFiveTextContainer}>
-            <div>
+            <div className={styles.sectionFiveVideo}>
               <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
             </div>
             <div className={styles.sectionFiveTitle}>
@@ -361,7 +359,7 @@ const Main = () => {
 
           </div>
           <div className={styles.sectionFiveTextContainer}>
-            <div>
+            <div className={styles.sectionFiveVideo}>
               <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
             </div>
             <div className={styles.sectionFiveTitle}>
@@ -377,13 +375,8 @@ const Main = () => {
               Pensé que sería súper difícil, pero las instrucciones son tan claras que lo armé en una
               tarde.
             </div>
-
           </div>
-
-
         </div>
-
-
       </div>
       <Tape />
 
@@ -539,11 +532,11 @@ const Main = () => {
           </div>
         </div>
       </div>
-
+     <div className={styles.separator}></div>
       <div className={styles.sectionFiveContainer}>
-
         <SectionFive />
       </div>
+       <div className={styles.separator}></div>
       <div className={styles.sectionSixContainer}>
         <SectionSix />
       </div>

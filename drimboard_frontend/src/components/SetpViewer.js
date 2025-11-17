@@ -17,22 +17,25 @@ function Model({ url, startAngle = 0 }) {
 
 export default function StepViewer({ fileUrl, initialAngle = Math.PI / 2 }) {
   return (
-    <div style={{ width: '100%', height: '600px' }}>
+<div style={{ width: '100%', height: '600px' }}>
       <Canvas camera={{ position: [130, 130, 130], fov: 50 }}>
         <Suspense fallback={null}>
-          <Stage intensity={0.5}>
-            <Model 
-              url={fileUrl} 
-              startAngle={initialAngle}
-            />
-          </Stage>
+          {/* Add manual lighting */}
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+          <directionalLight position={[-10, -10, -5]} intensity={0.5} />
+          
+          <Model 
+            url={fileUrl} 
+            startAngle={initialAngle}
+          />
         </Suspense>
         <OrbitControls 
           enableZoom={false}
           enablePan={false}
           enableRotate={true}
-          minDistance={225}  // Lock distance (calculated from camera position)
-          maxDistance={225}  // Same value to prevent any zoom change
+          minDistance={225}
+          maxDistance={225}
         />
       </Canvas>
     </div>

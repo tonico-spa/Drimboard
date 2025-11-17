@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { capitalizeWords, getRelativeTime } from "@/utils/utils";
 import VideoEmbed from "../VideoEmbed";
 import axios from 'axios';
+import EmbeddedPage from "../EmbeddedPage";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 import { getUrl } from "@/utils/utils";
 
@@ -23,6 +24,7 @@ const MaterialsSingleCourse = () => {
     const [pdfUrl, setPdfUrl] = useState(null)
     const [videoUrl, setVideoUrl] = useState(null)
     const [numPages, setNumPages] = useState(null);
+    const [courseContent, setCourseContent] = useState(false);
     const [comment, setComment] = useState('');
     const [description, setDescription] = useState(1);
     const [messages, setMessages] = useState([]);
@@ -38,8 +40,13 @@ const MaterialsSingleCourse = () => {
         setDescription(openMaterialCourse["description"])
         setMessages(materialCourseChat.filter(ele => ele.course_id === openMaterialCourse["_id"]))
 
-
     }, []);
+
+    useEffect(() => {
+
+        setMessages(materialCourseChat.filter(ele => ele.course_id === openMaterialCourse["_id"]))
+
+    }, [materialCourseChat]);
 
     const openCourse = (e) => {
         e.preventDefault()
@@ -53,24 +60,20 @@ const MaterialsSingleCourse = () => {
 
     const commentCourse = async () => {
 
-        console.log(comment)
-        console.log(openMaterialCourse)
-        console.log(materialCourseChat)
         const send_dd = {
             "course_id": openMaterialCourse["_id"],
             "email": logged["user_email"],
             "message": comment,
             "name": logged["user_name"]
         }
-        console.log(send_dd)
         const response = await axios.post(`${API_URL}/create_course_message`, send_dd)
-        console.log(response)
         setMaterialCourseChat([...materialCourseChat, send_dd])
-
-        
+        setComment("")
 
     }
-    console.log(messages)
+    const openCourseContent = () =>{
+        setCourseContent(!courseContent)
+    }
 
 
     return (
@@ -85,7 +88,19 @@ const MaterialsSingleCourse = () => {
                 Volver
             </div>
 
-            <div className={styles.materialCourse}>
+            <div className={styles.materialsSingleCourseBlocks}>
+                <EmbeddedPage
+                    url="https://www.drim.cl/"
+                    allowedOrigins={['https://www.drim.cl/']}
+                />
+            </div>
+            <div className={styles.materialCourseOpenCourse} onClick={openCourseContent}>
+                Contenido del curso
+            </div>
+
+            {courseContent && 
+            <>
+             <div className={styles.materialCourse}>
                 <div className={styles.materialCoursePdf}>
 
                     {pdfUrl && (
@@ -113,6 +128,10 @@ const MaterialsSingleCourse = () => {
 
 
             </div>
+            </>
+            }
+
+           
             <div className={styles.materialCourseChat}>
                 <div>
                     {messages.length} comentarios
