@@ -38,7 +38,7 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  # NOT ["*"]
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -170,7 +170,7 @@ def generate_presigned_url(data: PresignedUrlRequest):
 
 
 @app.post("/login", response_model=MessageResponse)
-def login(payload: LoginRequest, response: Response, db: Session = Depends(get_db)): # <--- FIXED HERE
+def login(payload: LoginRequest, db: Session = Depends(get_db)):
     email = payload.email
     kit_code = payload.kit_code
 
@@ -184,19 +184,6 @@ def login(payload: LoginRequest, response: Response, db: Session = Depends(get_d
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials"
         )
-
-    # Create the JWT token
-    token = jwt.encode({
-        "email": email,
-        "iat": datetime.utcnow(),
-        "exp": datetime.utcnow() + timedelta(days=1)
-    }, SECRET_KEY, algorithm="HS256")
-
-    # Set the token in an HTTPOnly cookie
-    if ENV == "prod":
-        response.set_cookie(key="token", value=token, httponly=True, secure=True, samesite="Lax")
-    else:
-        response.set_cookie(key="token", value=token, httponly=True, secure=False, samesite="Lax")
 
     return {"user": email, "name": "ignacia baeza", "message": "Login successful"}
 

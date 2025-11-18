@@ -11,7 +11,6 @@ const MaterialsCourses = () => {
     const openMaterialCourse = useAppStore((state) => state.openMaterialCourse);
     const courses = useAppStore((state) => state.courses);
     const { setOpenMaterialCourse } = useAppStore((state) => state);
-    console.log(courses)
 
     const openCourse = (e, element) => {
         e.preventDefault()

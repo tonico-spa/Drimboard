@@ -17,7 +17,6 @@ export function AuthProvider({ children }) {
         // IMPORTANT: Point to the proxy path.
         // Do NOT include the host (http://localhost:3000). The browser will handle that.
         baseURL: API_URL,
-        withCredentials: true
     });
     // --- IMPROVEMENT 1: Check session on initial app load ---
     useEffect(() => {
