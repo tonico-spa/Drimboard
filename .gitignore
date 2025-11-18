@@ -4,3 +4,6 @@ drimboard_frontend/.env
 drimboard_frontend/node_modules
 drimboard_frontend/.next
 drimboard_backend/.idea
+drimboard_backend/app/__pycache__/
+drimboard_backend/app/drimboard.egg-info
+drimboard_backend/app/database/__pycache__/
