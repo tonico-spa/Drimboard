@@ -60,14 +60,14 @@ class CourseMessageCreate(BaseModel):
     user_name: str
     user_email: str
     message: str
-    course_id: int
+    course_id: str
 
 class CourseMessageResponse(BaseModel):
     user_name: str
     user_email: str
     message: str
     created_time: datetime
-    course_id: int
+    course_id: str
 
     class Config:
         orm_mode = True

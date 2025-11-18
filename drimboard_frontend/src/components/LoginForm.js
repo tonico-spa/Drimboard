@@ -22,6 +22,7 @@ const LoginForm = () => {
         setIsLoading(true); // Show a loading state
 
         try {
+            console.log("logging")
             const result = await login({ email: email, kit_code: kitCode });
 
             if (result.success) {

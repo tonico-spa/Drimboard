@@ -21,8 +21,10 @@ const Materials = () => {
     useEffect(() => {
 
         const getMessages = async () => {
+            console.log("fetching messages")
             const response = await axios.get(`${API_URL}/get_course_messages`);
-            setMaterialCourseChat(response.data["messages"])
+            console.log("messages fetched", response.data)
+            setMaterialCourseChat(response.data)
         }
         const getLatestPosts = async () => {
 
