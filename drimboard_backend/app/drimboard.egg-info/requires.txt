@@ -1,9 +1,0 @@
-Flask
-Flask-Bcrypt
-Flask-Cors
-psycopg2-binary
-PyJWT
-python-dotenv
-sqlalchemy
-boto3
-gunicorn

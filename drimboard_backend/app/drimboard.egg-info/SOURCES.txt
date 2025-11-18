@@ -1,7 +1,0 @@
-README.md
-pyproject.toml
-app/drimboard.egg-info/PKG-INFO
-app/drimboard.egg-info/SOURCES.txt
-app/drimboard.egg-info/dependency_links.txt
-app/drimboard.egg-info/requires.txt
-app/drimboard.egg-info/top_level.txt

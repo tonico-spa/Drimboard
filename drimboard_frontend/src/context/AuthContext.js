@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
     const api = axios.create({
         // IMPORTANT: Point to the proxy path.
         // Do NOT include the host (http://localhost:3000). The browser will handle that.
-        baseURL: '/',
+        baseURL: API_URL,
         withCredentials: true
     });
     // --- IMPROVEMENT 1: Check session on initial app load ---
@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
     const login = async (credentials) => {
         try {
             // The `credentials` object should be { email, kit_code }
+
             const response = await api.post('/login', credentials);
 
             if (response.status === 200 && response.data) {

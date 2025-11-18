@@ -28,6 +28,11 @@ dependencies = [
     "sqlalchemy",
     "boto3",
     "gunicorn",
+    "uvicorn",
+    "fastapi",
+    "passlib",
+    "pydantic",
+    "typing"
 ]
 
 [tool.setuptools.packages.find]

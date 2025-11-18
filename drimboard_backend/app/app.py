@@ -1,47 +1,101 @@
-# app.py
+# app.py (FastAPI version with if __name__ == "__main__": and Depends fix)
 import os
 import jwt
+import uvicorn
+# import aws_utils as aws_utils
 import app.aws_utils as aws_utils
-import boto3
+
 
 from datetime import datetime, timedelta
+from typing import Optional
+
 from sqlalchemy import create_engine, text
-from flask import Flask, request, jsonify, make_response
-from flask_bcrypt import Bcrypt
-from flask_cors import CORS
+from sqlalchemy.orm import Session # <--- ADD THIS IMPORT
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Response, Cookie
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from passlib.context import CryptContext
 from dotenv import load_dotenv
+
+# from database import models, database
 from app.database import models, database
 
 # Load environment variables from .env file
 load_dotenv()
 
 # --- App Initialization ---
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
-
-# --- Configuration ---
-app.config["SECRET_KEY"] = os.getenv("JWT_SECRET")
-
+app = FastAPI()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ENV = os.getenv("FLASK_ENV")
 
+# --- CORS Configuration ---
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://develop.d17k1lr65yqfqv.amplifyapp.com/"
+]
 
-# --- Mock Database Function ---
-# (Replace this with your actual RDS database call)
-# print("Creating database tables...")
-# database.Base.metadata.create_all(bind=database.engine)
-# print("Tables created.")
-@app.route("/create_course_message", methods=["POST"])
-def create_course_message():
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# --- Configuration ---
+SECRET_KEY = os.getenv("JWT_SECRET")
+if not SECRET_KEY:
+    raise ValueError("JWT_SECRET environment variable not set.")
+
+# --- Database Dependency ---
+def get_db():
     db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-    data = request.get_json()
+# --- Pydantic Models for Request/Response Bodies ---
+class CourseMessageCreate(BaseModel):
+    user_name: str
+    user_email: str
+    message: str
+    course_id: int
+
+class CourseMessageResponse(BaseModel):
+    user_name: str
+    user_email: str
+    message: str
+    created_time: datetime
+    course_id: int
+
+    class Config:
+        orm_mode = True
+
+class PresignedUrlRequest(BaseModel):
+    course_name: str
+
+class LoginRequest(BaseModel):
+    email: str
+    kit_code: str
+
+class MessageResponse(BaseModel):
+    message: str
+    user: Optional[str] = None
+    name: Optional[str] = None
+    email: Optional[str] = None
+    result: Optional[str] = None
+
+
+@app.post("/create_course_message", response_model=MessageResponse)
+def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)): # <--- FIXED HERE
     try:
         new_message = models.CourseMessage(
-            user_name=data["name"],
-            user_email=data["email"],
-            message=data["message"],
-            course_id=data["course_id"]
+            user_name=message.user_name,
+            user_email=message.user_email,
+            message=message.message,
+            course_id=message.course_id
         )
 
         db.add(new_message)
@@ -49,59 +103,52 @@ def create_course_message():
         db.refresh(new_message)
 
         print(f"Message inserted with ID: {new_message.id}")
-        return jsonify({"result": f"Message inserted with ID: {new_message.id}"})
+        return {"message": f"Message inserted with ID: {new_message.id}"}
 
     except Exception as e:
         db.rollback()
         print(f"Error inserting message: {e}")
-        raise
-    finally:
-        db.close()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error inserting message")
 
-@app.route("/get_course_messages", methods=["GET"])
-def get_course_messages():
 
-    db = database.SessionLocal()
+@app.get("/get_course_messages", response_model=list[CourseMessageResponse])
+def get_course_messages(db: Session = Depends(get_db)): # <--- FIXED HERE
     message_ls = db.query(models.CourseMessage).all()
-    return_ls = list()
-
-    for message in message_ls:
-        aux_dd = {"name": message.user_name,
-                  "email": message.user_email,
-                  "message": message.message,
-                  "created_time": message.created_time,
-                  "course_id": message.course_id}
-        return_ls.append(aux_dd)
-
-    return jsonify({"messages": return_ls})
+    return message_ls
 
 
-
-
-
-@app.route("/get_single_pdf", methods=["POST"])
-def generate_presigned_url():
+@app.post("/get_single_pdf")
+def generate_presigned_url(data: PresignedUrlRequest):
     try:
-        data = request.get_json()
-        file_key = data.get("course_name")
+        file_key = data.course_name
 
         key_id = os.getenv("S3_AWS_ACCESS_KEY_ID")
         access_key = os.getenv("S3_AWS_SECRET_ACCESS_KEY")
         region = os.getenv("AWS_REGION")
         bucket = os.getenv("S3_BUCKET_NAME")
 
+        if not all([key_id, access_key, region, bucket]):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="S3 AWS credentials or bucket name are not fully configured."
+            )
+
         s3_client = aws_utils.get_s3_client(key_id=key_id, access_key=access_key, region=region)
 
+        try:
+            response = s3_client.head_object(
+                Bucket=bucket,
+                Key=file_key
+            )
+            print("File exists!")
+            print(f"Size: {response['ContentLength']} bytes")
+            print(f"Content-Type: {response['ContentType']}")
+        except Exception as e:
+            print(f"File {file_key} not found in bucket {bucket}: {e}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"File {file_key} not found")
 
-        response = s3_client.head_object(
-            Bucket='drim-material-files',
-            Key='colores.pdf'
-        )
-        print("File exists!")
-        print(f"Size: {response['ContentLength']} bytes")
-        print(f"Content-Type: {response['ContentType']}")
         if not file_key:
-            return jsonify({"error": "file_key is required"}), 400
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="file_key is required")
 
         params = {
             "Bucket": bucket,
@@ -111,46 +158,40 @@ def generate_presigned_url():
         url = s3_client.generate_presigned_url(
             "get_object",
             Params=params,
+            ExpiresIn=3600
         )
 
-        return jsonify({"url": url})
+        return {"url": url}
 
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
         print(f"Error generating URL: {e}")
-        return jsonify({"error": "Internal server error"}), 500
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
 
 
+@app.post("/login", response_model=MessageResponse)
+def login(payload: LoginRequest, response: Response, db: Session = Depends(get_db)): # <--- FIXED HERE
+    email = payload.email
+    kit_code = payload.kit_code
 
-
-@app.route("/login", methods=["POST"])
-def login():
-    payload = request.json
-    email = payload.get("email")
-    kit_code = payload.get("kit_code")
-
-    if not email or not kit_code:
-        return jsonify({"message": "Email and kit_code are required"}), 400
-
-    db = database.SessionLocal()
-    try:
-        user = db.query(models.Kits).filter(
-            models.Kits.user_email == email,
-            models.Kits.kit_code == kit_code
-        ).first()
-    finally:
-        db.close()
+    user = db.query(models.Kits).filter(
+        models.Kits.user_email == email,
+        models.Kits.kit_code == kit_code
+    ).first()
 
     if not user:
-        return jsonify({"message": "Invalid credentials"}), 401
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
 
     # Create the JWT token
     token = jwt.encode({
         "email": email,
         "iat": datetime.utcnow(),
         "exp": datetime.utcnow() + timedelta(days=1)
-    }, app.config["SECRET_KEY"], algorithm="HS256")
-
-    response = make_response(jsonify({"user": email, "name": "ignacia baeza", "message": "Login successful"}))
+    }, SECRET_KEY, algorithm="HS256")
 
     # Set the token in an HTTPOnly cookie
     if ENV == "prod":
@@ -158,34 +199,42 @@ def login():
     else:
         response.set_cookie(key="token", value=token, httponly=True, secure=False, samesite="Lax")
 
-    return response
+    return {"user": email, "name": "ignacia baeza", "message": "Login successful"}
 
-@app.route("/profile", methods=["GET"])
-def profile():
-    token = request.cookies.get("token")
+
+@app.get("/profile", response_model=MessageResponse)
+def profile(token: Optional[str] = Cookie(None)):
     if not token:
-        return jsonify({"message": "Not authorized, no token provided"}), 401
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authorized, no token provided"
+        )
 
     try:
-        data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
-        return jsonify({"email": data["email"], "message": "This is your profile."})
+        data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return {"email": data["email"], "message": "This is your profile."}
     except jwt.ExpiredSignatureError:
-        return jsonify({"message": "Token has expired"}), 401
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired"
+        )
     except jwt.InvalidTokenError:
-        return jsonify({"message": "Invalid token"}), 401
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token"
+        )
 
 
-@app.route("/logout", methods=["POST"])
-def logout():
-    response = make_response(jsonify({"message": "Logout successful"}))
+@app.post("/logout", response_model=MessageResponse)
+def logout(response: Response):
     response.set_cookie(key="token", value="", expires=0, httponly=True)
-    return response
+    return {"message": "Logout successful"}
 
-@app.route("/", methods=["GET"])
+
+@app.get("/", response_model=MessageResponse)
 def home():
-    return jsonify({"result": "success"})
-
+    return {"message": "API is running successfully", "result": "success"}
 
 # --- Running the App ---
 if __name__ == "__main__":
-    app.run(debug=True, port=5001, host='0.0.0.0')  # Runs on port 5001
+    uvicorn.run("app:app", host="0.0.0.0", port=5001, reload=True)
