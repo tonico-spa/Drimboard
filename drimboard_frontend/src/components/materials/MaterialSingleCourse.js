@@ -90,8 +90,8 @@ const MaterialsSingleCourse = () => {
 
             <div className={styles.materialsSingleCourseBlocks}>
                 <EmbeddedPage
-                    url="https://www.drim.cl/"
-                    allowedOrigins={['https://www.drim.cl/']}
+                    url="https://pcb-block-programming.d33nxrkjnqqh49.amplifyapp.com/"
+                    allowedOrigins={['https://pcb-block-programming.d33nxrkjnqqh49.amplifyapp.com/']}
                 />
             </div>
             <div className={styles.materialCourseOpenCourse} onClick={openCourseContent}>

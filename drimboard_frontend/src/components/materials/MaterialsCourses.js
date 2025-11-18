@@ -27,7 +27,8 @@ const MaterialsCourses = () => {
                     <div className={styles.materiasMainContentContainer}>
                         <div className={styles.materiasMainSectionOne}>
                             <div className={styles.materiasMainSectionOneTitle}>
-                                Cursos
+                                
+                                Actividades
                             </div>
                             <div className={styles.materiasMainSectionOneContent}>
 

@@ -1,7 +1,7 @@
 # app.py
 import os
 import jwt
-import aws_utils
+import app.aws_utils as aws_utils
 import boto3
 
 from datetime import datetime, timedelta
@@ -10,7 +10,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from dotenv import load_dotenv
-from database import models, database
+from app.database import models, database
 
 # Load environment variables from .env file
 load_dotenv()
@@ -180,6 +180,10 @@ def logout():
     response = make_response(jsonify({"message": "Logout successful"}))
     response.set_cookie(key="token", value="", expires=0, httponly=True)
     return response
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"result": "success"})
 
 
 # --- Running the App ---

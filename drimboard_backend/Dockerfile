@@ -1,30 +1,36 @@
-[build-system]
-requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.build_meta"
+# ---- Builder Stage ----
+FROM python:3.12.10 AS builder
 
-[project]
-name = "drimboard"
-version = "0.1.0"
-description = "A Flask API to manage activation codes and user accounts for robotics kits."
-readme = "README.md"
-requires-python = ">=3.10"
-license = { text = "MIT" }
-authors = [
-  { name = "Your Name", email = "youremail@example.com" },
-]
+WORKDIR /app
 
-dependencies = [
-    "Flask",
-    "Flask-Bcrypt",
-    "Flask-Cors",
-    "psycopg2-binary",
-    "PyJWT",
-    "python-dotenv",
-    "sqlalchemy",
-    "boto3",
-    "gunicorn",
-]
+# Update pip
+RUN python -m pip install --upgrade pip
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["app*"]
+# Copy everything needed for installation
+COPY . .
+
+# Install project dependencies (make sure gunicorn is in pyproject.toml)
+RUN pip install --no-cache-dir -e .
+
+# ---- Final Stage ----
+FROM python:3.12.10-slim
+
+# Set a non-root user for security
+RUN useradd --create-home appuser
+
+WORKDIR /home/appuser/code
+
+# Copy the installed dependencies from the builder stage
+COPY --from=builder /usr/local /usr/local
+
+# Copy the entire project content
+COPY --chown=appuser:appuser . /home/appuser/code/
+
+# Switch to non-root user
+USER appuser
+
+# Expose the port
+EXPOSE 8000
+
+# Use Gunicorn for Flask (WSGI) apps
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "app.app:app"]
