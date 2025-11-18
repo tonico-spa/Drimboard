@@ -2,8 +2,8 @@
 import os
 import jwt
 import uvicorn
-# import aws_utils as aws_utils
-import app.aws_utils as aws_utils
+import aws_utils as aws_utils
+# import app.aws_utils as aws_utils
 
 
 from datetime import datetime, timedelta
@@ -17,8 +17,8 @@ from pydantic import BaseModel
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 
-# from database import models, database
-from app.database import models, database
+from database import models, database
+# from app.database import models, database
 
 # Load environment variables from .env file
 load_dotenv()
@@ -32,6 +32,7 @@ ENV = os.getenv("FLASK_ENV")
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://192.168.1.7:3000"
     "https://develop.d17k1lr65yqfqv.amplifyapp.com"
 ]
 

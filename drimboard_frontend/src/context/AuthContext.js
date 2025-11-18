@@ -5,6 +5,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 
 // Use environment variable for the API URL
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+console.log(API_URL)
 
 const AuthContext = createContext();
 
@@ -41,7 +42,7 @@ export function AuthProvider({ children }) {
                 return { success: true, data: response.data };
             }
         } catch (error) {
-            console.error("Login failed:", error.response?.data?.message);
+            console.error("Login failed:", error);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Login failed'

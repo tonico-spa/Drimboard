@@ -8,6 +8,8 @@
     flex-direction: column;
     /* If you want nav and content to stack vertically */
     min-height: 100vh;
+    width: 100%;
+    padding: clamp(20px, 10vw, 70px);
     /* Ensure there's enough height to scroll if content is short */
 }
 
@@ -87,7 +89,7 @@
     /* Active tab color */
     font-weight: bold;
     border-bottom: 5px solid #F397C1;
-    
+
     border-radius: 4px;
 
     /* Active indicator */
