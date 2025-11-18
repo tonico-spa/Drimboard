@@ -62,9 +62,9 @@ const MaterialsSingleCourse = () => {
 
         const send_dd = {
             "course_id": openMaterialCourse["_id"],
-            "email": logged["user_email"],
+            "user_email": logged["user_email"],
             "message": comment,
-            "name": logged["user_name"]
+            "user_name": logged["user_name"]
         }
         const response = await axios.post(`${API_URL}/create_course_message`, send_dd)
         setMaterialCourseChat([...materialCourseChat, send_dd])
