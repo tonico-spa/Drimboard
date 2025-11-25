@@ -119,7 +119,7 @@ const Main = () => {
               pin: sectionThreeContainer,
               pinSpacing: true,
               invalidateOnRefresh: true,
-              enabled: false
+              enabled: true
             }
           });
         }
@@ -182,7 +182,7 @@ const Main = () => {
           end: "+=5000", // A larger value gives more scroll room for the animation
           scrub: 1,
           invalidateOnRefresh: true,
-          enabled: false
+          enabled: true
           // markers: true, // Uncomment for debugging
         }
       });
