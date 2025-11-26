@@ -40,9 +40,11 @@ const useAppStore = create(
             setOpenMaterialsPage: (open) => set({openMaterialsPage: open})
 
         }),
-        {
-            name: 'app-storage', 
-             partialize: (state) => ({ logged: state.logged}),
+       {
+          
+            partialize: (state) => ({ 
+                logged: state.logged 
+            }),
         }
     )
 );

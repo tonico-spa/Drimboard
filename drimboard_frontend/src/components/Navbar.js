@@ -13,9 +13,7 @@ const Navbar = () => {
     const { setOpenMaterialsPage } = useAppStore((state) => state);
 
 
-    useEffect(() => {
-        setOpenMaterialsPage(false);
-    }, []);
+
 
     const openLoginForm = (e) => {
         e.preventDefault()

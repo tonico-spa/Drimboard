@@ -39,6 +39,13 @@ const Main = () => {
 
 
   const [activeCard, setActiveCard] = useState(0);
+  const [openMaterials, setOpenMaterials] = useState(false);
+
+
+  useEffect(() => {
+    console.log(open_materials)
+    setOpenMaterials(open_materials)
+  }, [open_materials])
 
   const arrowStyles = `
     .first_triangle {
@@ -98,7 +105,9 @@ const Main = () => {
 
   // Effect for Section Three (Split Scroll)
   useEffect(() => {
-     if (open_materials) return; // Skip if materials page is open
+    console.log(openMaterials)
+
+    if (openMaterials === true) return;
     let ctx = gsap.context(() => {
       if (mainScrollContainerRef.current && scrollContentRef.current && scrollContainerRef.current) {
         const scrollContent = scrollContentRef.current;
@@ -127,11 +136,13 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [openMaterials]);
 
   // Effect for Section Two (Title Fade-in)
   useEffect(() => {
-     if (open_materials) return; // Skip if materials page is open
+    console.log(openMaterials)
+
+    if (openMaterials === true) return; // Skip if materials page is open
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -164,10 +175,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [openMaterials]);
 
   useEffect(() => {
-     if (open_materials) return; // Skip if materials page is open
+    if (openMaterials === true) return; // Skip if materials page is open
     const ctx = gsap.context(() => {
 
 
@@ -208,10 +219,9 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, []);
-  console.log(open_materials)
+  }, [openMaterials]);
   return (
-    !open_materials ?
+    !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
         <div className={styles.coverContainer}>
 
@@ -554,11 +564,11 @@ const Main = () => {
             <LoginForm />
           </div>
         }
-      </div > :
-      
-      <div className={styles.mainContainer} ref={mainContainerRef}>
-        <Materials />
-      </div>
+      </div >) : (
+      <Materials />
+    )
+
+
 
   )
 }
