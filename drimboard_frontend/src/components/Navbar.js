@@ -13,24 +13,30 @@ const Navbar = () => {
     const { setOpenMaterialsPage } = useAppStore((state) => state);
 
 
+    useEffect(() => {
+        setOpenMaterialsPage(false);
+    }, []);
 
     const openLoginForm = (e) => {
         e.preventDefault()
         setOpenLoginForm(true)
     }
 
-    const logout = () => {
+    const logout = (e) => {
+        e.preventDefault()
         setLogged({ user_email: null, kit_code: null, user_name: null })
         setOpenMaterialsPage(false)
         setOpenUser(false)
     }
 
-    const openMaterials = () => {
+    const openMaterials = (e) => {
+        e.preventDefault()
         setOpenMaterialsPage(true)
         setOpenUser(false)
     }
 
-    const closeMaterials = () => {
+    const closeMaterials = (e) => {
+        e.preventDefault()
         setOpenMaterialsPage(false)
         setOpenUser(false)
     }
@@ -41,7 +47,7 @@ const Navbar = () => {
         <nav className={styles.navContainer}>
             <div className={styles.navbarContainer}>
                 <div className={styles.logoContainer}>
-                    <div href="/" onClick={closeMaterials} className={styles.navbarLink}>
+                    <div href="/" onClick={(e) => closeMaterials(e)} className={styles.navbarLink}>
                         <img
                             src="/black_logo.png"
                             alt="Duolab Logo"
@@ -73,10 +79,10 @@ const Navbar = () => {
                             />
                             {openUser &&
                                 <div className={styles.navbarOpenUser}>
-                                    <div onClick={openMaterials} className={styles.openUserLink}>
+                                    <div onClick={(e) => openMaterials(e)} className={styles.openUserLink}>
                                         Ver material
                                     </div>
-                                    <div onClick={logout} className={styles.openUserLink}>
+                                    <div onClick={(e) => logout(e)} className={styles.openUserLink}>
                                         Logout
                                     </div>
                                 </div>

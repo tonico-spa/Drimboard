@@ -42,7 +42,7 @@ const useAppStore = create(
         }),
         {
             name: 'app-storage', 
-             partialize: (state) => ({ logged: state.logged, openMaterialsPage: state.openMaterialsPage}),
+             partialize: (state) => ({ logged: state.logged}),
         }
     )
 );
