@@ -29,7 +29,7 @@
 
 .sectionSixContainerInfo {
     display: grid;
-    grid-template-columns: 2fr 2fr;
+    grid-template-columns: 2fr ;
     justify-content: center;
     align-items: center;
      color: black;
@@ -39,7 +39,7 @@
 .sectionSixContainerInfoCard {
     background-color: #f7f4f1;
     height: 100%;
-    width: 70%;
+    width: 90%;
      position: relative; 
     display: flex;
     flex-direction: column;

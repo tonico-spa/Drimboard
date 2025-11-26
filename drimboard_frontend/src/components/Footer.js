@@ -30,7 +30,7 @@ const Footer = () => {
                         className={styles.footerEmailLogo}
                     />
                     <div className={styles.footerEmail}>
-                        hola@drim.com
+                        hola@duolab.com
                     </div>
                 </div>
             </div>

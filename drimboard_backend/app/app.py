@@ -3,21 +3,22 @@ import os
 import jwt
 import uvicorn
 import aws_utils as aws_utils
+import utils
 # import app.aws_utils as aws_utils
 
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import Session # <--- ADD THIS IMPORT
-from fastapi import FastAPI, Depends, HTTPException, status, Request, Response, Cookie
+from sqlalchemy.orm import Session  # <--- ADD THIS IMPORT
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Cookie
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 
 from database import models, database
+
 # from app.database import models, database
 
 # Load environment variables from .env file
@@ -27,7 +28,6 @@ load_dotenv()
 app = FastAPI()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ENV = os.getenv("FLASK_ENV")
-
 
 origins = [
     "http://localhost:3000",
@@ -48,6 +48,7 @@ SECRET_KEY = os.getenv("JWT_SECRET")
 if not SECRET_KEY:
     raise ValueError("JWT_SECRET environment variable not set.")
 
+
 # --- Database Dependency ---
 def get_db():
     db = database.SessionLocal()
@@ -56,12 +57,14 @@ def get_db():
     finally:
         db.close()
 
+
 # --- Pydantic Models for Request/Response Bodies ---
 class CourseMessageCreate(BaseModel):
     user_name: str
     user_email: str
     message: str
     course_id: str
+
 
 class CourseMessageResponse(BaseModel):
     user_name: str
@@ -73,12 +76,21 @@ class CourseMessageResponse(BaseModel):
     class Config:
         orm_mode = True
 
+
 class PresignedUrlRequest(BaseModel):
     course_name: str
+
 
 class LoginRequest(BaseModel):
     email: str
     kit_code: str
+
+
+class ContactForm(BaseModel):
+    name: str
+    email: str
+    message: str
+
 
 class MessageResponse(BaseModel):
     message: str
@@ -89,7 +101,7 @@ class MessageResponse(BaseModel):
 
 
 @app.post("/create_course_message", response_model=MessageResponse)
-def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)): # <--- FIXED HERE
+def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)):  # <--- FIXED HERE
     try:
         new_message = models.CourseMessage(
             user_name=message.user_name,
@@ -112,7 +124,7 @@ def create_course_message(message: CourseMessageCreate, db: Session = Depends(ge
 
 
 @app.get("/get_course_messages", response_model=list[CourseMessageResponse])
-def get_course_messages(db: Session = Depends(get_db)): # <--- FIXED HERE
+def get_course_messages(db: Session = Depends(get_db)):  # <--- FIXED HERE
     message_ls = db.query(models.CourseMessage).all()
     return message_ls
 
@@ -218,9 +230,29 @@ def logout(response: Response):
     return {"message": "Logout successful"}
 
 
+@app.post("/send_form", response_model=MessageResponse)
+def send_form(payload: LoginRequest):
+    try:
+        name = payload.name
+        email = payload.email
+        message = payload.message
+
+        data_dd = {
+            "name": name,
+            "email": email,
+            "message": message
+        }
+        utils.handle_contact_form(data_dd)
+
+        return {"result": "success"}
+    except Exception as exc:
+        return {"result": exc}
+
+
 @app.get("/", response_model=MessageResponse)
 def home():
     return {"message": "API is running successfully", "result": "success"}
+
 
 # --- Running the App ---
 if __name__ == "__main__":

@@ -81,7 +81,7 @@ const SectionTwoCards = () => {
       cards.forEach(card => {
         gsap.to(card, {
           rotation: gsap.utils.random(-15, 15),
-          duration: 0.8,
+          duration: 0.2,
           ease: 'elastic.out(1, 0.5)', // Smooth elastic bounce
         });
       });
@@ -103,7 +103,7 @@ const SectionTwoCards = () => {
           rotation: 0,      // Make it straight
           scale: 1.1,       // Make it bigger
           y: -20,           // Move it up to separate it
-          duration: 0.6,
+          duration: 0.1,
           ease: 'elastic.out(1, 0.4)', // Smooth elastic bounce on hover
           overwrite: 'auto' // Prevents conflicting animations on the same element
         });
@@ -112,7 +112,7 @@ const SectionTwoCards = () => {
         otherCards.forEach(otherCard => {
           gsap.to(otherCard, {
             rotation: gsap.utils.random(-15, 15),
-            duration: 0.5,
+            duration: 0.3,
             ease: 'back.out(1.2)', // Smooth back easing with slight overshoot
             overwrite: 'auto'
           });
@@ -125,7 +125,7 @@ const SectionTwoCards = () => {
         gsap.to(card, {
           scale: 1,
           y: 0,
-          duration: 0.6,
+          duration: 0.3,
           ease: 'elastic.out(1, 0.5)', // Smooth elastic bounce when returning
           overwrite: 'auto'
         });

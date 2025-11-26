@@ -335,7 +335,7 @@
   width: 100%;
   min-height: 500px;
   border-radius: clamp(10px, 2vw, 15px);
-  background-color: #F397C1;
+  background-color: #53C68E;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: clamp(0.75rem, 2vw, 1.5rem);

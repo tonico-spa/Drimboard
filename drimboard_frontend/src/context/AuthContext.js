@@ -20,10 +20,6 @@ export function AuthProvider({ children }) {
         baseURL: API_URL,
     });
     // --- IMPROVEMENT 1: Check session on initial app load ---
-    useEffect(() => {
-        checkUserStatus();
-    }, []); // Empty dependency array means this runs only once on mount
-
 
     // --- IMPROVEMENT 2 & 3: Parameterized and efficient login ---
     const login = async (credentials) => {

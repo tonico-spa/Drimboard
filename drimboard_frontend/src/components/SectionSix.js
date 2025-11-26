@@ -39,10 +39,11 @@ const SectionSix = () => {
                 <div className={styles.sectionTwoTitleLogo}>
                     <SquareCircle styles={squareCircleStyles} />
                 </div>
-                Quiero <br></br> mi drim
+                Quiero <br></br> mi taller
             </div>
             <div className={styles.sectionSixContainerInfo}>
-                <div className={`${styles.sectionSixContainerInfoCard} ${styles.cardRaised}`} >
+
+                {/* <div className={`${styles.sectionSixContainerInfoCard} ${styles.cardRaised}`} >
                    <div className={styles.sectionSixTitle}>
                         <div className={styles.sectionSixTitle}>
                             Soy <br />
@@ -55,19 +56,43 @@ const SectionSix = () => {
                             consiguela
                     </div>
 
-                </div>
+                </div> */}
                 <div className={`${styles.sectionSixContainerInfoCard}`}>
                     <div className={styles.sectionSixTitle}>
                         <div className={styles.sectionSixTitle}>
-                            Soy <br />
-                            <span className={styles.highlightText}>Estudiante</span>
-                            <br />
-                            y quiero mi drim
+                            Quieres que vayamos a hacerte un taller? <br />
+
+                            <span className={styles.highlightText}>Contáctanos</span>
+
                         </div>
+                        <form className={styles.form} >
+                            <div className={styles.contactFirstWrap}>
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="name">Nombre</label>
+                                    <input  type="text" id="name" name="name" required className={styles.inputStyle}  />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <label htmlFor="email">Email</label>
+                                    <input type="email" id="email" name="email" required className={styles.inputStyle}  />
+                                </div>
+                            </div>
+
+
+                            <div className={styles.formGroup}>
+                                <label htmlFor="msg">Escribenos un mensaje</label>
+                                <textarea id="msg" name="msg" rows="4" required className={styles.inputStyle} ></textarea>
+                            </div>
+                           
+
+                            <button type="submit" className={styles.submitBtn} >Enviar</button>
+                            {/* <button type="submit" className={styles.submitBtn} onClick={(e) => getUsers(e)}>get</button> */}
+
+
+                        </form>
+
                     </div>
-                    <div className={styles.sectionSixButton}>
-                            consiguela
-                    </div>
+
                 </div>
             </div>
 
