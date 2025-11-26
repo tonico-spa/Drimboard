@@ -177,49 +177,49 @@ const Main = () => {
     return () => ctx.revert();
   }, [openMaterials]);
 
-  useEffect(() => {
-    if (openMaterials === true) return; // Skip if materials page is open
-    const ctx = gsap.context(() => {
+  // useEffect(() => {
+  //   if (openMaterials === true) return; // Skip if materials page is open
+  //   const ctx = gsap.context(() => {
 
 
-      gsap.set([card2Ref.current, card3Ref.current, card4Ref.current], { yPercent: 100, opacity: 0 });
+  //     gsap.set([card2Ref.current, card3Ref.current, card4Ref.current], { yPercent: 100, opacity: 0 });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: cardsContainerRef.current, // Use the ref for the trigger element
-          pin: true,
-          pinSpacing: true,
-          start: "top 20%",
-          end: "+=5000", // A larger value gives more scroll room for the animation
-          scrub: 1,
-          invalidateOnRefresh: true,
-          enabled: true
-          // markers: true, // Uncomment for debugging
-        }
-      });
+  //     const tl = gsap.timeline({
+  //       scrollTrigger: {
+  //         trigger: cardsContainerRef.current, // Use the ref for the trigger element
+  //         pin: true,
+  //         pinSpacing: true,
+  //         start: "top 20%",
+  //         end: "+=5000", // A larger value gives more scroll room for the animation
+  //         scrub: 1,
+  //         invalidateOnRefresh: true,
+  //         enabled: true
+  //         // markers: true, // Uncomment for debugging
+  //       }
+  //     });
 
-      // Animate Card 2 into view
-      tl.addLabel("card2Enter")
-        .to(card1Ref.current, { scale: 1, yPercent: -10, opacity: 1 }, "card2Enter")
-        .to(card2Ref.current, { yPercent: 0, opacity: 1 }, "card2Enter")
-        .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 1 : 0));
+  //     // Animate Card 2 into view
+  //     tl.addLabel("card2Enter")
+  //       .to(card1Ref.current, { scale: 1, yPercent: -10, opacity: 1 }, "card2Enter")
+  //       .to(card2Ref.current, { yPercent: 0, opacity: 1 }, "card2Enter")
+  //       .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 1 : 0));
 
-      // Animate Card 3 into view
-      tl.addLabel("card3Enter")
-        .to(card2Ref.current, { scale: 1, yPercent: -8, opacity: 1 }, "card3Enter")
-        .to(card3Ref.current, { yPercent: 0, opacity: 1 }, "card3Enter")
-        .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 2 : 1));
+  //     // Animate Card 3 into view
+  //     tl.addLabel("card3Enter")
+  //       .to(card2Ref.current, { scale: 1, yPercent: -8, opacity: 1 }, "card3Enter")
+  //       .to(card3Ref.current, { yPercent: 0, opacity: 1 }, "card3Enter")
+  //       .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 2 : 1));
 
-      // Animate Card 4 into view
-      tl.addLabel("card4Enter")
-        .to(card3Ref.current, { scale: 1, yPercent: -6, opacity: 1 }, "card4Enter")
-        .to(card4Ref.current, { yPercent: 0, opacity: 1 }, "card4Enter")
-        .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 3 : 2));
+  //     // Animate Card 4 into view
+  //     tl.addLabel("card4Enter")
+  //       .to(card3Ref.current, { scale: 1, yPercent: -6, opacity: 1 }, "card4Enter")
+  //       .to(card4Ref.current, { yPercent: 0, opacity: 1 }, "card4Enter")
+  //       .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 3 : 2));
 
-    }, mainContainerRef);
+  //   }, mainContainerRef);
 
-    return () => ctx.revert();
-  }, [openMaterials]);
+  //   return () => ctx.revert();
+  // }, [openMaterials]);
   return (
     !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
@@ -397,8 +397,8 @@ const Main = () => {
         </div>
         <Tape />
 
-        <div className={styles.separator}></div>
-        <div className={styles.sectionFourContainer}>
+        {/* <div className={styles.separator}></div> */}
+        {/* <div className={styles.sectionFourContainer}>
           <div className={styles.cards} ref={cardsContainerRef}>
             <div ref={card1Ref} className={`${styles.customCard} ${styles.card1}`}>
               <div className={styles.sectionFourTitleContainer}>
@@ -548,7 +548,7 @@ const Main = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className={styles.separator}></div>
         <div className={styles.sectionFiveContainer}>
           <SectionFive />
