@@ -91,7 +91,7 @@ const MaterialsSingleCourse = () => {
             <div className={styles.materialsSingleCourseBlocks}>
                 <EmbeddedPage
                     url="https://blockly-web.dplpleoajxzor.amplifyapp.com/"
-                    allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com/']}
+                    allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com']}
                 />
             </div>
             <div className={styles.materialCourseOpenCourse} onClick={openCourseContent}>
