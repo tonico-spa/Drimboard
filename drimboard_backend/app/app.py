@@ -231,7 +231,7 @@ def logout(response: Response):
 
 
 @app.post("/send_form", response_model=MessageResponse)
-def send_form(payload: LoginRequest):
+def send_form(payload: ContactForm):
     try:
         name = payload.name
         email = payload.email
@@ -244,7 +244,7 @@ def send_form(payload: LoginRequest):
         }
         utils.handle_contact_form(data_dd)
 
-        return {"result": "success"}
+        return {"message": "Logout successful"}
     except Exception as exc:
         return {"result": exc}
 

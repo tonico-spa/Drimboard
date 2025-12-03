@@ -74,6 +74,34 @@
     /* Bigger */
 }
 
+.submitBtn {
+    font-family: "Geist Mono", monospace !important;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 5px;
+    padding: 0.4em;
+    font-size: 12px;
+    background-color: #F397C1;
+    color: black;
+    border: none;
+    font-weight: 600;
+}
+
+
+.submitBtn:hover {
+    font-family: "Geist Mono", monospace !important;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 5px;
+    padding: 0.4em;
+    font-size: 12px;
+    background-color: #f37ab1;
+    color: black;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .sectionSixButton {
     font-family: "Geist Mono", monospace !important;
     background-color: #ffffff;
@@ -93,34 +121,18 @@
     /* Aligns it 20px from the left */
 }
 
-.form {
-    margin: 1em;
-}
-
-
 .formGroup {
-    font-family: "Geist Mono", monospace !important;
-    font-size: 14px;
     display: flex;
     flex-direction: column;
-    width: 50%;
-    margin-bottom: 0.5em;
+    font-size: 16px;
+    margin-bottom: 0.8em;
+}
 
+.form {
+    margin: 0.9em;
 }
 
 .inputStyle {
-    background-color: white;
-    padding: 0.7em;
-    border-radius: 10px;
-}
-
-.submitBtn {
-    padding: 0.2em;
-    font-family: "Geist Mono", monospace !important;
-    background-color: #F397C1;
-    color: black;
     border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 600;
+    padding: 0.5em;
 }
