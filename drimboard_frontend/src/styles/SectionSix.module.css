@@ -29,10 +29,10 @@
 
 .sectionSixContainerInfo {
     display: grid;
-    grid-template-columns: 2fr ;
+    grid-template-columns: 2fr;
     justify-content: center;
     align-items: center;
-     color: black;
+    color: black;
     margin: 1em;
 }
 
@@ -40,7 +40,7 @@
     background-color: #f7f4f1;
     height: 100%;
     width: 90%;
-     position: relative; 
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-self: center;
@@ -85,7 +85,42 @@
     text-align: center;
     font-size: 13px;
     justify-self: flex-end;
-    position: absolute; /* Positions the button relative to the parent card */
-    bottom: 20px;       /* Aligns it 20px from the bottom */
-    left: 20px;         /* Aligns it 20px from the left */
+    position: absolute;
+    /* Positions the button relative to the parent card */
+    bottom: 20px;
+    /* Aligns it 20px from the bottom */
+    left: 20px;
+    /* Aligns it 20px from the left */
+}
+
+.form {
+    margin: 1em;
+}
+
+
+.formGroup {
+    font-family: "Geist Mono", monospace !important;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-bottom: 0.5em;
+
+}
+
+.inputStyle {
+    background-color: white;
+    padding: 0.7em;
+    border-radius: 10px;
+}
+
+.submitBtn {
+    padding: 0.2em;
+    font-family: "Geist Mono", monospace !important;
+    background-color: #F397C1;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
 }

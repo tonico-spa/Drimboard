@@ -86,7 +86,6 @@ const SectionSix = () => {
                            
 
                             <button type="submit" className={styles.submitBtn} >Enviar</button>
-                            {/* <button type="submit" className={styles.submitBtn} onClick={(e) => getUsers(e)}>get</button> */}
 
 
                         </form>

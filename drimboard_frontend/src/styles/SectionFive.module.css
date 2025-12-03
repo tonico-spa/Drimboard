@@ -36,6 +36,7 @@
     display: grid;
     grid-template-columns: 2fr 2fr;
     font-weight: 500;
+    color: black;
 }
 
 .sectionFiveRightText {
