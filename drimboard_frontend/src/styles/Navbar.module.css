@@ -3,7 +3,11 @@
     position: fixed;
     top: 0;
     z-index: 1000;
-    background-color: #f4ede5ab;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: center;
     width: 100%;
@@ -21,7 +25,7 @@
 }
 
 .navbarLink {
-    padding: 20px;
+    padding: 10px;
     color: black;
     font-family: "Geist Mono", monospace !important;
     border: 0px;
@@ -29,6 +33,7 @@
     font-weight: 500;
     background-color: transparent;
     cursor: pointer;
+    text-align: center;
 }
 
 .navbarLink:hover {
@@ -44,6 +49,7 @@
 .linksContainer {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 .userMenuContainer {
     position: relative;

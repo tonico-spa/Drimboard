@@ -4,7 +4,6 @@
     gap: 20px;
     height: 100%;
     border-radius: 10px;
-
 }
 
 .sectionSixContainerTitle {
@@ -14,7 +13,7 @@
     margin: 0.5em;
     padding: 0.2em;
     text-align: left;
-    font-size: 43px;
+    font-size: clamp(1.5rem, 4vw, 33px);
     font-weight: 600;
     display: flex;
     flex-direction: row;
@@ -22,7 +21,8 @@
 
 .sectionTwoTitleLogo {
     height: auto;
-    width: 8%;
+    width: 7%;
+    color: black;
     color: black;
     margin-right: 0.5em;
 }
@@ -39,7 +39,7 @@
 .sectionSixContainerInfoCard {
     background-color: #f7f4f1;
     height: 100%;
-    width: 90%;
+    width: 70%;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -47,10 +47,10 @@
     border-radius: 10px;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     border: 6px solid #53C68E;
+    padding: 0.5em;
 }
 
 .cardRaised {
-    /* Moves the card up by 20 pixels. Adjust the value as needed. */
     transform: translateY(-40px);
     border: 6px solid #FFB71A;
 }
@@ -64,14 +64,11 @@
     text-align: left;
     font-size: 23px;
     font-weight: 600;
-
 }
 
 .highlightText {
     font-weight: 800;
-    /* Bolder */
-    font-size: 1.5em;
-    /* Bigger */
+    font-size: 1.2em;
 }
 
 .submitBtn {
@@ -114,11 +111,8 @@
     font-size: 13px;
     justify-self: flex-end;
     position: absolute;
-    /* Positions the button relative to the parent card */
     bottom: 20px;
-    /* Aligns it 20px from the bottom */
     left: 20px;
-    /* Aligns it 20px from the left */
 }
 
 .formGroup {
@@ -126,6 +120,9 @@
     flex-direction: column;
     font-size: 16px;
     margin-bottom: 0.8em;
+    text-align: left;
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 600;
 }
 
 .form {
@@ -135,4 +132,5 @@
 .inputStyle {
     border-radius: 5px;
     padding: 0.5em;
+  font-family: "Geist", sans-serif;
 }

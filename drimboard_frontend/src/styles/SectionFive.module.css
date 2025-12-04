@@ -1,6 +1,6 @@
 .sectionFiveContainer {
     width: 100%;
-    height: 70%;
+    height: 60%;
     border-radius: 10px;
 
 }
@@ -8,13 +8,13 @@
 .sectionFiveContentContainer {
     display: grid;
     grid-template-columns: 2fr 2fr;
-    gap: 20px;
+    gap: 10px;
     height: 100%;
 }
 
 .sectionFiveRightSide {
     display: grid;
-    grid-template-rows: 2fr 2fr 2fr;
+    grid-template-rows: 1fr 1fr 1fr;
     gap: 10px;
     margin-top: 1em;
 }
@@ -34,8 +34,8 @@
 
 .sectionFiveRightTextContainer {
     display: grid;
-    grid-template-columns: 2fr 2fr;
-    font-weight: 500;
+    grid-template-columns: 2fr 1fr;
+    font-weight: 400;
     color: black;
 }
 
@@ -50,15 +50,19 @@
     text-align: left;
     font-family: "Geist Mono", monospace !important;
     font-weight: 700;
-    font-size: 40px;
+    font-size: clamp(1.5rem, 4vw, 33px);
 
+}
+
+.coverLogo {
+    width: 100%;
 }
 
 .sectionFiveRightImg {
     border-radius: 10px;
     overflow: hidden;
+    width: 90%;
     float: right;
-    margin-right: 1em;
     margin-bottom: 1em;
 
 }
@@ -70,7 +74,7 @@
     align-items: flex-start;
     width: 70%;
     font-weight: 400;
-    font-size: 20px;
+    font-size: clamp(0.5rem, 1.4vw, 33px);
     margin-top: 0.6em;
 
 

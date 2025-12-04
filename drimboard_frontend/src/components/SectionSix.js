@@ -32,12 +32,12 @@ const SectionSix = () => {
 
     const [userDict, setUserDict] = useState({ "name": "", "email": "", "message": "" })
 
-    const  sendForm = async (e) => {
+    const sendForm = async (e) => {
         e.preventDefault()
         console.log(userDict)
         const response = await axios.post(`${API_URL}/send_form`, userDict)
-     console.log(response)
-        if(response.status === 200){
+        console.log(response)
+        if (response.status === 200) {
             console.log(response)
             setUserDict({ "name": "", "email": "", "message": "" })
             window.alert("Mensaje enviado! Nos contactaremos contigo")
@@ -79,41 +79,40 @@ const SectionSix = () => {
                     </div>
 
                 </div> */}
+                
                 <div className={`${styles.sectionSixContainerInfoCard}`}>
                     <div className={styles.sectionSixTitle}>
-                        <div className={styles.sectionSixTitle}>
-                            Quieres que vayamos a hacerte un taller? <br />
+                        Quieres que vayamos a hacerte un taller? <br />
 
-                            <span className={styles.highlightText}>Contáctanos</span>
-
-                        </div>
-                        <form className={styles.form} >
-                            <div className={styles.contactFirstWrap}>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="name">Nombre</label>
-                                    <input value={userDict.name} onChange={(e)=>handleChange(e)} type="text" id="name" name="name" required className={styles.inputStyle} />
-                                </div>
-
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="email">Email</label>
-                                    <input value={userDict.email} onChange={(e)=>handleChange(e)} type="email" id="email" name="email" required className={styles.inputStyle} />
-                                </div>
-                            </div>
-
-
-                            <div className={styles.formGroup}>
-                                <label htmlFor="message">Escribenos un mensaje</label>
-                                <textarea value={userDict.message} onChange={(e)=>handleChange(e)} id="message" name="message" rows="4" required className={styles.inputStyle} ></textarea>
-                            </div>
-
-
-                            <button type="submit" className={styles.submitBtn} onClick={(e) => sendForm(e)}>Enviar</button>
-                            {/* <button type="submit" className={styles.submitBtn} onClick={(e) => getUsers(e)}>get</button> */}
-
-
-                        </form>
+                        <span className={styles.highlightText}>Contáctanos</span>
 
                     </div>
+                    <form className={styles.form} >
+                        <div className={styles.contactFirstWrap}>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="name">Nombre</label>
+                                <input value={userDict.name} onChange={(e) => handleChange(e)} type="text" id="name" name="name" required className={styles.inputStyle} />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label htmlFor="email">Email</label>
+                                <input value={userDict.email} onChange={(e) => handleChange(e)} type="email" id="email" name="email" required className={styles.inputStyle} />
+                            </div>
+                        </div>
+
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="message">Escribenos un mensaje</label>
+                            <textarea value={userDict.message} onChange={(e) => handleChange(e)} id="message" name="message" rows="4" required className={styles.inputStyle} ></textarea>
+                        </div>
+
+
+                        <button type="submit" className={styles.submitBtn} onClick={(e) => sendForm(e)}>Enviar</button>
+                        {/* <button type="submit" className={styles.submitBtn} onClick={(e) => getUsers(e)}>get</button> */}
+
+
+                    </form>
+
 
                 </div>
             </div>

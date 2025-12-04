@@ -1,6 +1,6 @@
 .cardsContainer {
     padding-top: 4em;
-    height: 30%;
+    height: 20%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
@@ -24,13 +24,13 @@
 }
 
 .svgContainer {
-    width: 50%;
+    width: 40%;
     align-self: center;
 }
 
 .singleCardTitle{
     font-weight: 600;
-    font-size: 20px;
+  font-size: clamp(1rem, 1vw, 33px);
     margin-top: 1em;
     color: black;
     margin-bottom: 1em;
@@ -38,7 +38,7 @@
 
 .singleCardText{
     font-family: "Geist", sans-serif !important;
-    font-size: 16px;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
     margin-top: 1em;
     margin-bottom: 1em;
     color: black;

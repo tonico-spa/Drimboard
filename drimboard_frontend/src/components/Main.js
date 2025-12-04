@@ -223,8 +223,13 @@ const Main = () => {
   return (
     !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
+   
         <div className={styles.coverContainer}>
-
+        <img
+            src="/auto.png"
+            alt="cover image"
+            className={styles.coverImg}
+          />
           <img
             src="/cover_logo.png"
             alt="Duolab Logo"
@@ -241,10 +246,10 @@ const Main = () => {
             </div>
 
           </div>
+         
 
         </div>
-
-        <div className={styles.separator}></div>
+     <div className={styles.separator}></div>
         <div className={styles.sectionTwoContainer}>
 
           <div className={styles.sectionTwoTitleContainer}>
@@ -260,8 +265,11 @@ const Main = () => {
           <div className={styles.sectionTwoCards}>
             <SectionTwoCards />
           </div>
+        <div className={styles.separator}></div>
+
         </div>
         <div className={styles.sectionThreeContainer} ref={mainScrollContainerRef}>
+
           <div className={styles.splitScrollTitle}>
             drim v/s otros microcontroladores
           </div>
@@ -330,7 +338,10 @@ const Main = () => {
             </div>
 
           </div>
+          
         </div>
+             <div className={styles.separator}></div>
+
         <div className={styles.separator}></div>
         {/* --- UPDATED JSX FOR SECTION FOUR --- */}
         <Tape />

@@ -9,7 +9,7 @@
 }
 
 .separator {
-  height: clamp(2vh, 5vh, 15vh);
+  height: clamp(2vh, 15vh, 15vh);
 }
 
 /* COVER SECTION */
@@ -22,12 +22,27 @@
   align-items: flex-start;
   padding: clamp(20px, 5vw, 40px);
   box-sizing: border-box;
+  position: relative;
+}
+
+.coverImg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -70%) ;
+  width: auto;
+  height: 60%;
+  max-width: 90%;
+  object-fit: contain;
+  z-index: 0;
 }
 
 .coverLogo {
-  width: clamp(200px, 30vw, 550px);
+  width: clamp(200px, 20vw, 550px);
   height: auto;
-  margin-bottom: clamp(1rem, 3vh, 2rem);
+  position: relative;
+  z-index: 1;
+  float: left;
 }
 
 .coverSubtitleContainer {
@@ -37,21 +52,24 @@
   width: 100%;
   align-items: center;
   justify-content: flex-start;
-  gap: clamp(0.5rem, 2vw, 1rem);
+  gap: clamp(0.5rem, 0.5vw, 1rem);
+  position: relative;
+  z-index: 1;
 }
 
 .coverSubtitleLogo {
   height: auto;
-  width: clamp(30px, 5vw, 50px);
+  width: clamp(30px, 3vw, 50px);
   flex-shrink: 0;
 }
 
 .coverSubtitleText {
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-size: clamp(0.5rem, 1.1vw, 1.5rem);
   font-weight: 500;
   color: black;
 }
 
+/* SECTION TWO */
 /* SECTION TWO */
 .sectionTwoContainer {
   min-height: 60vh;
@@ -72,7 +90,7 @@
 
 .sectionTwoTitleLogo {
   height: auto;
-  width: clamp(40px, 8vw, 80px);
+  width: clamp(40px, 7vw, 80px);
   flex-shrink: 0;
 }
 
@@ -80,7 +98,7 @@
   text-align: left;
   display: flex;
   align-items: flex-end;
-  font-size: clamp(1.25rem, 3.5vw, 2rem);
+  font-size: clamp(1.5rem, 4vw, 33px);
   font-weight: 600;
   line-height: 1.3;
 }
@@ -94,17 +112,18 @@
 .sectionThreeContainer {
   position: relative;
   padding-top: clamp(2rem, 5vh, 5rem);
-  height: 75vh;
+  height: 70vh;
   width: 90%;
   font-family: "Geist Mono", monospace !important;
   will-change: transform;
 }
 
 .splitScrollTitle {
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-size: clamp(1.5rem, 1vw, 33px);
   color: #F397C1;
   font-weight: bold;
   margin-bottom: clamp(1.5rem, 3vh, 3rem);
+  margin-top: clamp(1.5rem, 5vh, 3rem);
   text-align: left;
   font-family: "Geist Mono", monospace !important;
 }
@@ -165,7 +184,7 @@
 }
 
 .scrollSectionTitle {
-  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-size: clamp(1.5rem, 2.5vw, 33px);
   font-weight: bold;
   margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
   line-height: 1.2;
@@ -326,22 +345,22 @@
   max-width: 1400px;
   display: flex;
   justify-content: center;
-  margin: clamp(2rem, 5vh, 4rem) 0;
+  margin: clamp(1rem, 1vh, 2rem) 0;
   flex-direction: column;
   min-height: 60vh;
 }
 
 .sectionFiveVideoContainer {
   width: 100%;
-  min-height: 500px;
+  height: 500px;
   border-radius: clamp(10px, 2vw, 15px);
   background-color: #53C68E;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: clamp(0.75rem, 2vw, 1.5rem);
+  gap: clamp(0.75rem, 1vw, 1.5rem);
   color: black;
   font-family: "Geist", sans-serif;
-  padding: clamp(1rem, 3vw, 2rem);
+  padding: clamp(1rem, 2vw, 2rem);
   box-sizing: border-box;
 }
 
@@ -350,7 +369,7 @@
   display: flex;
   flex-direction: column;
   gap: clamp(0.5rem, 1.5vh, 1rem);
-  padding: clamp(0.75rem, 2vw, 1.5rem);
+  padding: clamp(0.75rem, 1vw, 1.5rem);
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
@@ -366,22 +385,22 @@
 
 .sectionFiveTitle {
   font-family: "Geist Mono", monospace !important;
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-size: clamp(1.125rem, 1.5vw, 1.5rem);
   font-weight: 600;
   text-align: center;
-  margin-top: clamp(0.5rem, 1.5vh, 1rem);
+  margin-top: clamp(0.5rem, 1vh, 1rem);
 }
 
 .sectionFiveSubTitle {
   font-family: "Geist Mono", monospace !important;
-  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-size: clamp(0.875rem, 1vw, 1.125rem);
   font-weight: 700;
   text-align: center;
-  margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+  margin-bottom: clamp(0.5rem, 1vh, 1rem);
 }
 
 .sectionFiveText {
-  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  font-size: clamp(0.875rem, 1vw, 1rem);
   line-height: 1.6;
   text-align: justify;
 }
@@ -493,9 +512,17 @@
     min-height: 550px;
   }
 
-  .card2 { top: 20px; }
-  .card3 { top: 40px; }
-  .card4 { top: 60px; }
+  .card2 {
+    top: 20px;
+  }
+
+  .card3 {
+    top: 40px;
+  }
+
+  .card4 {
+    top: 60px;
+  }
 
   .sectionFourActivityInformationPicture {
     display: none;

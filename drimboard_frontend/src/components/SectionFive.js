@@ -44,9 +44,10 @@ const SectionFive = () => {
                             Paso 1
                         </div>
                         <div className={styles.sectionFiveRightTextContainer}>
-                            
+
                             <div className={styles.sectionFiveRightText}>
-                                Solo la drim es lo que necesitas para empezar.
+                                Solo la drim es lo que necesitas para empezar. Conectala a tu 
+                                computador y comienza a programar.
                             </div>
                             <div className={styles.sectionFiveRightImg}>
                                 <img
@@ -54,7 +55,6 @@ const SectionFive = () => {
                                     alt="Duolab Logo"
                                     className={styles.coverLogo}
                                 />
-
                             </div>
                         </div>
 
@@ -63,47 +63,49 @@ const SectionFive = () => {
                         <div className={styles.sectionFiveRightSideSmallTitle}>
                             Paso 2
                         </div>
-                          <div className={styles.sectionFiveRightSideBlock}>
-                       
-                        <div className={styles.sectionFiveRightTextContainer}>
-                            
-                            <div className={styles.sectionFiveRightText}>
-                                Conecta actuadores y sensores externos para proyectos mas grandes.
-                            </div>
-                            <div className={styles.sectionFiveRightImg}>
-                                <img
-                                    src="/paso2.png"
-                                    alt="Duolab Logo"
-                                    className={styles.coverLogo}
-                                />
+                        <div className={styles.sectionFiveRightSideBlock}>
 
+                            <div className={styles.sectionFiveRightTextContainer}>
+
+                                <div className={styles.sectionFiveRightText}>
+                                    Conecta actuadores y sensores externos y ve como tu drim cobra 
+                                    vida con nuevas funcionalidades.
+                                </div>
+                                <div className={styles.sectionFiveRightImg}>
+                                    <img
+                                        src="/paso2.png"
+                                        alt="Duolab Logo"
+                                        className={styles.coverLogo}
+                                    />
+
+                                </div>
                             </div>
+
                         </div>
-
-                    </div>
                     </div>
                     <div className={styles.sectionFiveRightSideBlock}>
                         <div className={styles.sectionFiveRightSideSmallTitle}>
                             Paso 3
                         </div>
-                          <div className={styles.sectionFiveRightSideBlock}>
-                       
-                        <div className={styles.sectionFiveRightTextContainer}>
-                            
-                            <div className={styles.sectionFiveRightText}>
-                               Abre tu drim y trabaja directamente con tu micorontrolador para proyectos mas audaces.
-                            </div>
-                            <div className={styles.sectionFiveRightImg}>
-                                <img
-                                    src="/paso3.png"
-                                    alt="Duolab Logo"
-                                    className={styles.coverLogo}
-                                />
+                        <div className={styles.sectionFiveRightSideBlock}>
 
+                            <div className={styles.sectionFiveRightTextContainer}>
+
+                                <div className={styles.sectionFiveRightText}>
+                                    Abre tu drim y trabaja directamente con el microcontrolador
+                                     para proyectos mas audaces.
+                                </div>
+                                <div className={styles.sectionFiveRightImg}>
+                                    <img
+                                        src="/paso3.png"
+                                        alt="Duolab Logo"
+                                        className={styles.coverLogo}
+                                    />
+
+                                </div>
                             </div>
+
                         </div>
-
-                    </div>
                     </div>
                 </div>
             </div>

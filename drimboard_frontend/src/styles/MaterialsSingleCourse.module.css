@@ -94,7 +94,7 @@
 .materialCourseMessageTitle {
     font-family: "Geist Mono", monospace !important;
     font-weight: 600;
-    font-size: 16px;
+    font-size: clamp(1rem, 2.5vw, 33px);
     margin-top: 0.5em;
     display: flex;
     flex-direction: column;
@@ -166,7 +166,7 @@
 .materialCourseDescriptionTitle {
     font-family: "Geist Mono", monospace !important;
     font-weight: 600;
-    font-size: 18px;
+    font-size: clamp(1.125rem, 3vw, 33px);
     margin-bottom: 0.5em;
 }
 

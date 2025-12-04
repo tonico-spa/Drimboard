@@ -2,14 +2,13 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  height: 70px; /* Match tapeItem height */
+  height: 35px; /* Match tapeItem height */
 }
 
 .wrapper {
   display: flex;
   position: relative;
   width: 100%;
-  height: 100%;
 }
 
 .lane {
@@ -27,7 +26,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 45px;
+  height: 35px;
   margin: 0 20px; /* Add spacing between items */
   padding: 0;
 }

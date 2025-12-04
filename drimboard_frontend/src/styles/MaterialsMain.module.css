@@ -10,7 +10,7 @@
 
 .materiasMainTitle {
     font-weight: 600;
-    font-size: 30px;
+    font-size: clamp(1.5rem, 4vw, 33px);
 }
 
 .materiasMainSubtitle {
@@ -26,7 +26,7 @@
 .materiasMainSectionOneTitle {
     font-family: "Geist Mono", monospace !important;
     font-weight: 600;
-    font-size: 25px;
+    font-size: clamp(1.25rem, 3.5vw, 33px);
 }
 
 .coverLogo {
@@ -69,7 +69,7 @@
 .materiasMainSectionTwoTitle {
     font-family: "Geist Mono", monospace !important;
     font-weight: 600;
-    font-size: 25px;
+    font-size: clamp(1.25rem, 3.5vw, 33px);
 }
 
 .materiasMainSectionTwoMaterial {
@@ -112,7 +112,7 @@
 .materiasMainSectionThreeTitle {
     font-family: "Geist Mono", monospace !important;
     font-weight: 600;
-    font-size: 25px;
+    font-size: clamp(1.25rem, 3.5vw, 33px);
 }
 
 .materiasMainSectionThreeMaterial {
