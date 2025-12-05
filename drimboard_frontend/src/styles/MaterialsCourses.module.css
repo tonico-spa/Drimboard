@@ -2,6 +2,7 @@
     width: 95%;
     margin: 0 auto;
     position: relative;
+    text-align: left;
 }
 
 .materiasMainTitleContainer {
@@ -68,47 +69,25 @@
 
 }
 
+.materiasMainSectionOneMaterialTitle {
+    font-weight: 600;
+    color: white;
+    text-align: left !important;
+    width: 80%;
+    font-size: clamp(1.25rem, 1.5vw, 33px);
+    background-color: #F397C1;
+    border-radius: 5px;
+    padding-left: 0.6vw;
+ 
+}
+
 .materiasMainSectionOneTitle {
     font-family: "Geist Mono", monospace !important;
     font-weight: 600;
     font-size: clamp(1.25rem, 3.5vw, 33px);
 }
 
-.materiasMainSectionOneMaterial {
-    border: 3px solid #F397C1;
-    border-radius: 15px;
-    padding: 2em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    min-height: 200px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
 
-.materiasMainSectionOneMaterial::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 50%);
-    z-index: 1;
-}
-
-.materiasMainSectionOneMaterial > * {
-    position: relative;
-    z-index: 2;
-    color: white;
-    font-weight: 600;
-    text-align: center;
-}
 
 .sectionOnePdf {
     display: none;
@@ -143,15 +122,53 @@
     font-size: clamp(1.25rem, 3.5vw, 33px);
 }
 
-.materiasMainSectionTwoMaterial {
-    border: 3px solid #DED900;
+
+.materiasMainSectionOneMaterial {
     border-radius: 15px;
-    padding: 2em;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
     min-height: 200px;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.materiasMainSectionOneMaterial::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
+    z-index: 1;
+}
+
+.materiasMainSectionOneMaterial>* {
+    position: relative;
+    z-index: 2;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+
+
+
+.materiasMainSectionTwoMaterial {
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-height: 200px;
+    height: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -167,11 +184,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 50%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
     z-index: 1;
 }
 
-.materiasMainSectionTwoMaterial > * {
+.materiasMainSectionTwoMaterial>* {
     position: relative;
     z-index: 2;
     color: white;
@@ -211,14 +228,13 @@
 }
 
 .materiasMainSectionThreeMaterial {
-    border: 3px solid #53C68E;
     border-radius: 15px;
-    padding: 2em;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
     min-height: 200px;
+    height: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -234,11 +250,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 50%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
     z-index: 1;
 }
 
-.materiasMainSectionThreeMaterial > * {
+.materiasMainSectionThreeMaterial>* {
     position: relative;
     z-index: 2;
     color: white;
@@ -250,21 +266,176 @@
     display: none;
 }
 
-.materialsSingleCourseContainer{
+.materialsSingleCourseContainer {
     position: fixed;
     top: 0;
     left: 0;
     width: 90%;
     height: 90vh;
-    background-color:#53C68E; /* Semi-transparent backdrop */
+    background-color: #53C68E;
+    /* Semi-transparent backdrop */
     border: 3px solid #53C68E;
     display: flex;
     justify-content: center;
     align-items: center;
     transform: translate(5%, 5%);
-    z-index: 1000; /* Ensures it's above everything else */
+    z-index: 1000;
+    /* Ensures it's above everything else */
     border-radius: 15px;
     overflow: scroll;
 
-    
+
+}
+
+.verMasButton {
+    margin-top: 2.5em;
+    padding: 0.45em 1em;
+    background-color: #53C68E;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 10%;
+}
+
+.verMasButton:hover {
+    background-color: #429e6e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modalContent {
+    background-color: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2em;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2em;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1em;
+}
+
+.modalTitle {
+    font-family: "Geist Mono", monospace !important;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 3.5vw, 33px);
+    margin: 0;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 3rem;
+    color: #666;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+}
+
+.closeButton:hover {
+    color: #000;
+}
+
+.modalGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5em;
+}
+
+.modalCard {
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-height: 200px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modalCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modalCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
+    z-index: 1;
+}
+
+.modalCardTitle {
+    position: relative;
+    z-index: 2;
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    width: 80%;
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    background-color: #F397C1;
+    border-radius: 5px;
+    padding: 0.5em;
+    margin: 0.5em;
 }

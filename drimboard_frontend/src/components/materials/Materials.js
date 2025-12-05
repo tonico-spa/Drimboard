@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import useAppStore from '@/store/useAppStore';
 import MaterialsMain from "@/components/materials/MaterialsMain";
 import MaterialsCourses from "@/components/materials/MaterialsCourses";
+import MaterialsSingleCourse from "@/components/materials/MaterialSingleCourse";
 import axios from 'axios';
 import { groq } from 'next-sanity';
 
@@ -15,6 +16,7 @@ import { client } from '../../lib/sanity.js'; // Your Sanity client
 
 const Materials = () => {
     const [tab, setTab] = useState("inicio");
+    const openMaterialCourse = useAppStore((state) => state.openMaterialCourse);
     const { setMaterialCourseChat, setActividades, setVideos, setDocuments } = useAppStore((state) => state);
 
     useEffect(() => {
@@ -119,12 +121,18 @@ const Materials = () => {
                     </div>
                 </div>
             </div>
-            {tab === "inicio" &&
-                <MaterialsMain />
-            }
-            {tab === "material" &&
-                <MaterialsCourses />
-            }
+            {openMaterialCourse["open"] ? (
+                <MaterialsSingleCourse />
+            ) : (
+                <>
+                    {tab === "inicio" &&
+                        <MaterialsMain />
+                    }
+                    {tab === "material" &&
+                        <MaterialsCourses />
+                    }
+                </>
+            )}
 
         </div>
     )

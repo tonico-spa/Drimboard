@@ -73,8 +73,19 @@ const MaterialsSingleCourse = () => {
         setComment("")
 
     }
-    const openCourseContent = () =>{
+    const openCourseContent = () => {
         setCourseContent(!courseContent)
+    }
+    const downloadDocument = () => {
+        if (pdfUrl) {
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = openMaterialCourse.title || 'document.pdf';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     }
 
 
@@ -82,11 +93,7 @@ const MaterialsSingleCourse = () => {
 
         <div className={styles.materialsSingleCourseContainer}>
             <div className={styles.closeButton} onClick={(e) => openCourse(e)}>
-                <img
-                    src="/left_arrow.png"
-                    alt="Duolab Logo"
-                    className={styles.coverLogo}
-                />
+
                 Volver
             </div>
 
@@ -99,62 +106,104 @@ const MaterialsSingleCourse = () => {
                             allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com']}
                         />
                     </div>
+                    <div className={styles.materialCourseDescription}>
+                        <div className={styles.materialCourseDescriptionTitle}>
+                            Descripción del curso
+                        </div>
+                        {description}
+                    </div>
                     <div className={styles.materialCourseOpenCourse} onClick={openCourseContent}>
                         Contenido del curso
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{
+                                transform: courseContent ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.3s ease'
+                            }}
+                        >
+                            <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
                     </div>
 
-                    {courseContent && 
-                        <>
-                            <div className={styles.materialCourse}>
-                                <div className={styles.materialCoursePdf}>
-                                    {pdfUrl && (
-                                        <div className={styles.pdfViewer}>
-                                            <iframe
-                                                src={`${pdfUrl}#toolbar=0`}
-                                                width="100%"
-                                                height="100%"
-                                            />
-                                        </div>
-                                    )}
+                    <div className={`${styles.contentWrapper} ${courseContent ? styles.contentOpen : styles.contentClosed}`}>
+                        {courseContent &&
+                            <>
+                                <div className={styles.materialCourse}>
+                                    <div className={styles.materialCoursePdf}>
+                                        {pdfUrl && (
+                                            <div className={styles.pdfViewer}>
+                                                <iframe
+                                                    src={`${pdfUrl}#toolbar=0`}
+                                                    width="100%"
+                                                    height="100%"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={styles.materialCourseVideo}>
+                                        {videoUrl &&
+                                            <VideoEmbed styles={styles} videoUrl={videoUrl} />
+                                        }
+                                    </div>
                                 </div>
-                                <div className={styles.materialCourseVideo}>
-                                    {videoUrl &&
-                                        <VideoEmbed styles={styles} videoUrl={videoUrl} />
-                                    }
-                                </div>
-                            </div>
-                            <div className={styles.materialCourseDescription}>
-                                <div className={styles.materialCourseDescriptionTitle}>
-                                    Descripción del curso
-                                </div>
-                                {description}
-                            </div>
-                        </>
-                    }
+
+                            </>
+                        }
+                    </div>
                 </>
             )}
 
             {/* Show only PDF for Documents */}
             {contentType === 'documents' && (
                 <>
-                    {pdfUrl && (
-                        <div className={styles.materialsSingleCourseBlocks}>
-                            <iframe
-                                src={`${pdfUrl}#toolbar=0`}
-                                width="100%"
-                                height="100%"
-                                style={{ border: 'none' }}
-                            />
+                    <>
+                        <div className={styles.downloadButtonContainer}>
+                            <button className={styles.downloadButton} onClick={downloadDocument}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Descargar documento
+                            </button>
                         </div>
-                    )}
-                    {description && (
-                        <div className={styles.materialCourseDescription}>
-                            <div className={styles.materialCourseDescriptionTitle}>
-                                Descripción del documento
+                        {pdfUrl && (
+                            <div className={styles.materialsSingleCourseBlocks}>
+                                <iframe
+                                    src={`${pdfUrl}#toolbar=0`}
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 'none' }}
+                                />
                             </div>
-                            {description}
-                        </div>
-                    )}
+                        )}
+                        {description && (
+                            <div className={styles.materialCourseDescription}>
+                                <div className={styles.materialCourseDescriptionTitle}>
+                                    Descripción del documento
+                                </div>
+                                {description}
+                            </div>
+                        )}
+                    </>
                 </>
             )}
 
@@ -177,9 +226,9 @@ const MaterialsSingleCourse = () => {
                 </>
             )}
 
-           
+
             <div className={styles.materialCourseChat}>
-                <div>
+                <div className={styles.materialCourseChatTitle}>
                     {messages.length} comentarios
                 </div>
                 <div className={styles.inputGroup}>
@@ -203,7 +252,7 @@ const MaterialsSingleCourse = () => {
                     <div className={styles.materialCourseMessage} key={element["_id"]}>
                         <div className={styles.materialCourseTitleContainer}>
                             <div className={styles.materialCourseMessageTitle}>
-                                {capitalizeWords(element["name"])}
+                                {capitalizeWords(element["user_name"])}
 
                             </div>
                             <div className={styles.materialCourseMessageTime}>
