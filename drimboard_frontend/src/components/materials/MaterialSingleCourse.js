@@ -28,6 +28,7 @@ const MaterialsSingleCourse = () => {
     const [comment, setComment] = useState('');
     const [description, setDescription] = useState(1);
     const [messages, setMessages] = useState([]);
+    const [contentType, setContentType] = useState(null);
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
@@ -38,6 +39,7 @@ const MaterialsSingleCourse = () => {
         setVideoUrl(openMaterialCourse["youtubeUrl"])
         setPdfUrl(openMaterialCourse["pdfFile"])
         setDescription(openMaterialCourse["description"])
+        setContentType(openMaterialCourse["contentType"])
         setMessages(materialCourseChat.filter(ele => ele.course_id === openMaterialCourse["_id"]))
 
     }, []);
@@ -88,48 +90,92 @@ const MaterialsSingleCourse = () => {
                 Volver
             </div>
 
-            <div className={styles.materialsSingleCourseBlocks}>
-                <EmbeddedPage
-                    url="https://blockly-web.dplpleoajxzor.amplifyapp.com/"
-                    allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com']}
-                />
-            </div>
-            <div className={styles.materialCourseOpenCourse} onClick={openCourseContent}>
-                Contenido del curso
-            </div>
+            {/* Show embedded page only for Actividades */}
+            {contentType === 'actividades' && (
+                <>
+                    <div className={styles.materialsSingleCourseBlocks}>
+                        <EmbeddedPage
+                            url="https://blockly-web.dplpleoajxzor.amplifyapp.com/"
+                            allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com']}
+                        />
+                    </div>
+                    <div className={styles.materialCourseOpenCourse} onClick={openCourseContent}>
+                        Contenido del curso
+                    </div>
 
-            {courseContent && 
-            <>
-             <div className={styles.materialCourse}>
-                <div className={styles.materialCoursePdf}>
+                    {courseContent && 
+                        <>
+                            <div className={styles.materialCourse}>
+                                <div className={styles.materialCoursePdf}>
+                                    {pdfUrl && (
+                                        <div className={styles.pdfViewer}>
+                                            <iframe
+                                                src={`${pdfUrl}#toolbar=0`}
+                                                width="100%"
+                                                height="100%"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={styles.materialCourseVideo}>
+                                    {videoUrl &&
+                                        <VideoEmbed styles={styles} videoUrl={videoUrl} />
+                                    }
+                                </div>
+                            </div>
+                            <div className={styles.materialCourseDescription}>
+                                <div className={styles.materialCourseDescriptionTitle}>
+                                    Descripción del curso
+                                </div>
+                                {description}
+                            </div>
+                        </>
+                    }
+                </>
+            )}
 
+            {/* Show only PDF for Documents */}
+            {contentType === 'documents' && (
+                <>
                     {pdfUrl && (
-                        <div className={styles.pdfViewer}>
+                        <div className={styles.materialsSingleCourseBlocks}>
                             <iframe
-                                src={`${`https://cdn.sanity.io/files/${projectId}/${dataset}/${pdfUrl.asset._ref.replace('file-', '').replace('-pdf', '.pdf')}`}#toolbar=0`}
+                                src={`${pdfUrl}#toolbar=0`}
                                 width="100%"
                                 height="100%"
+                                style={{ border: 'none' }}
                             />
                         </div>
                     )}
-                </div>
-                <div className={styles.materialCourseVideo}>
-                    {videoUrl &&
-                        <VideoEmbed styles={styles} videoUrl={videoUrl} />
+                    {description && (
+                        <div className={styles.materialCourseDescription}>
+                            <div className={styles.materialCourseDescriptionTitle}>
+                                Descripción del documento
+                            </div>
+                            {description}
+                        </div>
+                    )}
+                </>
+            )}
 
-                    }
-                </div>
-            </div>
-            <div className={styles.materialCourseDescription}>
-                <div className={styles.materialCourseDescriptionTitle}>
-                    Descripción del curso
-                </div>
-                {description}
-
-
-            </div>
-            </>
-            }
+            {/* Show only Video for Videos */}
+            {contentType === 'videos' && (
+                <>
+                    {videoUrl && (
+                        <div className={styles.materialsSingleCourseBlocks}>
+                            <VideoEmbed styles={styles} videoUrl={videoUrl} />
+                        </div>
+                    )}
+                    {description && (
+                        <div className={styles.materialCourseDescription}>
+                            <div className={styles.materialCourseDescriptionTitle}>
+                                Descripción del video
+                            </div>
+                            {description}
+                        </div>
+                    )}
+                </>
+            )}
 
            
             <div className={styles.materialCourseChat}>

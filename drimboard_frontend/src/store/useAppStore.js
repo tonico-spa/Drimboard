@@ -34,6 +34,15 @@ const useAppStore = create(
             courses: [],
             setCourses: (courses) => set({courses: courses}),
 
+            
+            actividades: [],
+            setActividades: (actividades) => set({actividades: actividades}),
+
+            videos: [],
+            setVideos: (videos) => set({videos: videos}),
+
+            documents: [],
+            setDocuments: (documents) => set({documents: documents}),
 
             
             openMaterialsPage: false,

@@ -9,12 +9,14 @@ import MaterialsSingleCourse from "./MaterialSingleCourse";
 
 const MaterialsCourses = () => {
     const openMaterialCourse = useAppStore((state) => state.openMaterialCourse);
-    const courses = useAppStore((state) => state.courses);
+    const actividades = useAppStore((state) => state.actividades);
+    const videos = useAppStore((state) => state.videos);
+    const documents = useAppStore((state) => state.documents);
     const { setOpenMaterialCourse } = useAppStore((state) => state);
 
-    const openCourse = (e, element) => {
+    const openCourse = (e, element, contentType) => {
         e.preventDefault()
-        setOpenMaterialCourse({ ...element, "open": true })
+        setOpenMaterialCourse({ ...element, "open": true, "contentType": contentType })
     }
     return (
 
@@ -26,23 +28,19 @@ const MaterialsCourses = () => {
                     <div className={styles.materiasMainContentContainer}>
                         <div className={styles.materiasMainSectionOne}>
                             <div className={styles.materiasMainSectionOneTitle}>
-                                
                                 Actividades
                             </div>
                             <div className={styles.materiasMainSectionOneContent}>
 
-                                {courses.length > 0 && courses.map((element) => (
+                                {actividades.length > 0 && actividades.map((element) => (
                                     <div
-                                        key={element._id} // Use unique ID from Sanity
-                                        id="colores.pdf"
+                                        key={element._id}
                                         className={styles.materiasMainSectionOneMaterial}
-                                        onClick={(e) => openCourse(e, element)}
+                                        onClick={(e) => openCourse(e, element, 'actividades')}
+                                        style={{
+                                            backgroundImage: `url(${element.coverImage || '/pdf.png'})`
+                                        }}
                                     >
-                                        <img
-                                            src="/pdf.png"
-                                            alt="Duolab Logo"
-                                            className={styles.sectionOnePdf}
-                                        />
                                         {element.title}
                                     </div>
                                 ))}
@@ -57,41 +55,18 @@ const MaterialsCourses = () => {
                                 Documentos
                             </div>
                             <div className={styles.materiasMainSectionTwoContent}>
-                                <div className={styles.materiasMainSectionTwoMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionTwoPdf}
-                                    />
-                                    Documento
-
-                                </div>
-                                <div className={styles.materiasMainSectionTwoMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionTwoPdf}
-                                    />
-                                    Documento
-                                </div>
-                                <div className={styles.materiasMainSectionTwoMaterial}>
-
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionTwoPdf}
-                                    />
-                                    Documento
-                                </div>
-                                <div className={styles.materiasMainSectionTwoMaterial}>
-
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionTwoPdf}
-                                    />
-                                    Documento
-                                </div>
+                                {documents.length > 0 && documents.map((element) => (
+                                    <div
+                                        key={element._id}
+                                        className={styles.materiasMainSectionTwoMaterial}
+                                        onClick={(e) => openCourse(e, element, 'documents')}
+                                        style={{
+                                            backgroundImage: `url(${element.coverImage || '/pdf.png'})`
+                                        }}
+                                    >
+                                        {element.title}
+                                    </div>
+                                ))}
                             </div>
 
                         </div>
@@ -102,41 +77,18 @@ const MaterialsCourses = () => {
                                 Videos
                             </div>
                             <div className={styles.materiasMainSectionThreeContent}>
-                                <div className={styles.materiasMainSectionThreeMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionThreePdf}
-                                    />
-                                    Documento
-
-                                </div>
-                                <div className={styles.materiasMainSectionThreeMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionThreePdf}
-                                    />
-                                    Documento
-                                </div>
-                                <div className={styles.materiasMainSectionThreeMaterial}>
-
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionThreePdf}
-                                    />
-                                    Documento
-                                </div>
-                                <div className={styles.materiasMainSectionThreeMaterial}>
-
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.sectionThreePdf}
-                                    />
-                                    Documento
-                                </div>
+                                {videos.length > 0 && videos.map((element) => (
+                                    <div
+                                        key={element._id}
+                                        className={styles.materiasMainSectionThreeMaterial}
+                                        onClick={(e) => openCourse(e, element, 'videos')}
+                                        style={{
+                                            backgroundImage: `url(${element.coverImage || '/pdf.png'})`
+                                        }}
+                                    >
+                                        {element.title}
+                                    </div>
+                                ))}
                             </div>
 
                         </div>

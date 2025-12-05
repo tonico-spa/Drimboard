@@ -15,8 +15,7 @@ import { client } from '../../lib/sanity.js'; // Your Sanity client
 
 const Materials = () => {
     const [tab, setTab] = useState("inicio");
-    const { setMaterialCourseChat } = useAppStore((state) => state);
-    const { setCourses } = useAppStore((state) => state);
+    const { setMaterialCourseChat, setActividades, setVideos, setDocuments } = useAppStore((state) => state);
 
     useEffect(() => {
 
@@ -26,26 +25,60 @@ const Materials = () => {
             console.log("messages fetched", response.data)
             setMaterialCourseChat(response.data)
         }
-        const getLatestPosts = async () => {
 
-            const postsQuery = groq`
-                            *[_type == "post"]{
-                            _id,
-                            title,
-                            "pdfFile": pdf.asset->url,
-                            youtubeUrl,
-                            description
-                            } | order(_createdAt desc)
-                            `;
+        const getActividades = async () => {
+            const actividadesQuery = groq`
+                *[_type == "actividades"]{
+                    _id,
+                    title,
+                    "pdfFile": pdfFile.asset->url,
+                    youtubeUrl,
+                    description,
+                    "coverImage": coverImage.asset->url,
+                    publishedAt
+                } | order(publishedAt desc)
+            `;
+            const data = await client.fetch(actividadesQuery);
+            console.log("actividades fetched", data);
+            setActividades(data);
+        }
 
-            const data =  await client.fetch('*[_type == "post"]')
-            setCourses(data)
+        const getVideos = async () => {
+            const videosQuery = groq`
+                *[_type == "videos"]{
+                    _id,
+                    title,
+                    youtubeUrl,
+                    description,
+                    "coverImage": coverImage.asset->url,
+                    publishedAt
+                } | order(publishedAt desc)
+            `;
+            const data = await client.fetch(videosQuery);
+            console.log("videos fetched", data);
+            setVideos(data);
+        }
 
+        const getDocuments = async () => {
+            const documentsQuery = groq`
+                *[_type == "pdf_document"]{
+                    _id,
+                    title,
+                    "pdfFile": pdfFile.asset->url,
+                    description,
+                    "coverImage": coverImage.asset->url,
+                    publishedAt
+                } | order(publishedAt desc)
+            `;
+            const data = await client.fetch(documentsQuery);
+            console.log("documents fetched", data);
+            setDocuments(data);
         }
 
         getMessages()
-        getLatestPosts()
-
+        getActividades()
+        getVideos()
+        getDocuments()
 
     }, [])
 
