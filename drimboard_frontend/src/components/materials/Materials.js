@@ -8,6 +8,7 @@ import MaterialsMain from "@/components/materials/MaterialsMain";
 import MaterialsCourses from "@/components/materials/MaterialsCourses";
 import MaterialsSingleCourse from "@/components/materials/MaterialSingleCourse";
 import axios from 'axios';
+import Forum from "./Forum";
 import { groq } from 'next-sanity';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
@@ -89,6 +90,17 @@ const Materials = () => {
 
     // Function to handle tab clicks
     const handleTabClick = (tabValue) => {
+        // if a material single course is open, close it when switching tabs
+        const { setOpenMaterialCourse } = useAppStore.getState ? useAppStore.getState() : {};
+        if (setOpenMaterialCourse) {
+            setOpenMaterialCourse({
+                course_name: null,
+                open: false,
+                pdf_url: null,
+                youtubeUrl: null,
+                _id: null
+            });
+        }
         setTab(tabValue);
     };
     return (
@@ -130,6 +142,9 @@ const Materials = () => {
                     }
                     {tab === "material" &&
                         <MaterialsCourses />
+                    }
+                    {tab === "foro" &&
+                        <Forum />
                     }
                 </>
             )}

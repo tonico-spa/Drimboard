@@ -58,6 +58,26 @@ def get_db():
         db.close()
 
 
+def create_tables():
+    """Create database tables for all models if they do not exist yet.
+
+    This is safe to call multiple times; SQLAlchemy will only create missing
+    tables. We import `models` at module level so SQLAlchemy knows about
+    all model metadata.
+    """
+    try:
+        database.Base.metadata.create_all(bind=database.engine)
+        print("Database tables ensured (create_all completed).")
+    except Exception as e:
+        print(f"Error creating database tables: {e}")
+
+
+# Ensure tables are created on FastAPI startup
+@app.on_event("startup")
+def on_startup():
+    create_tables()
+
+
 # --- Pydantic Models for Request/Response Bodies ---
 class CourseMessageCreate(BaseModel):
     user_name: str
@@ -100,6 +120,47 @@ class MessageResponse(BaseModel):
     result: Optional[str] = None
 
 
+# --- Forum (Issue) Schemas ---
+class IssueCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    author_name: str
+    author_email: str
+    tags: Optional[list[str]] = None
+
+
+class IssueResponse(BaseModel):
+    id: int
+    title: str
+    description: Optional[str]
+    author_name: str
+    author_email: str
+    status: Optional[str]
+    created_time: datetime
+    tags: Optional[list[str]] = None
+
+    class Config:
+        orm_mode = True
+
+
+class CommentCreate(BaseModel):
+    user_name: str
+    user_email: str
+    comment: str
+
+
+class CommentResponse(BaseModel):
+    id: int
+    issue_id: int
+    user_name: str
+    user_email: str
+    comment: str
+    created_time: datetime
+
+    class Config:
+        orm_mode = True
+
+
 @app.post("/create_course_message", response_model=MessageResponse)
 def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)):  # <--- FIXED HERE
     try:
@@ -127,6 +188,111 @@ def create_course_message(message: CourseMessageCreate, db: Session = Depends(ge
 def get_course_messages(db: Session = Depends(get_db)):  # <--- FIXED HERE
     message_ls = db.query(models.CourseMessage).all()
     return message_ls
+
+
+# --- Issue endpoints (Forum) ---
+@app.post("/issues", response_model=IssueResponse)
+def create_issue(payload: IssueCreate, db: Session = Depends(get_db)):
+    try:
+        tags_str = None
+        if payload.tags:
+            # store as comma-separated string
+            tags_str = ",".join([t.strip() for t in payload.tags if t and t.strip()])
+
+        new_issue = models.Issue(
+            title=payload.title,
+            description=payload.description,
+            author_name=payload.author_name,
+            author_email=payload.author_email,
+            tags=tags_str,
+            status="open"
+        )
+        db.add(new_issue)
+        db.commit()
+        db.refresh(new_issue)
+
+        # prepare response with tags as list
+        resp = {
+            "id": new_issue.id,
+            "title": new_issue.title,
+            "description": new_issue.description,
+            "author_name": new_issue.author_name,
+            "author_email": new_issue.author_email,
+            "status": new_issue.status,
+            "created_time": new_issue.created_time,
+            "tags": new_issue.tags.split(",") if new_issue.tags else []
+        }
+        return resp
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+@app.get("/issues")
+def list_issues(tag: Optional[str] = None, db: Session = Depends(get_db)):
+    q = db.query(models.Issue).order_by(models.Issue.created_time.desc())
+    issues = q.all()
+
+    result = []
+    for it in issues:
+        tags_list = it.tags.split(",") if it.tags else []
+        if tag:
+            # filter by tag (case-insensitive)
+            if tag.lower() not in [t.lower() for t in tags_list]:
+                continue
+        result.append({
+            "id": it.id,
+            "title": it.title,
+            "description": it.description,
+            "author_name": it.author_name,
+            "author_email": it.author_email,
+            "status": it.status,
+            "created_time": it.created_time,
+            "tags": tags_list
+        })
+
+    return result
+
+
+@app.get("/issues/{issue_id}")
+def issue_detail(issue_id: int, db: Session = Depends(get_db)):
+    issue = db.query(models.Issue).filter(models.Issue.id == issue_id).first()
+    if not issue:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
+    comments = db.query(models.IssueComment).filter(models.IssueComment.issue_id == issue_id).order_by(models.IssueComment.created_time.asc()).all()
+    tags_list = issue.tags.split(",") if issue.tags else []
+    issue_obj = {
+        "id": issue.id,
+        "title": issue.title,
+        "description": issue.description,
+        "author_name": issue.author_name,
+        "author_email": issue.author_email,
+        "status": issue.status,
+        "created_time": issue.created_time,
+        "tags": tags_list
+    }
+    return {"issue": issue_obj, "comments": comments}
+
+
+@app.post("/issues/{issue_id}/comments", response_model=CommentResponse)
+def add_issue_comment(issue_id: int, payload: CommentCreate, db: Session = Depends(get_db)):
+    issue = db.query(models.Issue).filter(models.Issue.id == issue_id).first()
+    if not issue:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Issue not found")
+    try:
+        new_comment = models.IssueComment(
+            issue_id=issue_id,
+            user_name=payload.user_name,
+            user_email=payload.user_email,
+            comment=payload.comment
+        )
+        db.add(new_comment)
+        db.commit()
+        db.refresh(new_comment)
+        return new_comment
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @app.post("/get_single_pdf")
@@ -256,4 +422,11 @@ def home():
 
 # --- Running the App ---
 if __name__ == "__main__":
+    # # Create DB tables if they don't exist
+    # try:
+    #     print("Creating database tables if they do not exist...")
+    #     create_tables()
+    # except Exception as e:
+    #     print(f"Warning: could not create tables automatically: {e}")
+
     uvicorn.run("app:app", host="0.0.0.0", port=5001, reload=True)

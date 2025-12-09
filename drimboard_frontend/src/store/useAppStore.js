@@ -44,6 +44,9 @@ const useAppStore = create(
             documents: [],
             setDocuments: (documents) => set({documents: documents}),
 
+            issues: [],
+            setIssues: (issues) => set({issues: issues}),
+
             
             openMaterialsPage: false,
             setOpenMaterialsPage: (open) => set({openMaterialsPage: open})
