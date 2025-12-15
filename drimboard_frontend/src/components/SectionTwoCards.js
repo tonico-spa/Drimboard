@@ -82,7 +82,7 @@ const SectionTwoCards = () => {
         gsap.to(card, {
           rotation: gsap.utils.random(-15, 15),
           duration: 0.2,
-          ease: 'elastic.out(1, 0.5)', // Smooth elastic bounce
+          ease: 'power2.out',
         });
       });
     };
@@ -103,37 +103,44 @@ const SectionTwoCards = () => {
           rotation: 0,      // Make it straight
           scale: 1.1,       // Make it bigger
           y: -20,           // Move it up to separate it
-          duration: 0.1,
-          ease: 'elastic.out(1, 0.4)', // Smooth elastic bounce on hover
-          overwrite: 'auto' // Prevents conflicting animations on the same element
+          duration: 0.15,
+          ease: 'power2.out',
+          overwrite: true // Immediately overwrite any existing animation
         });
 
-        // Animate the OTHER cards to new random angles
+        // Animate the OTHER cards to new random angles immediately
         otherCards.forEach(otherCard => {
           gsap.to(otherCard, {
             rotation: gsap.utils.random(-15, 15),
-            duration: 0.3,
-            ease: 'back.out(1.2)', // Smooth back easing with slight overshoot
-            overwrite: 'auto'
+            duration: 0.15,
+            ease: 'power2.out',
+            overwrite: true
           });
         });
       });
 
       // --- MOUSE LEAVE ---
       card.addEventListener('mouseleave', () => {
-        // Animate the card we just left back to its normal size and position
+        // Animate all cards simultaneously - no setTimeout delay
         gsap.to(card, {
           scale: 1,
           y: 0,
-          duration: 0.3,
-          ease: 'elastic.out(1, 0.5)', // Smooth elastic bounce when returning
+          rotation: gsap.utils.random(-15, 15),
+          duration: 0.2,
+          ease: 'power2.out',
           overwrite: 'auto'
         });
 
-        // And then give ALL cards a new random rotation
-        setTimeout(() => {
-          setInitialRotations();
-        }, 100); // Small delay for better visual flow
+        // Give ALL other cards a new random rotation immediately
+        const otherCards = cards.filter(c => c !== card);
+        otherCards.forEach(otherCard => {
+          gsap.to(otherCard, {
+            rotation: gsap.utils.random(-15, 15),
+            duration: 0.2,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
       });
     });
 

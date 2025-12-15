@@ -9,9 +9,41 @@ gsap.registerPlugin(ScrollTrigger);
 
 
 const RightArrow = ({ styles }) => {
+    const svgRef = useRef(null);
+
+    useEffect(() => {
+        if (svgRef.current) {
+            const firstTriangle = svgRef.current.querySelector('.first_triangle');
+            const secondTriangle = svgRef.current.querySelector('.second_triangle');
+
+            // Set initial state - hidden and positioned to the left
+            gsap.set([firstTriangle, secondTriangle], {
+                x: -50,
+                opacity: 0
+            });
+
+            // Animate arrows appearing one by one from the left with bounce
+            gsap.to(firstTriangle, {
+                x: 0,
+                opacity: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                delay: 0
+            });
+
+            gsap.to(secondTriangle, {
+                x: 0,
+                opacity: 1,
+                duration: 0.6,
+                ease: "back.out(1.7)",
+                delay: 0.2
+            });
+        }
+    }, []);
+
     return (
-        <div >
-            <svg id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.22 40.46">
+        <div>
+            <svg ref={svgRef} id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.22 40.46">
                 <defs>
                     <style>
                         {styles}

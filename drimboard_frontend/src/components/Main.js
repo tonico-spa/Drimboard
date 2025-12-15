@@ -16,6 +16,9 @@ import LoginForm from './LoginForm';
 import StepViewer from './SetpViewer';
 import VideoEmbed from "./VideoEmbed";
 import Materials from './materials/Materials';
+import MainLogo from './svgs/MainLogo';
+
+
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -55,6 +58,8 @@ const Main = () => {
       fill: #f397c1;
     }`;
 
+
+
   const squareCircleStyles = `
     .top_circle {
       fill: #53C68E;
@@ -69,6 +74,27 @@ const Main = () => {
       fill: #53C68E;
     }`;
 
+  const mainLogoStyles = `
+      .cls-1 {
+          fill: #1f150b;
+        }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: #ded900;
+      }
+
+      .cls-4 {
+        fill: #1f150b;
+      }
+
+      .cls-5 {
+        fill: #1f150b;
+      }
+    `
   useEffect(() => {
     // Initialize Lenis
     const lenis = new Lenis({
@@ -223,18 +249,17 @@ const Main = () => {
   return (
     !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
-   
+
         <div className={styles.coverContainer}>
-        <img
+          <img
             src="/auto.png"
             alt="cover image"
             className={styles.coverImg}
           />
-          <img
-            src="/cover_logo.png"
-            alt="Duolab Logo"
-            className={styles.coverLogo}
-          />
+
+          <div className={styles.coverLogo}>
+            <MainLogo styles={mainLogoStyles} />
+          </div>
 
           <div className={styles.coverSubtitleContainer}>
 
@@ -246,10 +271,10 @@ const Main = () => {
             </div>
 
           </div>
-         
+
 
         </div>
-     <div className={styles.separator}></div>
+        <div className={styles.separator}></div>
         <div className={styles.sectionTwoContainer}>
 
           <div className={styles.sectionTwoTitleContainer}>
@@ -265,7 +290,7 @@ const Main = () => {
           <div className={styles.sectionTwoCards}>
             <SectionTwoCards />
           </div>
-        <div className={styles.separator}></div>
+          <div className={styles.separator}></div>
 
         </div>
         <div className={styles.sectionThreeContainer} ref={mainScrollContainerRef}>
@@ -332,15 +357,15 @@ const Main = () => {
 
 
               <Suspense fallback={<div>Loading 3D model...</div>}>
-                <StepViewer fileUrl="/models/kit_sim.glb" initialAngle={-Math.PI / 2} />
+                <StepViewer fileUrl="/models/kit_sim_trans.glb" initialAngle={-Math.PI / 2} />
               </Suspense>
 
             </div>
 
           </div>
-          
+
         </div>
-             <div className={styles.separator}></div>
+        <div className={styles.separator}></div>
 
         <div className={styles.separator}></div>
         {/* --- UPDATED JSX FOR SECTION FOUR --- */}
@@ -564,7 +589,6 @@ const Main = () => {
         <div className={styles.sectionFiveContainer}>
           <SectionFive />
         </div>
-        <div className={styles.separator}></div>
         <div className={styles.sectionSixContainer}>
           <SectionSix />
         </div>

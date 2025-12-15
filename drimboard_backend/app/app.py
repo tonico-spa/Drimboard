@@ -2,8 +2,9 @@
 import os
 import jwt
 import uvicorn
-import aws_utils as aws_utils
 import utils
+import aws_utils as aws_utils
+
 # import app.aws_utils as aws_utils
 
 
@@ -11,7 +12,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy.orm import Session  # <--- ADD THIS IMPORT
-from fastapi import FastAPI, Depends, HTTPException, status, Response, Cookie
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from passlib.context import CryptContext
@@ -32,17 +33,41 @@ ENV = os.getenv("FLASK_ENV")
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://192.168.1.7:3000"
-    "https://develop.d17k1lr65yqfqv.amplifyapp.com"
+    "http://192.168.1.7:3000",
+    "https://develop.d17k1lr65yqfqv.amplifyapp.com",
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # NOT ["*"]
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Optional env flags to allow permissive CORS and enable debug logging for preflight
+CORS_ALLOW_ALL = os.getenv("CORS_ALLOW_ALL", "0") == "1"
+CORS_DEBUG = os.getenv("CORS_DEBUG", "0") == "1"
+
+if CORS_ALLOW_ALL:
+    # temporary/testing mode: allow all origins and credentials
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+
+# Middleware to log preflight requests and origins when debugging CORS issues
+@app.middleware("http")
+async def cors_logger(request: Request, call_next):
+    origin = request.headers.get("origin")
+    if CORS_DEBUG or request.method == "OPTIONS":
+        print(f"CORS_LOG: {request.method} {request.url.path} Origin: {origin}")
+    response = await call_next(request)
+    return response
 # --- Configuration ---
 SECRET_KEY = os.getenv("JWT_SECRET")
 if not SECRET_KEY:

@@ -9,9 +9,37 @@ gsap.registerPlugin(ScrollTrigger);
 
 
 const SquareCircle = ({ styles }) => {
+    const svgRef = useRef(null);
+
+    useEffect(() => {
+        if (svgRef.current) {
+            const topCircle = svgRef.current.querySelector('.top_circle');
+            const topSquare = svgRef.current.querySelector('.top_square');
+            const bottomCircle = svgRef.current.querySelector('.bottom_circle');
+            const bottomSquare = svgRef.current.querySelector('.bottom_square');
+
+            // Create rotation animations for each element
+            const createRotationAnimation = (element, delay = 0) => {
+                gsap.timeline({ repeat: -1, repeatDelay: 5, delay: delay })
+                    .to(element, {
+                        rotation: 360,
+                        duration: 1,
+                        ease: "power2.inOut",
+                        transformOrigin: "center center"
+                    });
+            };
+
+            // Stagger the rotation animations
+            createRotationAnimation(topCircle, 0);
+            createRotationAnimation(topSquare, 0.3);
+            createRotationAnimation(bottomCircle, 0.6);
+            createRotationAnimation(bottomSquare, 0.9);
+        }
+    }, []);
+
     return (
         <div >
-            <svg id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.08 96.08">
+            <svg ref={svgRef} id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 116 116">
                 <defs>
                     <style>
                         {styles}

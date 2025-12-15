@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from "next/link";
 import styles from "../styles/Navbar.module.css";
 import useAppStore from '@/store/useAppStore';
+import NavLogo from './svgs/NavLogo';
 
 const Navbar = () => {
 
@@ -13,7 +14,10 @@ const Navbar = () => {
     const { setOpenMaterialsPage } = useAppStore((state) => state);
 
 
-
+    const navLogoStyles = `
+    .cls-8 {
+        fill: #1f150b;
+      }`;
 
     const openLoginForm = (e) => {
         e.preventDefault()
@@ -46,11 +50,7 @@ const Navbar = () => {
             <div className={styles.navbarContainer}>
                 <div className={styles.logoContainer}>
                     <div href="/" onClick={(e) => closeMaterials(e)} className={styles.navbarLink}>
-                        <img
-                            src="/black_logo.png"
-                            alt="Duolab Logo"
-                            className={styles.logoImg}
-                        />
+                        <NavLogo styles={navLogoStyles} />
                     </div>
                 </div>
                 <div className={styles.linksContainer}>
