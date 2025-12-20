@@ -5,10 +5,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const styles = `
-    .cls-1 {
-      fill: #ffb71a;
-    }`;
 
 const UpArrows = ({fill}) => {
     return (

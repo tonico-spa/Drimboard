@@ -9,7 +9,6 @@ import SectionTwoCards from './SectionTwoCards';
 import Tape from './svgs/tape/Tape';
 import Lenis from '@studio-freight/lenis'; // Import Lenis
 import SectionFive from './SectionFive';
-import SectionSix from './SectionSix';
 import { Suspense } from 'react';
 import useAppStore from '@/store/useAppStore';
 import LoginForm from './LoginForm';
@@ -28,6 +27,11 @@ const Main = () => {
   const scrollContentRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const mainScrollContainerRef = useRef(null);
+  const sectionTwoTitleRef = useRef(null);
+  const sectionFiveBackgroundRef = useRef(null);
+  const sectionFiveContainerRef = useRef(null);
+  const sectionSixContainerRef = useRef(null);
+  const containerRef = useRef(null);
 
 
   // --- REFS FOR SECTION FOUR CARDS ---
@@ -43,10 +47,11 @@ const Main = () => {
 
   const [activeCard, setActiveCard] = useState(0);
   const [openMaterials, setOpenMaterials] = useState(false);
+  const [userDict, setUserDict] = useState({ "name": "", "email": "", "message": "" })
+
 
 
   useEffect(() => {
-    console.log(open_materials)
     setOpenMaterials(open_materials)
   }, [open_materials])
 
@@ -203,6 +208,35 @@ const Main = () => {
     return () => ctx.revert();
   }, [openMaterials]);
 
+  // Effect for Section Four Video Container (Scale animation)
+  useEffect(() => {
+    if (openMaterials === true) return;
+
+    const ctx = gsap.context(() => {
+      const background = document.querySelector(`.${styles.sectionFourBackground}`);
+      const container = document.querySelector(`.${styles.sectionFourVideoContainer}`);
+
+      if (background && container) {
+        gsap.set(background, {
+          scale: 0.93,
+        });
+
+        gsap.to(background, {
+          scale: 1,
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: container,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          }
+        });
+      }
+    }, mainContainerRef);
+
+    return () => ctx.revert();
+  }, [openMaterials]);
+
   // useEffect(() => {
   //   if (openMaterials === true) return; // Skip if materials page is open
   //   const ctx = gsap.context(() => {
@@ -246,11 +280,74 @@ const Main = () => {
 
   //   return () => ctx.revert();
   // }, [openMaterials]);
+
+
+  const squareSixCircleStyles = `
+    .top_circle {
+      fill: #F397C1;
+    }
+    .bottom_circle {
+      fill: #F397C1;
+    }
+    .top_square {
+      fill: #F397C1;
+    }
+    .bottom_square {
+      fill: #F397C1;
+    }`;
+
+
+  const sendForm = async (e) => {
+    e.preventDefault()
+    const response = await axios.post(`${API_URL}/send_form`, userDict)
+    if (response.status === 200) {
+      setUserDict({ "name": "", "email": "", "message": "" })
+      window.alert("Mensaje enviado! Nos contactaremos contigo")
+    }
+  }
+
+  const handleChange = (e) => {
+    setUserDict({
+      ...userDict,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // Effect for Section Six Info Background (Scale animation)
+  useEffect(() => {
+    if (openMaterials === true) return;
+
+    const ctx = gsap.context(() => {
+      const background = document.querySelector(`.${styles.sectionSixBackground}`);
+      const container = document.querySelector(`.${styles.sectionSixContainer}`);
+
+      if (background && container) {
+        gsap.set(background, {
+          scale: 0.95,
+        });
+
+        gsap.to(background, {
+          scale: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: container,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          }
+        });
+      }
+    }, mainContainerRef);
+
+    return () => ctx.revert();
+  }, [openMaterials]);
+
+
   return (
     !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
 
-        <div className={styles.coverContainer}>
+        <div id="coverContainer" className={styles.coverContainer}>
           <img
             src="/auto.png"
             alt="cover image"
@@ -275,9 +372,9 @@ const Main = () => {
 
         </div>
         <div className={styles.separator}></div>
-        <div className={styles.sectionTwoContainer}>
+        <div id="sectionTwoContainer" className={styles.sectionTwoContainer}>
 
-          <div className={styles.sectionTwoTitleContainer}>
+          <div ref={sectionTwoTitleRef} className={styles.sectionTwoTitleContainer}>
             <div className={styles.sectionTwoTitleLogo}>
               <SquareCircle styles={squareCircleStyles} />
             </div>
@@ -288,7 +385,7 @@ const Main = () => {
             </div>
           </div>
           <div className={styles.sectionTwoCards}>
-            <SectionTwoCards />
+            <SectionTwoCards triggerRef={sectionTwoTitleRef} />
           </div>
           <div className={styles.separator}></div>
 
@@ -371,20 +468,21 @@ const Main = () => {
         {/* --- UPDATED JSX FOR SECTION FOUR --- */}
         <Tape />
 
-        <div className={styles.sectionFiveContainer}>
-          <div className={styles.sectionFiveVideoContainer}>
-            <div className={styles.sectionFiveTextContainer}>
-              <div className={styles.sectionFiveVideo}>
+        <div id="sectionFourContainer" className={styles.sectionFourContainer}>
+          <div className={styles.sectionFourVideoContainer}>
+            <div className={styles.sectionFourBackground}></div>
+            <div className={styles.sectionFourTextContainer}>
+              <div className={styles.sectionFourVideo}>
                 <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
               </div>
-              <div className={styles.sectionFiveTitle}>
+              <div className={styles.sectionFourTitle}>
                 Sofía
               </div>
-              <div className={styles.sectionFiveSubTitle}>
+              <div className={styles.sectionFourSubTitle}>
                 9 años - Futura Botánica
               </div>
 
-              <div className={styles.sectionFiveText}>
+              <div className={styles.sectionFourText}>
                 Siempre me encantaron las plantas, pero se me olvidaba regarlas.
                 Con el kit armé un sistema que riega mis plantas solo cuando la tierra está seca.
                 ¡No tuve que programar nada complicado! Solo seguí los pasos y conecté el sensor de
@@ -392,18 +490,18 @@ const Main = () => {
               </div>
 
             </div>
-            <div className={styles.sectionFiveTextContainer}>
-              <div className={styles.sectionFiveVideo}>
+            <div className={styles.sectionFourTextContainer}>
+              <div className={styles.sectionFourVideo}>
                 <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
               </div>
-              <div className={styles.sectionFiveTitle}>
+              <div className={styles.sectionFourTitle}>
                 Mateo
               </div>
-              <div className={styles.sectionFiveSubTitle}>
+              <div className={styles.sectionFourSubTitle}>
                 10 años - Futuro Músico
               </div>
 
-              <div className={styles.sectionFiveText}>
+              <div className={styles.sectionFourText}>
                 Quiero ser músico como mi papá, pero nunca imaginé que podría crear mis propios instrumentos.
                 Con el kit construí una guitarra que hace sonidos cuando tocas los botones.
                 Lo mejor es que el kit ya trae todo listo para empezar, no necesitas saber programar.
@@ -411,18 +509,18 @@ const Main = () => {
               </div>
 
             </div>
-            <div className={styles.sectionFiveTextContainer}>
-              <div className={styles.sectionFiveVideo}>
+            <div className={styles.sectionFourTextContainer}>
+              <div className={styles.sectionFourVideo}>
                 <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
               </div>
-              <div className={styles.sectionFiveTitle}>
+              <div className={styles.sectionFourTitle}>
                 Valentina
               </div>
-              <div className={styles.sectionFiveSubTitle}>
+              <div className={styles.sectionFourSubTitle}>
                 11 años - Futura Geóloga
               </div>
 
-              <div className={styles.sectionFiveText}>
+              <div className={styles.sectionFourText}>
                 Los terremotos siempre me dieron curiosidad. ¿Cómo los detectan?
                 Con el kit pude construir mi propio detector de movimientos sísmicos para mi proyecto de ciencias.
                 Pensé que sería súper difícil, pero las instrucciones son tan claras que lo armé en una
@@ -586,13 +684,58 @@ const Main = () => {
           </div>
         </div> */}
         <div className={styles.separator}></div>
-        <div className={styles.sectionFiveContainer}>
-          <SectionFive />
+        <div id="sectionFiveContainer" className={styles.sectionFiveContainer} ref={sectionFiveContainerRef}>
+          <SectionFive triggerRef={sectionFiveContainerRef} />
         </div>
-        <div className={styles.sectionSixContainer}>
-          <SectionSix />
-        </div>
+        <div className={styles.sectionBigSixContainer}>
+          <div id="sectionSixContainer" className={styles.sectionSixContainer} >
+            <div className={styles.sectionSixContainerTitle}>
+              <div className={styles.sectionTwoTitleLogo}>
+                <SquareCircle styles={squareSixCircleStyles} />
+              </div>
+              Quiero <br></br> mi taller
+            </div>
+            <div className={styles.sectionSixContainerInfo}>
+              <div className={styles.sectionSixInfoBackground}></div>
+              <div className={`${styles.sectionSixContainerInfoCard}`}>
+                <div className={styles.sectionSixBackground}></div>
+                <div className={styles.sectionSixTitle}>
+                  Quieres que vayamos a hacerte un taller? <br />
 
+                  <span className={styles.highlightText}>Contáctanos</span>
+
+                </div>
+                <form className={styles.form} >
+                  <div className={styles.contactFirstWrap}>
+                    <div className={styles.formGroup}>
+                      <label htmlFor="name">Nombre</label>
+                      <input value={userDict.name} onChange={(e) => handleChange(e)} type="text" id="name" name="name" required className={styles.inputStyle} />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label htmlFor="email">Email</label>
+                      <input value={userDict.email} onChange={(e) => handleChange(e)} type="email" id="email" name="email" required className={styles.inputStyle} />
+                    </div>
+                  </div>
+
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="message">Escribenos un mensaje</label>
+                    <textarea value={userDict.message} onChange={(e) => handleChange(e)} id="message" name="message" rows="4" required className={styles.inputStyle} ></textarea>
+                  </div>
+
+
+                  <button type="submit" className={styles.submitBtn} onClick={(e) => sendForm(e)}>Enviar</button>
+
+
+                </form>
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
         {
           openLoginForm &&
           <div className={styles.loginFormContainer}>

@@ -10,7 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SectionTwoCards = () => {
+const SectionTwoCards = ({ triggerRef }) => {
   const containerRef = useRef(null);
   const blockContainerRef = useRef(null);
   const codeContainerRef = useRef(null);
@@ -75,21 +75,48 @@ const SectionTwoCards = () => {
     // A robust way to select all card elements
     const cards = gsap.utils.toArray('.singleCardContainer');
 
-    // --- HELPER FUNCTION ---
-    // This function sets a random rotation on all cards. We'll reuse it.
-    const setInitialRotations = () => {
-      cards.forEach(card => {
-        gsap.to(card, {
-          rotation: gsap.utils.random(-15, 15),
-          duration: 0.2,
-          ease: 'power2.out',
-        });
-      });
-    };
+    // Set initial state - cards hidden and slightly below
+    gsap.set(cards, {
+      opacity: 0,
+      y: 290
+    });
 
-    // 1. SET INITIAL STATE
-    // Give all cards a random tilt when the component first loads
-    setInitialRotations();
+    // Create a timeline for sequential card appearance
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: triggerRef?.current || cards[0],
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+      }
+    });
+
+    // Animate cards appearing one by one with stagger
+    cards.forEach((card, index) => {
+      const textContainer = card.querySelector(`.${styles.singleCardText}`);
+      
+      // Set initial state for this card's text
+      gsap.set(textContainer, {
+        opacity: 0,
+        y: 30
+      });
+      
+      // Animate card
+      tl.to(card, {
+        opacity: 1,
+        y: 0,
+        rotation: gsap.utils.random(-15, 15),
+        duration: 0.5,
+        ease: 'power2.out'
+      }, index * 0.15); // Stagger by 0.15 seconds
+      
+      // Animate text sliding up
+      tl.to(textContainer, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, index * 0.15 + 0.2); // Start 0.2s after card animation starts
+    });
 
     // 2. ADD EVENT LISTENERS TO EACH CARD
     cards.forEach(card => {

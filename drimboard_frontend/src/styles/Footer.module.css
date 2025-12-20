@@ -35,6 +35,14 @@
 
 }
 
+.coverLogo {
+  width: clamp(200px, 20vw, 550px);
+  height: auto;
+  position: relative;
+  z-index: 1;
+  float: left;
+}
+
 .footerEmailLogo {
     height: 30%;
 }

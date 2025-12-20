@@ -8,7 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const styles = `
-    .cls-1 {
+    .line {
       fill: #DED900;
     }`;
 
@@ -21,9 +21,9 @@ const Line = () => {
                     </style>
                 </defs>
                 <g>
-                    <rect className="cls-1" width="12.25" height="48.23" rx="3.81" ry="3.81" />
-                    <rect className="cls-1" x="18.18" width="12.25" height="48.23" rx="3.81" ry="3.81" />
-                    <rect className="cls-1" x="35.91" width="12.25" height="48.23" rx="3.81" ry="3.81" />
+                    <rect className="line" width="12.25" height="48.23" rx="3.81" ry="3.81" />
+                    <rect className="line" x="18.18" width="12.25" height="48.23" rx="3.81" ry="3.81" />
+                    <rect className="line" x="35.91" width="12.25" height="48.23" rx="3.81" ry="3.81" />
                 </g>
             </svg>
     );

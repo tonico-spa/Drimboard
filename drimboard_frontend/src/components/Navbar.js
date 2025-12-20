@@ -43,6 +43,19 @@ const Navbar = () => {
         setOpenUser(false)
     }
 
+    const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - (window.innerHeight * 0.2);
+            
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+
 
     return (
 
@@ -54,15 +67,18 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className={styles.linksContainer}>
-                    <Link href="/" className={styles.navbarLink}>
+                    <div onClick={() => scrollToSection('sectionTwoContainer')} className={styles.navbarLink}>
                         Por que drim
-                    </Link>
-                    <Link href="/" className={styles.navbarLink}>
-                        Actividades
-                    </Link>
-                    <Link href="/" className={styles.navbarLink}>
-                        Quiero mi drim
-                    </Link>
+                    </div>
+                    <div onClick={() => scrollToSection('sectionFourContainer')} className={styles.navbarLink}>
+                        Testimonios
+                    </div>
+                    <div onClick={() => scrollToSection('sectionFiveContainer')} className={styles.navbarLink}>
+                        Usa tu drim
+                    </div>
+                    <div onClick={() => scrollToSection('sectionSixContainer')} className={styles.navbarLink}>
+                        Contacto
+                    </div>
 
 
 

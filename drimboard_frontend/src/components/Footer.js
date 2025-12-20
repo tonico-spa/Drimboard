@@ -1,23 +1,39 @@
 "use client";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Footer.module.css";
-import { useAuth } from '../context/AuthContext';
-
+import MainLogo from './svgs/MainLogo';
 const Footer = () => {
 
 
 
+  const mainLogoStyles = `
+      .cls-1 {
+          fill: #1f150b;
+        }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: #ded900;
+      }
+
+      .cls-4 {
+        fill: #1f150b;
+      }
+
+      .cls-5 {
+        fill: #1f150b;
+      }
+    `
 
     return (
 
         <div className={styles.footerContainer}>
             <div className={styles.footerLogin}>
-                <img
-                    src="/cover_logo.png"
-                    alt="Duolab Logo"
-                    className={styles.footerLogo}
-                />
+                <div className={styles.coverLogo}>
+            <MainLogo styles={mainLogoStyles} />
+          </div>
             </div>
             <div className={styles.footerContent}>
                 <div className={styles.footerTitle}>
