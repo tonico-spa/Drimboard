@@ -29,7 +29,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -70%) ;
+  transform: translate(-50%, -70%);
   width: auto;
   height: 60%;
   max-width: 90%;
@@ -377,7 +377,7 @@
   z-index: 0;
 }
 
-.sectionFourVideoContainer > *:not(.sectionFourBackground) {
+.sectionFourVideoContainer>*:not(.sectionFourBackground) {
   position: relative;
   z-index: 1;
 }
@@ -453,174 +453,174 @@
 }
 
 .sectionSixContainer {
-    display: grid;
-    grid-template-rows: 0.5fr 2fr;
-    gap: 20px;
-    height: 100%;
-    border-radius: 10px;
+  display: grid;
+  grid-template-rows: 0.5fr 2fr;
+  gap: 20px;
+  height: 100%;
+  border-radius: 10px;
 }
 
 .sectionSixContainerTitle {
-    font-family: "Geist Mono", monospace !important;
-    color: black;
-    border-radius: 5px;
-    margin: 0.5em;
-    padding: 0.2em;
-    text-align: left;
-    font-size: clamp(1.5rem, 4vw, 33px);
-    font-weight: 600;
-    display: flex;
-    flex-direction: row;
+  font-family: "Geist Mono", monospace !important;
+  color: black;
+  border-radius: 5px;
+  margin: 0.5em;
+  padding: 0.2em;
+  text-align: left;
+  font-size: clamp(1.5rem, 4vw, 33px);
+  font-weight: 600;
+  display: flex;
+  flex-direction: row;
 }
 
 .sectionTwoTitleLogo {
-    height: auto;
-    width: 7%;
-    color: black;
-    color: black;
-    margin-right: 0.5em;
+  height: auto;
+  width: 7%;
+  color: black;
+  color: black;
+  margin-right: 0.5em;
 }
 
 .sectionSixContainerInfo {
-    display: grid;
-    grid-template-columns: 2fr;
-    justify-content: center;
-    align-items: center;
-    color: black;
-    margin: 1em;
-    position: relative;
-    overflow: hidden;
+  display: grid;
+  grid-template-columns: 2fr;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  margin: 1em;
+  position: relative;
+  overflow: hidden;
 }
 
 .sectionSixInfoBackground {
-    position: absolute;
-    top: 0;
-    left: 0;
-     height: 100%;
-    width: 70%;
-    background-color: transparent;
-    z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 70%;
+  background-color: transparent;
+  z-index: 0;
 }
 
-.sectionSixContainerInfo > *:not(.sectionSixInfoBackground) {
-    position: relative;
-    z-index: 1;
+.sectionSixContainerInfo>*:not(.sectionSixInfoBackground) {
+  position: relative;
+  z-index: 1;
 }
 
 .sectionSixContainerInfoCard {
-    background-color: transparent;
-    height: 100%;
-    width: 70%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-self: center;
-    border-radius: 10px;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    padding: 0.5em;
-    overflow: hidden;
+  background-color: transparent;
+  height: 100%;
+  width: 70%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  padding: 0.5em;
+  overflow: hidden;
 }
 
 .sectionSixBackground {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #f7f4f1;
-    border-radius: 10px;
-    border: 6px solid #53C68E;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f7f4f1;
+  border-radius: 10px;
+  border: 6px solid #53C68E;
 
-    z-index: 0;
+  z-index: 0;
 }
 
-.sectionSixContainerInfoCard > *:not(.sectionSixBackground) {
-    position: relative;
-    z-index: 1;
+.sectionSixContainerInfoCard>*:not(.sectionSixBackground) {
+  position: relative;
+  z-index: 1;
 }
 
 .cardRaised {
-    transform: translateY(-40px);
-    border: 6px solid #FFB71A;
+  transform: translateY(-40px);
+  border: 6px solid #FFB71A;
 }
 
 .sectionSixTitle {
-    font-family: "Geist Mono", monospace !important;
-    color: black;
-    border-radius: 5px;
-    margin: 0.5em;
-    padding: 0.2em;
-    text-align: left;
-    font-size: 23px;
-    font-weight: 600;
+  font-family: "Geist Mono", monospace !important;
+  color: black;
+  border-radius: 5px;
+  margin: 0.5em;
+  padding: 0.2em;
+  text-align: left;
+  font-size: 23px;
+  font-weight: 600;
 }
 
 .highlightText {
-    font-weight: 800;
-    font-size: 1.2em;
+  font-weight: 800;
+  font-size: 1.2em;
 }
 
 .submitBtn {
-    font-family: "Geist Mono", monospace !important;
-    background-color: #ffffff;
-    color: black;
-    border-radius: 5px;
-    padding: 0.4em;
-    font-size: 12px;
-    background-color: #F397C1;
-    color: black;
-    border: none;
-    font-weight: 600;
+  font-family: "Geist Mono", monospace !important;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 5px;
+  padding: 0.4em;
+  font-size: 12px;
+  background-color: #F397C1;
+  color: black;
+  border: none;
+  font-weight: 600;
 }
 
 
 .submitBtn:hover {
-    font-family: "Geist Mono", monospace !important;
-    background-color: #ffffff;
-    color: black;
-    border-radius: 5px;
-    padding: 0.4em;
-    font-size: 12px;
-    background-color: #f37ab1;
-    color: black;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
+  font-family: "Geist Mono", monospace !important;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 5px;
+  padding: 0.4em;
+  font-size: 12px;
+  background-color: #f37ab1;
+  color: black;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .sectionSixButton {
-    font-family: "Geist Mono", monospace !important;
-    background-color: #ffffff;
-    color: black;
-    border-radius: 5px;
-    width: 23%;
-    margin: 0.5em;
-    padding: 0.4em;
-    text-align: center;
-    font-size: 13px;
-    justify-self: flex-end;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
+  font-family: "Geist Mono", monospace !important;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 5px;
+  width: 23%;
+  margin: 0.5em;
+  padding: 0.4em;
+  text-align: center;
+  font-size: 13px;
+  justify-self: flex-end;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
 }
 
 .formGroup {
-    display: flex;
-    flex-direction: column;
-    font-size: 16px;
-    margin-bottom: 0.8em;
-    text-align: left;
-    font-family: "Geist Mono", monospace !important;
-    font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  margin-bottom: 0.8em;
+  text-align: left;
+  font-family: "Geist Mono", monospace !important;
+  font-weight: 600;
 }
 
 .form {
-    margin: 0.9em;
+  margin: 0.9em;
 }
 
 .inputStyle {
-    border-radius: 5px;
-    padding: 0.5em;
+  border-radius: 5px;
+  padding: 0.5em;
   font-family: "Geist", sans-serif;
 }
 
@@ -741,5 +741,57 @@
   .loginFormContainer {
     width: 95vw;
     padding: 1rem;
+  }
+}
+
+/* ACTIVITIES SECTION */
+.sectionActivities {
+  width: 90%;
+  max-width: 1400px;
+  margin: clamp(3rem, 8vh, 6rem) auto;
+
+  color: #1f150b;
+}
+
+.activitiesHeader {
+  text-align: left;
+  font-family: "Geist Mono", monospace !important;
+  margin-bottom: clamp(2rem, 5vh, 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+}
+
+
+.activitiesTitle {
+  font-size: clamp(1rem, 3vw, 4rem);
+  font-weight: 700;
+  font-family: "Geist Mono", monospace !important;
+  margin-bottom: clamp(1rem, 2vh, 1.5rem);
+  color: #1f150b;
+}
+
+.activitiesSubtitle {
+  font-size: clamp(0.875rem, 1vw, 1rem);
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: 900px;
+  text-align: left;
+  color: #4a4a4a;
+  justify-content: left;
+  font-family: "Geist", sans-serif;
+  float: left;
+  justify-self: left;
+  align-items: left;
+}
+
+@media (max-width: 768px) {
+  .activitiesTitle {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  }
+
+  .activitiesSubtitle {
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
   }
 }

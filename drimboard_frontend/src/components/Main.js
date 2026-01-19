@@ -16,6 +16,7 @@ import StepViewer from './SetpViewer';
 import VideoEmbed from "./VideoEmbed";
 import Materials from './materials/Materials';
 import MainLogo from './svgs/MainLogo';
+import ActivitiesCarousel from './ActivitiesCarousel';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -530,6 +531,29 @@ const Main = () => {
           </div>
         </div>
         <Tape />
+
+        <div className={styles.sectionActivities}>
+          <div className={styles.activitiesHeader}>
+            <div ref={sectionTwoTitleRef} className={styles.sectionTwoTitleContainer}>
+              <div className={styles.sectionTwoTitleLogo}>
+                <SquareCircle styles={squareCircleStyles} />
+              </div>
+              <div className={styles.sectionTwoTitleText}>
+                Nuestras
+                <br />
+                Actividades
+              </div>
+
+            </div>
+            <div className={styles.activitiesSubtitle}>
+              Desde capacitación docente y talleres para estudiantes hasta competencias interactivas,
+              hemos llevado a cabo diversas actividades diseñadas para despertar la curiosidad y fomentar
+              la creatividad. Únete a nosotros en la exploración de robótica, programación y mucho más
+              a través de nuestros programas inmersivos.
+            </div>
+          </div>
+          <ActivitiesCarousel />
+        </div>
 
         {/* <div className={styles.separator}></div> */}
         {/* <div className={styles.sectionFourContainer}>
