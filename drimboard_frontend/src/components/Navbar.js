@@ -77,7 +77,10 @@ const Navbar = () => {
                         Usa tu drim
                     </div>
                     <div onClick={() => scrollToSection('sectionSixContainer')} className={styles.navbarLink}>
-                        Contacto
+                        Quiero mi taller
+                    </div>
+                    <div onClick={() => scrollToSection('sectionActividades')} className={styles.navbarLink}>
+                        Nuestras Actividades
                     </div>
 
 

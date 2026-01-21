@@ -532,181 +532,9 @@ const Main = () => {
         </div>
         <Tape />
 
-        <div className={styles.sectionActivities}>
-          <div className={styles.activitiesHeader}>
-            <div ref={sectionTwoTitleRef} className={styles.sectionTwoTitleContainer}>
-              <div className={styles.sectionTwoTitleLogo}>
-                <SquareCircle styles={squareCircleStyles} />
-              </div>
-              <div className={styles.sectionTwoTitleText}>
-                Nuestras
-                <br />
-                Actividades
-              </div>
+        
 
-            </div>
-            <div className={styles.activitiesSubtitle}>
-              Desde capacitación docente y talleres para estudiantes hasta competencias interactivas,
-              hemos llevado a cabo diversas actividades diseñadas para despertar la curiosidad y fomentar
-              la creatividad. Únete a nosotros en la exploración de robótica, programación y mucho más
-              a través de nuestros programas inmersivos.
-            </div>
-          </div>
-          <ActivitiesCarousel />
-        </div>
-
-        {/* <div className={styles.separator}></div> */}
-        {/* <div className={styles.sectionFourContainer}>
-          <div className={styles.cards} ref={cardsContainerRef}>
-            <div ref={card1Ref} className={`${styles.customCard} ${styles.card1}`}>
-              <div className={styles.sectionFourTitleContainer}>
-                <div className={styles.sectionFourActivityTitle}>
-                  Actividades
-                </div>
-                <div className={styles.sectionFourActivitySubTitle}>
-                  Titulo de la actividad
-                </div>
-
-              </div>
-              <div className={styles.sectionFourActivityInformationContainer}>
-                <div className={styles.sectionFourActivityInformation}>
-                  Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt
-                  ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam,
-                  quis nostrud exercitation
-                  ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat.
-                  Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur
-                </div>
-                <div className={styles.sectionFourActivityButton}>
-                  <div>
-                    Ver mas
-                  </div>
-                  <div className={styles.sectionFourActivityArrow}>
-                    <RightArrow styles={arrowStyles} />
-                  </div>
-
-                </div>
-              </div>
-              <div className={styles.sectionFourActivityInformationPicture}>
-                photo
-              </div>
-            </div>
-            <div ref={card2Ref} className={`${styles.customCard} ${styles.card2}`}>
-              <div className={styles.sectionFourTitleContainer}>
-                <div className={styles.sectionFourActivityTitle}>
-                  Actividades
-                </div>
-                <div className={styles.sectionFourActivitySubTitle}>
-                  Titulo de la actividad
-                </div>
-
-              </div>
-              <div className={styles.sectionFourActivityInformationContainer}>
-                <div className={styles.sectionFourActivityInformation}>
-                  Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt
-                  ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam,
-                  quis nostrud exercitation
-                  ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat.
-                  Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur
-                </div>
-                <div className={styles.sectionFourActivityButton}>
-                  <div>
-                    Ver mas
-                  </div>
-                  <div className={styles.sectionFourActivityArrow}>
-                    <RightArrow styles={arrowStyles} />
-                  </div>
-
-                </div>
-              </div>
-              <div className={styles.sectionFourActivityInformationPicture}>
-                photo
-              </div>
-            </div>
-            <div ref={card3Ref} className={`${styles.customCard} ${styles.card3}`}>
-              <div className={styles.sectionFourTitleContainer}>
-                <div className={styles.sectionFourActivityTitle}>
-                  Actividades
-                </div>
-                <div className={styles.sectionFourActivitySubTitle}>
-                  Titulo de la actividad
-                </div>
-
-              </div>
-              <div className={styles.sectionFourActivityInformationContainer}>
-                <div className={styles.sectionFourActivityInformation}>
-                  Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt
-                  ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam,
-                  quis nostrud exercitation
-                  ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat.
-                  Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur
-                </div>
-                <div className={styles.sectionFourActivityButton}>
-                  <div>
-                    Ver mas
-                  </div>
-                  <div className={styles.sectionFourActivityArrow}>
-                    <RightArrow styles={arrowStyles} />
-                  </div>
-
-                </div>
-              </div>
-              <div className={styles.sectionFourActivityInformationPicture}>
-                photo
-              </div>
-            </div>
-            <div ref={card4Ref} className={`${styles.customCard} ${styles.card4}`}>
-              <div className={styles.sectionFourTitleContainer}>
-                <div className={styles.sectionFourActivityTitle}>
-                  Actividades
-                </div>
-                <div className={styles.sectionFourActivitySubTitle}>
-                  Titulo de la actividad
-                </div>
-              </div>
-              <div className={styles.sectionFourActivityInformationContainer}>
-                <div className={styles.sectionFourActivityInformation}>
-                  Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt
-                  ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam,
-                  quis nostrud exercitation
-                  ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat.
-                  Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur
-                </div>
-                <div className={styles.sectionFourActivityButton}>
-                  <div>
-                    Ver mas
-                  </div>
-                  <div className={styles.sectionFourActivityArrow}>
-                    <RightArrow styles={arrowStyles} />
-                  </div>
-
-                </div>
-              </div>
-              <div className={styles.sectionFourActivityInformationPicture}>
-                photo
-              </div>
-            </div>
-          </div>
-        </div> */}
+       
         <div className={styles.separator}></div>
         <div id="sectionFiveContainer" className={styles.sectionFiveContainer} ref={sectionFiveContainerRef}>
           <SectionFive triggerRef={sectionFiveContainerRef} />
@@ -759,6 +587,28 @@ const Main = () => {
             </div>
 
           </div>
+        </div>
+        <div className={styles.sectionActivities} id="sectionActividades">
+          <div className={styles.activitiesHeader}>
+            <div ref={sectionTwoTitleRef} className={styles.sectionTwoTitleContainer}>
+              <div className={styles.sectionTwoTitleLogo}>
+                <SquareCircle styles={squareCircleStyles} />
+              </div>
+              <div className={styles.sectionTwoTitleText}>
+                Nuestras
+                <br />
+                Actividades
+              </div>
+
+            </div>
+            <div className={styles.activitiesSubtitle}>
+              Desde capacitación docente y talleres para estudiantes hasta competencias interactivas,
+              hemos llevado a cabo diversas actividades diseñadas para despertar la curiosidad y fomentar
+              la creatividad. Únete a nosotros en la exploración de robótica, programación y mucho más
+              a través de nuestros programas inmersivos.
+            </div>
+          </div>
+          <ActivitiesCarousel />
         </div>
         {
           openLoginForm &&
