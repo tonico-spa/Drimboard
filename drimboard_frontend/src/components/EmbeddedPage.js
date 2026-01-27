@@ -182,6 +182,131 @@ export default function EmbeddedPage({ url, allowedOrigins = [] }) {
         iframeRef.current?.contentWindow?.postMessage(data, targetOrigin);
     };
 
+    // Save code to a local file (uses File System Access API when available,
+    // falls back to creating a download)
+    const saveCodeToFile = async (code, suggestedName = 'code.py') => {
+        try {
+            if (window.showSaveFilePicker) {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName,
+                    types: [{ description: 'Code', accept: { 'text/plain': ['.py', '.txt'] } }]
+                });
+                const writable = await handle.createWritable();
+                await writable.write(code);
+                await writable.close();
+            } else {
+                const blob = new Blob([code], { type: 'text/plain' });
+                const urlObj = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = urlObj;
+                a.download = suggestedName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(urlObj);
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error saving file:', error);
+            return { success: false, error: error.message };
+        }
+    };
+
+    // Load code from a local file (uses File System Access API when available,
+    // falls back to an input[type=file] picker)
+    const loadCodeFromFile = async () => {
+        try {
+            if (window.showOpenFilePicker) {
+                const [handle] = await window.showOpenFilePicker({
+                    multiple: false,
+                    types: [{ description: 'Code', accept: { 'text/plain': ['.py', '.txt'] } }]
+                });
+                const file = await handle.getFile();
+                const text = await file.text();
+                return { success: true, code: text };
+            } else {
+                return await new Promise((resolve) => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.py,.txt,text/plain';
+                    input.onchange = async (e) => {
+                        const f = e.target.files[0];
+                        if (!f) return resolve({ success: false, error: 'No file selected' });
+                        const txt = await f.text();
+                        resolve({ success: true, code: txt });
+                    };
+                    input.click();
+                });
+            }
+        } catch (error) {
+            console.error('Error loading file:', error);
+            return { success: false, error: error.message };
+        }
+    };
+
+    // Request current code from the iframe (expects iframe to respond with
+    // a postMessage of type 'BLOCKLY_CURRENT_CODE' containing { code })
+    const requestCodeFromIframe = (timeoutMs = 10000) => {
+        return new Promise((resolve) => {
+            console.log('Requesting code from iframe...');
+            const targetOrigin = url ? new URL(url).origin : '*';
+            let settled = false;
+
+            const timer = setTimeout(() => {
+                if (settled) return;
+                settled = true;
+                window.removeEventListener('message', listener);
+                console.error('Timeout: iframe did not respond with code');
+                resolve({ success: false, error: 'Timeout: iframe did not respond. Make sure the iframe handles BLOCKLY_REQUEST_CODE messages.' });
+            }, timeoutMs);
+
+            const listener = (event) => {
+                const isAllowedOrigin = allowedOrigins.length === 0 ||
+                    allowedOrigins.includes(event.origin);
+                if (!isAllowedOrigin) return;
+
+                if (event.data && event.data.type === 'BLOCKLY_CURRENT_CODE') {
+                    if (settled) return;
+                    settled = true;
+                    clearTimeout(timer);
+                    window.removeEventListener('message', listener);
+                    console.log('Received code from iframe:', event.data.code?.substring(0, 50) + '...');
+                    resolve({ success: true, code: event.data.code });
+                }
+            };
+
+            window.addEventListener('message', listener);
+
+            // Ask iframe to send its current code
+            iframeRef.current?.contentWindow?.postMessage({ type: 'BLOCKLY_REQUEST_CODE' }, targetOrigin);
+        });
+    };
+
+    // Handlers for the Save and Load buttons
+    const handleSaveClick = async () => {
+        console.log('Save button clicked - asking iframe to send code for saving');
+        // Send a message to iframe to trigger it to send its code for saving
+        sendMessageToIframe({ type: 'BLOCKLY_TRIGGER_SAVE' });
+        // The iframe should respond with BLOCKLY_SAVE_CODE which is already handled in useEffect
+    };
+
+    const handleLoadClick = async () => {
+        console.log('Load button clicked');
+        const loadRes = await loadCodeFromFile();
+        if (!loadRes.success) {
+            console.error('Failed to load file:', loadRes.error);
+            alert('Error loading file: ' + loadRes.error);
+            sendMessageToIframe({ type: 'BLOCKLY_LOAD_RESULT', success: false, error: loadRes.error });
+            return;
+        }
+
+        // Send loaded code to iframe to set it in the editor
+        console.log('Sending loaded code to iframe...');
+        sendMessageToIframe({ type: 'BLOCKLY_SET_CODE', code: loadRes.code });
+        alert('Code loaded! Sent to editor.');
+    };
+
     // Receive messages from iframe
     useEffect(() => {
         const handleMessage = async (event) => {
@@ -207,6 +332,35 @@ export default function EmbeddedPage({ url, allowedOrigins = [] }) {
                     type: 'BLOCKLY_CODE_RESULT',
                     success: result.success,
                     error: result.error
+                });
+            }
+            
+            // Handle SAVE_CODE request from iframe -> prompt user to save file
+            if (event.data.type === 'BLOCKLY_SAVE_CODE') {
+                const code = event.data.code || '';
+                const name = event.data.suggestedName || 'code.py';
+                console.log('Received save request from iframe with code length:', code.length);
+                const result = await saveCodeToFile(code, name);
+                if (result.success) {
+                    alert('Code saved successfully!');
+                } else {
+                    alert('Error saving: ' + result.error);
+                }
+                sendMessageToIframe({
+                    type: 'BLOCKLY_SAVE_RESULT',
+                    success: result.success,
+                    error: result.error
+                });
+            }
+
+            // Handle LOAD_CODE request from iframe -> prompt user to pick a file and load
+            if (event.data.type === 'BLOCKLY_LOAD_CODE') {
+                const result = await loadCodeFromFile();
+                sendMessageToIframe({
+                    type: 'BLOCKLY_LOAD_RESULT',
+                    success: result.success,
+                    error: result.error,
+                    code: result.code
                 });
             }
             
@@ -237,32 +391,12 @@ export default function EmbeddedPage({ url, allowedOrigins = [] }) {
 
     return (
         <div className={styles.pageContainer}>
-            {/* Control bar */}
-            {/* <div className="bg-gray-100 p-3 flex gap-3 items-center border-b">
-                <button
-                    onClick={connectSerialDevice}
-                    disabled={isConnected}
-                    className={`px-4 py-2 rounded ${isConnected
-                            ? 'bg-gray-300 cursor-not-allowed'
-                            : 'bg-blue-500 hover:bg-blue-600 text-white'
-                        }`}
-                >
-                    {isConnected ? '✓ Connected' : 'Connect Device'}
-                </button>
 
-                {isConnected && (
-                    <button
-                        onClick={disconnectSerialDevice}
-                        className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
-                    >
-                        Disconnect
-                    </button>
-                )}
-
-                <span className="text-sm text-gray-600">
-                    {isConnected ? 'Device connected to USB port' : 'No device connected'}
-                </span>
-            </div> */}
+            {/* Controls */}
+       <div className={styles.controls} >
+                <button onClick={handleSaveClick} className={styles.controlButton} style={{ marginRight: 8 }}>Guardar codigo</button>
+                <button onClick={handleLoadClick} className={styles.controlButton}>Cargar codigo</button>
+            </div>
 
             {/* Iframe */}
             <div className={styles.pageContainer}>
@@ -274,6 +408,8 @@ export default function EmbeddedPage({ url, allowedOrigins = [] }) {
                     allow="serial; usb; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-popups"
                 />
-            </div>
+           
+           </div>
+                 
         </div>);
 }

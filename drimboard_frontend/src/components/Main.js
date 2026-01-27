@@ -33,6 +33,7 @@ const Main = () => {
   const sectionFiveContainerRef = useRef(null);
   const sectionSixContainerRef = useRef(null);
   const containerRef = useRef(null);
+  const activitiesTitleRef = useRef(null);
 
 
   // --- REFS FOR SECTION FOUR CARDS ---
@@ -590,7 +591,7 @@ const Main = () => {
         </div>
         <div className={styles.sectionActivities} id="sectionActividades">
           <div className={styles.activitiesHeader}>
-            <div ref={sectionTwoTitleRef} className={styles.sectionTwoTitleContainer}>
+            <div ref={activitiesTitleRef} className={styles.sectionTwoTitleContainer}>
               <div className={styles.sectionTwoTitleLogo}>
                 <SquareCircle styles={squareCircleStyles} />
               </div>
