@@ -35,3 +35,157 @@
   transform: translateY(-1.5px);
   box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+      font-family: "Geist", sans-serif;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.modalBody {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.noProjects {
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+    font-size: 1.1rem;
+}
+
+.projectList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.projectItem {
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.projectItem:hover {
+    border-color: #85d1ec;
+    background-color: #f8fcfe;
+}
+
+.projectItem.selected {
+    border-color: #53C68E;
+    background-color: #f0fdf7;
+}
+
+.projectInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.projectName {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+}
+
+.projectDate {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.modalFooter {
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cancelButton, .loadButton {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.cancelButton {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.cancelButton:hover {
+    background-color: #e0e0e0;
+}
+
+.loadButton {
+    background-color: #53C68E;
+    color: white;
+}
+
+.loadButton:hover:not(:disabled) {
+    background-color: #45a876;
+}
+
+.loadButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

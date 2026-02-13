@@ -29,6 +29,7 @@ const MaterialsSingleCourse = () => {
     const [description, setDescription] = useState(1);
     const [messages, setMessages] = useState([]);
     const [contentType, setContentType] = useState(null);
+    const [savedProjects, setSavedProjects] = useState([]);
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
@@ -41,8 +42,23 @@ const MaterialsSingleCourse = () => {
         setDescription(openMaterialCourse["description"])
         setContentType(openMaterialCourse["contentType"])
         setMessages(materialCourseChat.filter(ele => ele.course_id === openMaterialCourse["_id"]))
+        
+        // Fetch saved projects if contentType is actividades
+        if (openMaterialCourse["contentType"] === 'actividades' && logged?.user_email) {
+            fetchSavedProjects();
+        }
 
     }, []);
+    
+    const fetchSavedProjects = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/blocks/user/${encodeURIComponent(logged.user_email)}`);
+            setSavedProjects(response.data);
+            console.log('Saved projects:', response.data);
+        } catch (error) {
+            console.error('Error fetching saved projects:', error);
+        }
+    };
 
     useEffect(() => {
 
@@ -104,6 +120,8 @@ const MaterialsSingleCourse = () => {
                         <EmbeddedPage
                             url="https://blockly-web.dplpleoajxzor.amplifyapp.com/"
                             allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com']}
+                            savedProjects={savedProjects}
+                            onProjectsChange={fetchSavedProjects}
                         />
                     </div>
                     <div className={styles.materialCourseDescription}>

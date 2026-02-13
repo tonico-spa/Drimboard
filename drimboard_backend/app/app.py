@@ -188,6 +188,32 @@ class CommentResponse(BaseModel):
         orm_mode = True
 
 
+# --- User Blocks Workspace Schemas ---
+class UserBlocksCreate(BaseModel):
+    user_name: str
+    user_email: str
+    filename: str
+    blocks_json: str
+
+
+class UserBlocksUpdate(BaseModel):
+    filename: str
+    blocks_json: str
+
+
+class UserBlocksResponse(BaseModel):
+    id: int
+    user_name: str
+    user_email: str
+    filename: str
+    blocks_json: str
+    created_time: datetime
+    updated_time: datetime
+
+    class Config:
+        orm_mode = True
+
+
 @app.post("/create_course_message", response_model=MessageResponse)
 def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)):  # <--- FIXED HERE
     try:
@@ -440,6 +466,120 @@ def send_form(payload: ContactForm):
         return {"message": "Logout successful"}
     except Exception as exc:
         return {"result": exc}
+
+
+# --- User Blocks Workspace endpoints ---
+@app.post("/blocks/save", response_model=UserBlocksResponse)
+def save_user_blocks(payload: UserBlocksCreate, db: Session = Depends(get_db)):
+    """Save or update user's block workspace."""
+    try:
+        # Check if a workspace with this user_email and filename already exists
+        existing = db.query(models.UserBlocksWorkspace).filter(
+            models.UserBlocksWorkspace.user_email == payload.user_email,
+            models.UserBlocksWorkspace.filename == payload.filename
+        ).first()
+
+        if existing:
+            # Update existing workspace
+            existing.user_name = payload.user_name
+            existing.blocks_json = payload.blocks_json
+            db.commit()
+            db.refresh(existing)
+            return existing
+        else:
+            # Create new workspace
+            new_workspace = models.UserBlocksWorkspace(
+                user_name=payload.user_name,
+                user_email=payload.user_email,
+                filename=payload.filename,
+                blocks_json=payload.blocks_json
+            )
+            db.add(new_workspace)
+            db.commit()
+            db.refresh(new_workspace)
+            return new_workspace
+
+    except Exception as e:
+        db.rollback()
+        print(f"Error saving user blocks: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error saving blocks: {str(e)}"
+        )
+
+
+@app.get("/blocks/user/{user_email}", response_model=list[UserBlocksResponse])
+def get_user_blocks(user_email: str, db: Session = Depends(get_db)):
+    """Get all saved block workspaces for a user."""
+    try:
+        workspaces = db.query(models.UserBlocksWorkspace).filter(
+            models.UserBlocksWorkspace.user_email == user_email
+        ).order_by(models.UserBlocksWorkspace.updated_time.desc()).all()
+        
+        return workspaces
+
+    except Exception as e:
+        print(f"Error retrieving user blocks: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving blocks: {str(e)}"
+        )
+
+
+@app.get("/blocks/{block_id}", response_model=UserBlocksResponse)
+def get_block_workspace(block_id: int, db: Session = Depends(get_db)):
+    """Get a specific block workspace by ID."""
+    try:
+        workspace = db.query(models.UserBlocksWorkspace).filter(
+            models.UserBlocksWorkspace.id == block_id
+        ).first()
+        
+        if not workspace:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Workspace not found"
+            )
+        
+        return workspace
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error retrieving block workspace: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving workspace: {str(e)}"
+        )
+
+
+@app.delete("/blocks/{block_id}", response_model=MessageResponse)
+def delete_block_workspace(block_id: int, db: Session = Depends(get_db)):
+    """Delete a specific block workspace by ID."""
+    try:
+        workspace = db.query(models.UserBlocksWorkspace).filter(
+            models.UserBlocksWorkspace.id == block_id
+        ).first()
+        
+        if not workspace:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Workspace not found"
+            )
+        
+        db.delete(workspace)
+        db.commit()
+        
+        return {"message": f"Workspace {block_id} deleted successfully"}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        print(f"Error deleting block workspace: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error deleting workspace: {str(e)}"
+        )
 
 
 @app.get("/", response_model=MessageResponse)

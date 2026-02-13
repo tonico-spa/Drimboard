@@ -48,3 +48,15 @@ class IssueComment(Base):
     user_email = Column(String(255), nullable=False)
     comment = Column(Text)
     created_time = Column(TIMESTAMP, server_default=func.now())
+
+
+class UserBlocksWorkspace(Base):
+    __tablename__ = "user_blocks_workspaces"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_name = Column(String(100), nullable=False)
+    user_email = Column(String(255), nullable=False, index=True)
+    filename = Column(String(255), nullable=False)
+    blocks_json = Column(Text, nullable=False)
+    created_time = Column(TIMESTAMP, server_default=func.now())
+    updated_time = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
