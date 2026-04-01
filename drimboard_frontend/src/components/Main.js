@@ -470,69 +470,6 @@ const Main = () => {
         {/* --- UPDATED JSX FOR SECTION FOUR --- */}
         <Tape />
 
-        <div id="sectionFourContainer" className={styles.sectionFourContainer}>
-          <div className={styles.sectionFourVideoContainer}>
-            <div className={styles.sectionFourBackground}></div>
-            <div className={styles.sectionFourTextContainer}>
-              <div className={styles.sectionFourVideo}>
-                <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
-              </div>
-              <div className={styles.sectionFourTitle}>
-                Sofía
-              </div>
-              <div className={styles.sectionFourSubTitle}>
-                9 años - Futura Botánica
-              </div>
-
-              <div className={styles.sectionFourText}>
-                Siempre me encantaron las plantas, pero se me olvidaba regarlas.
-                Con el kit armé un sistema que riega mis plantas solo cuando la tierra está seca.
-                ¡No tuve que programar nada complicado! Solo seguí los pasos y conecté el sensor de
-                humedad. Ahora mis plantas están más verdes que nunca.
-              </div>
-
-            </div>
-            <div className={styles.sectionFourTextContainer}>
-              <div className={styles.sectionFourVideo}>
-                <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
-              </div>
-              <div className={styles.sectionFourTitle}>
-                Mateo
-              </div>
-              <div className={styles.sectionFourSubTitle}>
-                10 años - Futuro Músico
-              </div>
-
-              <div className={styles.sectionFourText}>
-                Quiero ser músico como mi papá, pero nunca imaginé que podría crear mis propios instrumentos.
-                Con el kit construí una guitarra que hace sonidos cuando tocas los botones.
-                Lo mejor es que el kit ya trae todo listo para empezar, no necesitas saber programar.
-
-              </div>
-
-            </div>
-            <div className={styles.sectionFourTextContainer}>
-              <div className={styles.sectionFourVideo}>
-                <VideoEmbed styles={styles} videoUrl={"https://youtu.be/DkfgSmyWFec?si=f0SsxZZgYLswl6SO"} />
-              </div>
-              <div className={styles.sectionFourTitle}>
-                Valentina
-              </div>
-              <div className={styles.sectionFourSubTitle}>
-                11 años - Futura Geóloga
-              </div>
-
-              <div className={styles.sectionFourText}>
-                Los terremotos siempre me dieron curiosidad. ¿Cómo los detectan?
-                Con el kit pude construir mi propio detector de movimientos sísmicos para mi proyecto de ciencias.
-                Pensé que sería súper difícil, pero las instrucciones son tan claras que lo armé en una
-                tarde.
-              </div>
-            </div>
-          </div>
-        </div>
-        <Tape />
-
         
 
        
