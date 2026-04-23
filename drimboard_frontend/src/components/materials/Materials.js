@@ -9,7 +9,7 @@ import MaterialsCourses from "@/components/materials/MaterialsCourses";
 import MaterialsSingleCourse from "@/components/materials/MaterialSingleCourse";
 import axios from 'axios';
 import Forum from "./Forum";
-import { groq } from 'next-sanity';
+const groq = String.raw;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -35,7 +35,7 @@ const Materials = () => {
                     _id,
                     title,
                     "pdfFile": pdfFile.asset->url,
-                    youtubeUrl,
+                    youtubeUrls,
                     description,
                     "coverImage": coverImage.asset->url,
                     publishedAt
@@ -51,7 +51,7 @@ const Materials = () => {
                 *[_type == "videos"]{
                     _id,
                     title,
-                    youtubeUrl,
+                    youtubeUrls,
                     description,
                     "coverImage": coverImage.asset->url,
                     publishedAt
@@ -97,7 +97,7 @@ const Materials = () => {
                 course_name: null,
                 open: false,
                 pdf_url: null,
-                youtubeUrl: null,
+                youtubeUrls: null,
                 _id: null
             });
         }

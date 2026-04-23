@@ -2,8 +2,8 @@
 import os
 import jwt
 import uvicorn
-import utils
-# import aws_utils as aws_utils
+import app.utils as utils
+#import aws_utils as aws_utils
 
 import app.aws_utils as aws_utils
 
@@ -32,6 +32,7 @@ ENV = os.getenv("FLASK_ENV")
 
 origins = [
     "http://localhost:3000",
+    "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://192.168.1.7:3000",
     "https://develop.d17k1lr65yqfqv.amplifyapp.com",
@@ -417,7 +418,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
             detail="Invalid credentials"
         )
 
-    return {"user": email, "name": "ignacia baeza", "message": "Login successful"}
+    return {"user": email, "name": user.user_name, "message": "Login successful"}
 
 
 @app.get("/profile", response_model=MessageResponse)

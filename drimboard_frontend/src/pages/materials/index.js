@@ -7,7 +7,7 @@ import useAppStore from '@/store/useAppStore';
 import MaterialsMain from "@/components/materials/MaterialsMain";
 import MaterialsCourses from "@/components/materials/MaterialsCourses";
 import axios from 'axios';
-import { groq } from 'next-sanity';
+const groq = String.raw;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -33,7 +33,7 @@ const Materials = () => {
                             _id,
                             title,
                             "pdfFile": pdf.asset->url,
-                            youtubeUrl,
+                            youtubeUrls,
                             description
                             } | order(_createdAt desc)
                             `;
