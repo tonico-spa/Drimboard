@@ -82,7 +82,7 @@ const Navbar = () => {
                     <button type="button" onClick={() => goToSection('sectionActividades')} className={styles.navbarLink}>
                         Nuestras Actividades
                     </button>
-                    <Link href="/programacion" className={`${styles.navbarLink} ${styles.keepMobile}`}>
+                    <Link href="/programacion" className={`${styles.navbarCta} ${styles.keepMobile}`}>
                         Prueba tu drim
                     </Link>
 

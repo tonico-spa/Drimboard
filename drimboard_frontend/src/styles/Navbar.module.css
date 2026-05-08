@@ -102,6 +102,37 @@
 .navbarLink:hover::after { transform: scaleX(1); }
 .navbarLink:focus-visible::after { transform: scaleX(1); }
 
+/* "Prueba tu drim" CTA — pink pill, sits between text links and login */
+.navbarCta {
+    appearance: none;
+    -webkit-appearance: none;
+    color: #000000;
+    font-family: "Geist Mono", monospace !important;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    margin: 0 4px;
+    border: 1.5px solid #000000;
+    border-radius: 999px;
+    background: #F397C1;
+    cursor: pointer;
+    line-height: 1;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 2px 0 #000000;
+    transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), background .25s, box-shadow .2s;
+}
+.navbarCta:hover {
+    transform: translateY(-1px);
+    background: #f07aaf;
+    box-shadow: 0 4px 0 #000000;
+}
+.navbarCta:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #000000;
+}
+
 /* Login pill CTA — solid black with hover lift to pink */
 .navbarLoginLink {
     appearance: none;
@@ -204,4 +235,6 @@
     .linksContainer { gap: 6px; }
     .navbarLink { display: none; }
     .navbarLink.keepMobile { display: inline-flex; }
+    .navbarCta { padding: 8px 12px; font-size: 12px; }
+    .navbarCta.keepMobile { display: inline-flex; }
 }
