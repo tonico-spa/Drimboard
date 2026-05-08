@@ -1,9 +1,19 @@
 'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Center } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { OrbitControls, useGLTF, Center, Bounds, useBounds } from '@react-three/drei';
 import { Suspense, useRef, useEffect, useState } from 'react';
 import styles from "../styles/StepViewer.module.css"
+
+// Once the model is loaded, ask Bounds to refit the camera to it.
+function FitOnLoad({ deps }) {
+  const bounds = useBounds();
+  useEffect(() => {
+    bounds.refresh().clip().fit();
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
+
 function Model({ url, startAngle = 0, scrollRotation = 0, pivotOffset = [0, 0, 0], scale = 1 }) {
   const { scene } = useGLTF(url);
   const groupRef = useRef();
@@ -14,8 +24,6 @@ function Model({ url, startAngle = 0, scrollRotation = 0, pivotOffset = [0, 0, 0
       groupRef.current.rotation.y = startAngle + scrollRotation;
       groupRef.current.rotation.x = scrollRotation * 0.5;
     }
-    
-    // Apply scale smoothly
     if (meshRef.current) {
       meshRef.current.scale.set(scale, scale, scale);
     }
@@ -24,13 +32,14 @@ function Model({ url, startAngle = 0, scrollRotation = 0, pivotOffset = [0, 0, 0
   return (
     <group ref={groupRef}>
       <Center>
-        <primitive 
+        <primitive
           ref={meshRef}
-          object={scene} 
+          object={scene}
           position={pivotOffset}
           rotation={[0, 0, 0]}
         />
       </Center>
+      <FitOnLoad deps={[scene]} />
     </group>
   );
 }
@@ -78,8 +87,29 @@ export default function StepViewer({
     };
 
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Force Three.js to remeasure once the page settles. The Canvas measures
+  // its container at mount, but the container's dimensions aren't final yet
+  // (sticky positioning + reveal animation settle on later ticks). Without
+  // these resizes, the WebGL viewport stays 0×0 until the user does something
+  // — like switching tabs — that triggers a window resize.
+  useEffect(() => {
+    const fire = () => window.dispatchEvent(new Event('resize'));
+    const t1 = setTimeout(fire, 100);
+    const t2 = setTimeout(fire, 500);
+    const t3 = setTimeout(fire, 1200);
+    let observer;
+    if (containerRef.current && 'ResizeObserver' in window) {
+      observer = new ResizeObserver(fire);
+      observer.observe(containerRef.current);
+    }
+    return () => {
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      observer?.disconnect();
+    };
   }, []);
 
   const handleZoomIn = () => {
@@ -142,26 +172,28 @@ export default function StepViewer({
       </div>
 
       <div ref={containerRef} className={styles.canvasContainer}>
-        <Canvas camera={{ position: [130, 130, 130], fov: 50 }} style={{ overflow: 'visible' }}>
-          <Suspense fallback={null} >
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            <directionalLight position={[-10, -10, -5]} intensity={0.5} />
-            
-            <Model 
-              url={fileUrl} 
-              startAngle={initialAngle}
-              scrollRotation={scrollRotation}
-              pivotOffset={pivotOffset}
-              scale={scale}
-            />
+        <Canvas camera={{ position: [3, 3, 3], fov: 45, near: 0.01, far: 5000 }} style={{ overflow: 'visible' }}>
+          <ambientLight intensity={0.9} />
+          <directionalLight position={[10, 10, 5]} intensity={1.2} />
+          <directionalLight position={[-10, -10, -5]} intensity={0.6} />
+          <hemisphereLight args={['#ffffff', '#888888', 0.6]} />
+
+          <Suspense fallback={null}>
+            <Bounds fit clip margin={2}>
+              <Model
+                url={fileUrl}
+                startAngle={initialAngle}
+                scrollRotation={scrollRotation}
+                pivotOffset={pivotOffset}
+                scale={scale}
+              />
+            </Bounds>
           </Suspense>
-          <OrbitControls 
-            enableZoom={false}
-            enablePan={true}
-            enableRotate={true}
-            minDistance={225}
-            maxDistance={225}
+          <OrbitControls
+            enableZoom
+            enablePan
+            enableRotate
+            makeDefault
           />
         </Canvas>
       </div>

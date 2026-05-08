@@ -1,6 +1,8 @@
 "use client";
 import { Suspense, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from '../styles/Main.module.css';
 import RightArrow from './svgs/RightArrows';
 import useAppStore from '@/store/useAppStore';
@@ -8,6 +10,8 @@ import LoginForm from './LoginForm';
 import MainLogo from './svgs/MainLogo';
 import Tape from './svgs/tape/Tape';
 import { api } from '@/lib/api';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Three.js + GLTF loader is heavy; lazy-load on the client when this section mounts.
 const StepViewer = dynamic(() => import('./SetpViewer'), {
@@ -101,11 +105,56 @@ function youtubeId(url) {
 const Main = () => {
   const openLoginForm = useAppStore((state) => state.openLoginForm);
   const carouselRef = useRef(null);
+  const s3Ref = useRef(null);
+  const pointsViewportRef = useRef(null);
+  const pointsContentRef = useRef(null);
 
   const [userDict, setUserDict] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState({ kind: 'idle', message: '' });
 
   useReveal();
+
+  // Section 3: pin the section while the left points column scrolls through
+  // its content. The model on the right stays in place; window.scrollY keeps
+  // advancing during the pin so the model's scroll-rotation still works.
+  useEffect(() => {
+    const section = s3Ref.current;
+    const viewport = pointsViewportRef.current;
+    const content = pointsContentRef.current;
+    if (!section || !viewport || !content) return;
+
+    const compute = () => Math.max(0, content.scrollHeight - viewport.clientHeight);
+
+    const ctx = gsap.context(() => {
+      gsap.to(content, {
+        y: () => -compute(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${compute()}`,
+          scrub: 1,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+    }, s3Ref);
+
+    // Refresh after the browser settles (fonts, images, reveal animations).
+    const r1 = setTimeout(() => ScrollTrigger.refresh(), 200);
+    const r2 = setTimeout(() => ScrollTrigger.refresh(), 800);
+    const ro = new ResizeObserver(() => ScrollTrigger.refresh());
+    ro.observe(viewport);
+    ro.observe(content);
+
+    return () => {
+      clearTimeout(r1); clearTimeout(r2);
+      ro.disconnect();
+      ctx.revert();
+    };
+  }, []);
 
   // Carousel: auto-scroll with hover-pause + manual scroll buttons
   useEffect(() => {
@@ -203,7 +252,7 @@ const Main = () => {
             Tu mundo, tus reglas
           </div>
           <h2 className="dsec-title">Crea sin <em>límites.</em></h2>
-          <p className="dsec-sub">Cuatro maneras de jugar con drim — desde arrastrar bloques hasta intervenir el mundo real.</p>
+          <p className="dsec-sub">Cuatro maneras de jugar con drim. Desde arrastrar bloques hasta intervenir el mundo real.</p>
         </div>
         <div className="s2-grid">
           {FEATURES.map((f, i) => (
@@ -220,7 +269,7 @@ const Main = () => {
       <Tape />
 
       {/* ===== Section 3 — Comparison ===== */}
-      <section className="dsec s3">
+      <section className="dsec s3" ref={s3Ref}>
         <div className="reveal">
           <div className="dsec-eyebrow">
             <span className="glyph">
@@ -231,17 +280,18 @@ const Main = () => {
             </span>
             drim v/s otros microcontroladores
           </div>
-          <h2 className="dsec-title">No es Arduino. Es una <em>aventura.</em></h2>
         </div>
         <div className="s3-grid">
-          <div className="points">
-            {POINTS.map((p, i) => (
-              <div className="point reveal" key={p.n} style={{ transitionDelay: `${i * 80}ms` }}>
-                <span className="num">{p.n} · selling point</span>
-                <h3>{p.t}</h3>
-                <p>{p.d}</p>
-              </div>
-            ))}
+          <div className="points-viewport" ref={pointsViewportRef}>
+            <div className="points" ref={pointsContentRef}>
+              {POINTS.map((p, i) => (
+                <div className="point reveal" key={p.n} style={{ transitionDelay: `${i * 80}ms` }}>
+                  <span className="num">{p.n} </span>
+                  <h3>{p.t}</h3>
+                  <p>{p.d}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="kit-stage reveal">
             <Suspense fallback={<div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: '#000' }}>Cargando modelo 3D…</div>}>
@@ -305,9 +355,10 @@ const Main = () => {
       <section className="dsec s5" id="sectionFiveContainer">
         <div className="reveal">
           <div className="dsec-eyebrow">Usa tu drim</div>
-          <h2 className="dsec-title">Lo que puedes soñar, lo puedes crear. Te mostramos cómo darle vida a tu drim en tres simples pasos.</h2>
+          <h3>Lo que puedes soñar, lo puedes crear. Te mostramos cómo darle vida a tu drim en tres simples pasos.</h3>
         </div>
         <div className="s5-grid">
+          
           <h3 className="s5-words reveal">
             <span className="word">Juega<span className="dot">.</span></span>
             <span className="word">Aprende<span className="dot">.</span></span>
@@ -321,6 +372,7 @@ const Main = () => {
                 <div className="step-pic" style={{ backgroundImage: `url(${s.img})` }} aria-hidden="true" />
               </div>
             ))}
+
           </div>
         </div>
       </section>
@@ -367,7 +419,10 @@ const Main = () => {
         <div className="carousel-head">
           <div className="reveal">
             <div className="dsec-eyebrow">Nuestras actividades</div>
-            <h2 className="dsec-title">Salimos a la calle. <em>Mucho.</em></h2>
+            <p className="dsec-sub" >Desde capacitación docente y talleres para estudiantes hasta competencias interactivas,
+              hemos llevado a cabo diversas actividades diseñadas para despertar la curiosidad y fomentar
+              la creatividad. Únete a nosotros en la exploración de robótica, programación y mucho más
+              a través de nuestros programas inmersivos. </p>
           </div>
         </div>
         <div className="carousel" ref={carouselRef}>
