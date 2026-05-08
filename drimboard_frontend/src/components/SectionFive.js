@@ -148,7 +148,7 @@ const SectionFive = ({ triggerRef }) => {
                             </div>
                             <div className={styles.sectionFiveRightImg}>
                                 <img
-                                    src="/paso1.png"
+                                    src="/1_solo_caja.png"
                                     alt="Duolab Logo"
                                     className={styles.coverLogo}
                                 />
@@ -170,7 +170,7 @@ const SectionFive = ({ triggerRef }) => {
                                 </div>
                                 <div className={styles.sectionFiveRightImg}>
                                     <img
-                                        src="/paso2.png"
+                                        src="/2_caja_y_externos.png"
                                         alt="Duolab Logo"
                                         className={styles.coverLogo}
                                     />
@@ -194,7 +194,7 @@ const SectionFive = ({ triggerRef }) => {
                                 </div>
                                 <div className={styles.sectionFiveRightImg}>
                                     <img
-                                        src="/paso3.png"
+                                        src="/3_mas_complejos.png"
                                         alt="Duolab Logo"
                                         className={styles.coverLogo}
                                     />

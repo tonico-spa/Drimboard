@@ -75,47 +75,29 @@ const SectionTwoCards = ({ triggerRef }) => {
     // A robust way to select all card elements
     const cards = gsap.utils.toArray('.singleCardContainer');
 
-    // Set initial state - cards hidden and slightly below
-    gsap.set(cards, {
-      opacity: 0,
-      y: 290
+    // Set initial state - cards hidden with random rotation
+    cards.forEach((card) => {
+      gsap.set(card, {
+        opacity: 0,
+        rotation: gsap.utils.random(-15, 15)
+      });
     });
 
     // Create a timeline for sequential card appearance
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: triggerRef?.current || cards[0],
+        trigger: triggerRef?.current || containerRef.current,
         start: 'top 80%',
         toggleActions: 'play none none none',
       }
     });
 
     // Animate cards appearing one by one with stagger
-    cards.forEach((card, index) => {
-      const textContainer = card.querySelector(`.${styles.singleCardText}`);
-      
-      // Set initial state for this card's text
-      gsap.set(textContainer, {
-        opacity: 0,
-        y: 30
-      });
-      
-      // Animate card
-      tl.to(card, {
-        opacity: 1,
-        y: 0,
-        rotation: gsap.utils.random(-15, 15),
-        duration: 0.5,
-        ease: 'power2.out'
-      }, index * 0.15); // Stagger by 0.15 seconds
-      
-      // Animate text sliding up
-      tl.to(textContainer, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: 'power2.out'
-      }, index * 0.15 + 0.2); // Start 0.2s after card animation starts
+    tl.to(cards, {
+      opacity: 1,
+      duration: 0.5,
+      stagger: 0.15,
+      ease: 'power2.out'
     });
 
     // 2. ADD EVENT LISTENERS TO EACH CARD

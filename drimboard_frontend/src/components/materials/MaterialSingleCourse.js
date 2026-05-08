@@ -5,6 +5,7 @@ import useAppStore from '@/store/useAppStore';
 import { useEffect, useRef, useState } from "react";
 import { capitalizeWords, getRelativeTime } from "@/utils/utils";
 import VideoEmbed from "../VideoEmbed";
+import PdfViewer from '../PdfViewer';
 import axios from 'axios';
 import EmbeddedPage from "../EmbeddedPage";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
@@ -22,13 +23,14 @@ const MaterialsSingleCourse = () => {
     const { setOpenMaterialCourse } = useAppStore((state) => state);
     const { setMaterialCourseChat } = useAppStore((state) => state);
     const [pdfUrl, setPdfUrl] = useState(null)
-    const [videoUrl, setVideoUrl] = useState(null)
+    const [videoUrls, setVideoUrls] = useState([])
     const [numPages, setNumPages] = useState(null);
     const [courseContent, setCourseContent] = useState(false);
     const [comment, setComment] = useState('');
     const [description, setDescription] = useState(1);
     const [messages, setMessages] = useState([]);
     const [contentType, setContentType] = useState(null);
+    const [savedProjects, setSavedProjects] = useState([]);
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
@@ -36,13 +38,28 @@ const MaterialsSingleCourse = () => {
 
     useEffect(() => {
 
-        setVideoUrl(openMaterialCourse["youtubeUrl"])
+        setVideoUrls(openMaterialCourse["youtubeUrls"] || [])
         setPdfUrl(openMaterialCourse["pdfFile"])
         setDescription(openMaterialCourse["description"])
         setContentType(openMaterialCourse["contentType"])
         setMessages(materialCourseChat.filter(ele => ele.course_id === openMaterialCourse["_id"]))
+        
+        // Fetch saved projects if contentType is actividades
+        if (openMaterialCourse["contentType"] === 'actividades' && logged?.user_email) {
+            fetchSavedProjects();
+        }
 
     }, []);
+    
+    const fetchSavedProjects = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/blocks/user/${encodeURIComponent(logged.user_email)}`);
+            setSavedProjects(response.data);
+            console.log('Saved projects:', response.data);
+        } catch (error) {
+            console.error('Error fetching saved projects:', error);
+        }
+    };
 
     useEffect(() => {
 
@@ -104,6 +121,8 @@ const MaterialsSingleCourse = () => {
                         <EmbeddedPage
                             url="https://blockly-web.dplpleoajxzor.amplifyapp.com/"
                             allowedOrigins={['https://blockly-web.dplpleoajxzor.amplifyapp.com']}
+                            savedProjects={savedProjects}
+                            onProjectsChange={fetchSavedProjects}
                         />
                     </div>
                     <div className={styles.materialCourseDescription}>
@@ -139,19 +158,36 @@ const MaterialsSingleCourse = () => {
                                 <div className={styles.materialCourse}>
                                     <div className={styles.materialCoursePdf}>
                                         {pdfUrl && (
-                                            <div className={styles.pdfViewer}>
-                                                <iframe
-                                                    src={`${pdfUrl}#toolbar=0`}
-                                                    width="100%"
-                                                    height="100%"
-                                                />
-                                            </div>
+                                            <>
+                                                <div className={styles.downloadButtonContainer}>
+                                                    <button className={styles.downloadButton} onClick={downloadDocument}>
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="20"
+                                                            height="20"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                        </svg>
+                                                        Descargar documento
+                                                    </button>
+                                                </div>
+                                                <PdfViewer pdfUrl={pdfUrl} />
+                                            </>
                                         )}
                                     </div>
                                     <div className={styles.materialCourseVideo}>
-                                        {videoUrl &&
-                                            <VideoEmbed styles={styles} videoUrl={videoUrl} />
-                                        }
+                                        {videoUrls.map((item, i) => {
+                                            console.log(item);
+                                            return <VideoEmbed key={item._key || i} styles={styles} videoUrl={item.url || item} />;
+                                        })}
                                     </div>
                                 </div>
 
@@ -210,11 +246,11 @@ const MaterialsSingleCourse = () => {
             {/* Show only Video for Videos */}
             {contentType === 'videos' && (
                 <>
-                    {videoUrl && (
-                        <div className={styles.materialsSingleCourseBlocks}>
-                            <VideoEmbed styles={styles} videoUrl={videoUrl} />
+                    {videoUrls.map((item, i) => (
+                        <div key={item._key || i} className={styles.materialsSingleCourseBlocks}>
+                            <VideoEmbed styles={styles} videoUrl={item.url || item} />
                         </div>
-                    )}
+                    ))}
                     {description && (
                         <div className={styles.materialCourseDescription}>
                             <div className={styles.materialCourseDescriptionTitle}>
