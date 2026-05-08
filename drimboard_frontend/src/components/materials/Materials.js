@@ -1,7 +1,5 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import styles from "../../styles/Materials.module.css";
 import useAppStore from '@/store/useAppStore';
 import MaterialsMain from "@/components/materials/MaterialsMain";
 import MaterialsCourses from "@/components/materials/MaterialsCourses";
@@ -10,7 +8,7 @@ import Forum from "./Forum";
 import { api } from '@/lib/api';
 const groq = String.raw;
 
-import { client } from '../../lib/sanity.js'; // Your Sanity client
+import { client } from '../../lib/sanity.js';
 
 const Materials = () => {
     const [tab, setTab] = useState("inicio");
@@ -20,11 +18,21 @@ const Materials = () => {
     const setVideos = useAppStore((s) => s.setVideos);
     const setDocuments = useAppStore((s) => s.setDocuments);
 
+    const actividades = useAppStore((state) => state.actividades);
+    const videos = useAppStore((state) => state.videos);
+    const documents = useAppStore((state) => state.documents);
+
+    // Animated tab underline
+    const tabsRef = useRef(null);
+    const [bar, setBar] = useState({ left: 0, width: 0 });
     useEffect(() => {
-        // Read latest store snapshot — selectors above don't reflect updates from this same effect.
+        const el = tabsRef.current?.querySelector(`[data-tab="${tab}"]`);
+        if (el) setBar({ left: el.offsetLeft, width: el.offsetWidth });
+    }, [tab, openMaterialCourse]);
+
+    useEffect(() => {
         const store = useAppStore.getState();
 
-        // Defensive: dedupe by _id in case Sanity returns the same doc twice (drafts, etc.)
         const dedupById = (items) => {
             const seen = new Set();
             return (items || []).filter((it) => {
@@ -40,11 +48,10 @@ const Materials = () => {
                 .catch((err) => console.error('Error fetching messages', err));
         }
 
-        // Token-authed Sanity reads include drafts; filter them out at the GROQ level.
         const notDraft = `!(_id in path("drafts.**"))`;
 
         if (!store.actividades || store.actividades.length === 0) {
-            const actividadesQuery = groq`
+            const q = groq`
                 *[_type == "actividades" && ${notDraft}]{
                     _id,
                     title,
@@ -55,16 +62,11 @@ const Materials = () => {
                     publishedAt
                 } | order(publishedAt desc)
             `;
-            client.fetch(actividadesQuery)
-                .then((data) => {
-                    console.log('[sanity] actividades raw:', data);
-                    setActividades(dedupById(data));
-                })
-                .catch((err) => console.error('Error fetching actividades', err));
+            client.fetch(q).then((data) => setActividades(dedupById(data))).catch((err) => console.error('actividades', err));
         }
 
         if (!store.videos || store.videos.length === 0) {
-            const videosQuery = groq`
+            const q = groq`
                 *[_type == "videos" && ${notDraft}]{
                     _id,
                     title,
@@ -74,16 +76,11 @@ const Materials = () => {
                     publishedAt
                 } | order(publishedAt desc)
             `;
-            client.fetch(videosQuery)
-                .then((data) => {
-                    console.log('[sanity] videos raw:', data);
-                    setVideos(dedupById(data));
-                })
-                .catch((err) => console.error('Error fetching videos', err));
+            client.fetch(q).then((data) => setVideos(dedupById(data))).catch((err) => console.error('videos', err));
         }
 
         if (!store.documents || store.documents.length === 0) {
-            const documentsQuery = groq`
+            const q = groq`
                 *[_type == "pdf_document" && ${notDraft}]{
                     _id,
                     title,
@@ -93,22 +90,12 @@ const Materials = () => {
                     publishedAt
                 } | order(publishedAt desc)
             `;
-            client.fetch(documentsQuery)
-                .then((data) => {
-                    console.log('[sanity] documents raw:', data);
-                    setDocuments(dedupById(data));
-                })
-                .catch((err) => console.error('Error fetching documents', err));
+            client.fetch(q).then((data) => setDocuments(dedupById(data))).catch((err) => console.error('documents', err));
         }
-    }, [setMaterialCourseChat, setActividades, setVideos, setDocuments])
+    }, [setMaterialCourseChat, setActividades, setVideos, setDocuments]);
 
-
-
-
-    // Function to handle tab clicks
     const handleTabClick = (tabValue) => {
-        // if a material single course is open, close it when switching tabs
-        const { setOpenMaterialCourse } = useAppStore.getState ? useAppStore.getState() : {};
+        const { setOpenMaterialCourse } = useAppStore.getState();
         if (setOpenMaterialCourse) {
             setOpenMaterialCourse({
                 course_name: null,
@@ -120,54 +107,52 @@ const Materials = () => {
         }
         setTab(tabValue);
     };
+
+    const totalMaterial = actividades.length + documents.length + videos.length;
+
     return (
+        <div className="mat-page">
+            <div className="mat-wrap">
+                {openMaterialCourse["open"] ? (
+                    <MaterialsSingleCourse />
+                ) : (
+                    <>
+                        <div className="mtabs" ref={tabsRef} role="tablist">
+                            <button
+                                type="button"
+                                data-tab="inicio"
+                                className={`mtab ${tab === 'inicio' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('inicio')}
+                            >
+                                Inicio
+                            </button>
+                            <button
+                                type="button"
+                                data-tab="material"
+                                className={`mtab ${tab === 'material' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('material')}
+                            >
+                                Material <span className="count">{totalMaterial}</span>
+                            </button>
+                            <button
+                                type="button"
+                                data-tab="foro"
+                                className={`mtab ${tab === 'foro' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('foro')}
+                            >
+                                Foro
+                            </button>
+                            <div className="mtab-bar" style={{ left: bar.left, width: bar.width }} />
+                        </div>
 
-        <div className={styles.materialsContainer}>
-          
-            <div className={styles.materialsContent}>
-
-
-                <div className={styles.tabsContainer}>
-                    <div className={styles.tabList}>
-                        <button
-                            className={`${styles.tabButton} ${tab === 'inicio' ? styles.active : ''}`}
-                            onClick={() => handleTabClick('inicio')}
-                        >
-                            Inicio
-                        </button>
-                        <button
-                            className={`${styles.tabButton} ${tab === 'material' ? styles.active : ''}`}
-                            onClick={() => handleTabClick('material')}
-                        >
-                            Material
-                        </button>
-                        <button
-                            className={`${styles.tabButton} ${tab === 'foro' ? styles.active : ''}`}
-                            onClick={() => handleTabClick('foro')}
-                        >
-                            Foro
-                        </button>
-                    </div>
-                </div>
+                        {tab === "inicio"   && <MaterialsMain />}
+                        {tab === "material" && <MaterialsCourses />}
+                        {tab === "foro"     && <Forum />}
+                    </>
+                )}
             </div>
-            {openMaterialCourse["open"] ? (
-                <MaterialsSingleCourse />
-            ) : (
-                <>
-                    {tab === "inicio" &&
-                        <MaterialsMain />
-                    }
-                    {tab === "material" &&
-                        <MaterialsCourses />
-                    }
-                    {tab === "foro" &&
-                        <Forum />
-                    }
-                </>
-            )}
-
         </div>
-    )
-}
+    );
+};
 
-export default Materials
+export default Materials;

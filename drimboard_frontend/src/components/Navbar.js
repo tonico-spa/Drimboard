@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
 import styles from "../styles/Navbar.module.css";
@@ -12,8 +12,16 @@ const Navbar = () => {
     const logged = useAppStore((s) => s.logged);
     const setLogged = useAppStore((s) => s.setLogged);
     const [openUser, setOpenUser] = useState(false)
+    const [scrolled, setScrolled] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 12);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
 
     const navLogoStyles = `
@@ -54,10 +62,10 @@ const Navbar = () => {
 
     return (
 
-        <nav className={styles.navContainer}>
+        <nav className={`${styles.navContainer} ${scrolled ? styles.scrolled : ''}`} aria-label="Principal">
             <div className={styles.navbarContainer}>
                 <div className={styles.logoContainer}>
-                    <Link href="/" onClick={() => setOpenUser(false)} className={styles.navbarLink} aria-label="Inicio">
+                    <Link href="/" onClick={() => setOpenUser(false)} className={styles.navbarLogoLink} aria-label="Inicio">
                         <NavLogo styles={navLogoStyles} />
                     </Link>
                 </div>
@@ -74,7 +82,7 @@ const Navbar = () => {
                     <button type="button" onClick={() => goToSection('sectionActividades')} className={styles.navbarLink}>
                         Nuestras Actividades
                     </button>
-                    <Link href="/programacion" className={styles.navbarLink}>
+                    <Link href="/programacion" className={`${styles.navbarLink} ${styles.keepMobile}`}>
                         Prueba tu drim
                     </Link>
 

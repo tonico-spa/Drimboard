@@ -1,179 +1,179 @@
 "use client";
-import { useState } from "react";
-import styles from "../../styles/MaterialsCourses.module.css";
+import { useMemo, useState } from "react";
 import useAppStore from '@/store/useAppStore';
-import MaterialsSingleCourse from "./MaterialSingleCourse";
 
+function Glyph({ type }) {
+    if (type === 'actividades') {
+        return (
+            <svg className="g" viewBox="0 0 64 64" fill="none">
+                <rect x="6"  y="22" width="22" height="22" rx="4" fill="#fff" stroke="#1f150b" strokeWidth="2.5" />
+                <rect x="20" y="8"  width="22" height="22" rx="4" fill="#F397C1" stroke="#1f150b" strokeWidth="2.5" />
+                <rect x="34" y="22" width="22" height="22" rx="4" fill="#fff" stroke="#1f150b" strokeWidth="2.5" />
+                <rect x="20" y="36" width="22" height="22" rx="4" fill="#fff" stroke="#1f150b" strokeWidth="2.5" />
+            </svg>
+        );
+    }
+    if (type === 'documents') {
+        return (
+            <svg className="g" viewBox="0 0 64 64" fill="none">
+                <path d="M14 8 H40 L52 20 V56 H14 Z" fill="#fff" stroke="#1f150b" strokeWidth="2.5" strokeLinejoin="round" />
+                <path d="M40 8 V20 H52" fill="none" stroke="#1f150b" strokeWidth="2.5" strokeLinejoin="round" />
+                <line x1="22" y1="32" x2="44" y2="32" stroke="#1f150b" strokeWidth="2.5" strokeLinecap="round" />
+                <line x1="22" y1="40" x2="44" y2="40" stroke="#1f150b" strokeWidth="2.5" strokeLinecap="round" />
+                <line x1="22" y1="48" x2="36" y2="48" stroke="#1f150b" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+        );
+    }
+    return (
+        <svg className="g" viewBox="0 0 64 64" fill="none">
+            <rect x="6" y="10" width="52" height="44" rx="8" fill="#fff" stroke="#1f150b" strokeWidth="2.5" />
+            <path d="M26 22 L42 32 L26 42 Z" fill="#1f150b" />
+        </svg>
+    );
+}
 
+const TYPE_TO_DISPLAY = { actividades: 'actividad', documents: 'documento', videos: 'video' };
+
+function CourseCard({ element, contentType, onOpen }) {
+    const type = TYPE_TO_DISPLAY[contentType] || contentType;
+    const cover = element.coverImage;
+    return (
+        <button
+            type="button"
+            className="course"
+            data-type={type}
+            onClick={() => onOpen(element, contentType)}
+        >
+            <div
+                className={`course-cover ${cover ? 'has-image' : ''}`}
+                style={cover ? { backgroundImage: `url(${cover})` } : undefined}
+            >
+                <span className="course-tag">{type}</span>
+                {!cover && (<div className="cover-glyph"><Glyph type={contentType} /></div>)}
+            </div>
+            <div className="course-body">
+                <h4 className="course-title">{element.title}</h4>
+                <div className="course-meta"><span>drim</span></div>
+            </div>
+        </button>
+    );
+}
 
 const MaterialsCourses = () => {
-    const openMaterialCourse = useAppStore((state) => state.openMaterialCourse);
     const actividades = useAppStore((state) => state.actividades);
     const videos = useAppStore((state) => state.videos);
     const documents = useAppStore((state) => state.documents);
-    const { setOpenMaterialCourse } = useAppStore((state) => state);
+    const setOpenMaterialCourse = useAppStore((s) => s.setOpenMaterialCourse);
 
-    const [modalOpen, setModalOpen] = useState(false);
-    const [modalSection, setModalSection] = useState({ type: '', data: [], title: '', color: '' });
+    const [filter, setFilter] = useState('todos');
+    const [q, setQ] = useState('');
 
-    const openCourse = (e, element, contentType) => {
-        e.preventDefault()
-        setOpenMaterialCourse({ ...element, "open": true, "contentType": contentType })
-    }
+    const open = (element, contentType) => {
+        setOpenMaterialCourse({ ...element, open: true, contentType });
+    };
 
-    const openModal = (type, data, title, color) => {
-        setModalSection({ type, data, title, color });
-        setModalOpen(true);
-    }
+    const matchQuery = (item) => !q.trim() || (item.title || '').toLowerCase().includes(q.toLowerCase());
 
-    const closeModal = () => {
-        setModalOpen(false);
-    }
+    const filteredActividades = useMemo(() => actividades.filter(matchQuery), [actividades, q]);
+    const filteredDocumentos = useMemo(() => documents.filter(matchQuery), [documents, q]);
+    const filteredVideos = useMemo(() => videos.filter(matchQuery), [videos, q]);
+
+    const showActividades = (filter === 'todos' || filter === 'actividades') && filteredActividades.length > 0;
+    const showDocumentos = (filter === 'todos' || filter === 'documents') && filteredDocumentos.length > 0;
+    const showVideos = (filter === 'todos' || filter === 'videos') && filteredVideos.length > 0;
+    const empty = !showActividades && !showDocumentos && !showVideos;
+
     return (
-
-
-        <div className={styles.materialsMainContainer}>
-            {!openMaterialCourse["open"] &&
-                <>
-
-                    <div className={styles.materiasMainContentContainer}>
-                        <div className={styles.materiasMainSectionOne}>
-                            <div className={styles.materiasMainSectionOneTitle}>
-                                Actividades
-                            </div>
-                            <div className={styles.materiasMainSectionOneContent}>
-
-                                {actividades.length > 0 && actividades.slice(0, 5).map((element) => (
-                                    <button
-                                        type="button"
-                                        key={element._id}
-                                        className={styles.materiasMainSectionOneMaterial}
-                                        onClick={(e) => openCourse(e, element, 'actividades')}
-                                        style={{
-                                            backgroundImage: `url(${element.coverImage || '/pdf.png'})`,
-                                            border: "3px solid #F397C1"
-                                        }}
-                                    >
-                                        <div className={styles.materiasMainSectionOneMaterialTitle}>{element.title}</div>
-
-                                    </button>
-                                ))}
-
-                            </div>
-                            {actividades.length > 5 && (
-                                <button 
-                                    className={styles.verMasButton}
-                                    onClick={() => openModal('actividades', actividades, 'Actividades', '#F397C1')}
-                                >
-                                    Ver más
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                    <div className={styles.materiasMainContentContainer}>
-                        <div className={styles.materiasMainSectionTwo}>
-                            <div className={styles.materiasMainSectionTwoTitle}>
-                                Documentos
-                            </div>
-                            <div className={styles.materiasMainSectionTwoContent}>
-                                {documents.length > 0 && documents.slice(0, 5).map((element) => (
-                                    <button
-                                        type="button"
-                                        key={element._id}
-                                        className={styles.materiasMainSectionOneMaterial}
-                                        onClick={(e) => openCourse(e, element, 'documents')}
-                                        style={{
-                                            backgroundImage: `url(${element.coverImage || '/pdf.png'})`,
-                                            border: "3px solid #FFB71A"
-                                        }}
-                                    >
-                                        <div className={styles.materiasMainSectionOneMaterialTitle}>{element.title}</div>
-                                    </button>
-                                ))}
-                            </div>
-                            {documents.length > 5 && (
-                                <button 
-                                    className={styles.verMasButton}
-                                    onClick={() => openModal('documents', documents, 'Documentos', '#FFB71A')}
-                                >
-                                    Ver más
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                    <div className={styles.materiasMainContentContainer}>
-                        <div className={styles.materiasMainSectionThree}>
-                            <div className={styles.materiasMainSectionThreeTitle}>
-                                Videos
-                            </div>
-                            <div className={styles.materiasMainSectionThreeContent}>
-                                {videos.length > 0 && videos.slice(0, 5).map((element) => (
-                                    <button
-                                        type="button"
-                                        key={element._id}
-                                        className={styles.materiasMainSectionOneMaterial}
-                                        onClick={(e) => openCourse(e, element, 'videos')}
-                                        style={{
-                                            backgroundImage: `url(${element.coverImage || '/pdf.png'})`
-                                        }}
-                                    >
-                                        <div className={styles.materiasMainSectionOneMaterialTitle}>{element.title}</div>
-                                    </button>
-                                ))}
-                            </div>
-                            {videos.length > 5 && (
-                                <button 
-                                    className={styles.verMasButton}
-                                    onClick={() => openModal('videos', videos, 'Videos', '#53C68E')}
-                                >
-                                    Ver más
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </>
-            }
-
-
-            {openMaterialCourse["open"] &&
-                <div >
-                    <MaterialsSingleCourse />
-
+        <>
+            <div className="mat-toolbar">
+                <div className="chip-row">
+                    <button type="button" className="fchip" aria-pressed={filter === 'todos'} onClick={() => setFilter('todos')}>
+                        Todo <span className="n">{actividades.length + documents.length + videos.length}</span>
+                    </button>
+                    <button type="button" className="fchip" aria-pressed={filter === 'actividades'} onClick={() => setFilter('actividades')}>
+                        <span className="swatch" style={{ background: 'var(--pink)' }} /> Actividades <span className="n">{actividades.length}</span>
+                    </button>
+                    <button type="button" className="fchip" aria-pressed={filter === 'documents'} onClick={() => setFilter('documents')}>
+                        <span className="swatch" style={{ background: 'var(--yellow)' }} /> Documentos <span className="n">{documents.length}</span>
+                    </button>
+                    <button type="button" className="fchip" aria-pressed={filter === 'videos'} onClick={() => setFilter('videos')}>
+                        <span className="swatch" style={{ background: 'var(--green)' }} /> Videos <span className="n">{videos.length}</span>
+                    </button>
                 </div>
-            }
-
-            {modalOpen && (
-                <div className={styles.modalOverlay} onClick={closeModal}>
-                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <div className={styles.modalHeader}>
-                            <h2 className={styles.modalTitle}>{modalSection.title}</h2>
-                            <button className={styles.closeButton} onClick={closeModal}>×</button>
-                        </div>
-                        <div className={styles.modalGrid}>
-                            {modalSection.data.map((element) => (
-                                <button
-                                    type="button"
-                                    key={element._id}
-                                    className={styles.modalCard}
-                                    onClick={(e) => {
-                                        closeModal();
-                                        openCourse(e, element, modalSection.type);
-                                    }}
-                                    style={{
-                                        backgroundImage: `url(${element.coverImage || '/pdf.png'})`,
-                                        border: `3px solid ${modalSection.color}`
-                                    }}
-                                >
-                                    <div className={styles.modalCardTitle}>{element.title}</div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                <div className="mat-search">
+                    <span style={{ color: 'var(--t3)' }}>⌕</span>
+                    <input placeholder="Buscar por título…" value={q} onChange={(e) => setQ(e.target.value)} />
                 </div>
+            </div>
+
+            {showActividades && (
+                <section className="mat-section">
+                    <div className="mat-section-head">
+                        <h3>
+                            <span className="swatch" style={{ background: 'var(--pink)' }} />
+                            Actividades
+                            <span className="count-pill">{filteredActividades.length}</span>
+                        </h3>
+                        {filter === 'todos' && filteredActividades.length > 4 && (
+                            <button type="button" className="more" onClick={() => setFilter('actividades')}>Ver todas →</button>
+                        )}
+                    </div>
+                    <div className="mat-grid">
+                        {(filter === 'todos' ? filteredActividades.slice(0, 4) : filteredActividades).map((c) => (
+                            <CourseCard key={c._id} element={c} contentType="actividades" onOpen={open} />
+                        ))}
+                    </div>
+                </section>
             )}
 
-        </div>
-    )
-}
+            {showDocumentos && (
+                <section className="mat-section">
+                    <div className="mat-section-head">
+                        <h3>
+                            <span className="swatch" style={{ background: 'var(--yellow)' }} />
+                            Documentos
+                            <span className="count-pill">{filteredDocumentos.length}</span>
+                        </h3>
+                        {filter === 'todos' && filteredDocumentos.length > 4 && (
+                            <button type="button" className="more" onClick={() => setFilter('documents')}>Ver todos →</button>
+                        )}
+                    </div>
+                    <div className="mat-grid">
+                        {(filter === 'todos' ? filteredDocumentos.slice(0, 4) : filteredDocumentos).map((c) => (
+                            <CourseCard key={c._id} element={c} contentType="documents" onOpen={open} />
+                        ))}
+                    </div>
+                </section>
+            )}
 
-export default MaterialsCourses
+            {showVideos && (
+                <section className="mat-section">
+                    <div className="mat-section-head">
+                        <h3>
+                            <span className="swatch" style={{ background: 'var(--green)' }} />
+                            Videos
+                            <span className="count-pill">{filteredVideos.length}</span>
+                        </h3>
+                        {filter === 'todos' && filteredVideos.length > 4 && (
+                            <button type="button" className="more" onClick={() => setFilter('videos')}>Ver todos →</button>
+                        )}
+                    </div>
+                    <div className="mat-grid">
+                        {(filter === 'todos' ? filteredVideos.slice(0, 4) : filteredVideos).map((c) => (
+                            <CourseCard key={c._id} element={c} contentType="videos" onOpen={open} />
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {empty && (
+                <div className="empty">
+                    <h4>Sin resultados</h4>
+                    <p>Probá con otra palabra o cambiá el filtro.</p>
+                </div>
+            )}
+        </>
+    );
+};
+
+export default MaterialsCourses;

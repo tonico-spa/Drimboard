@@ -68,8 +68,7 @@ const NavLogo = ({ styles }) => {
     }, []);
 
     return (
-        <div style={{ width: '20%', height: '50%' }}>
-            <svg ref={svgRef} id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69.59 46.1" style={{ width: '100%', height: '100%' }}>
+            <svg ref={svgRef} id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69.59 46.1" style={{ height: '100%', width: 'auto', display: 'block' }}>
                 <defs>
                     <style>
                         {styles}
@@ -85,7 +84,6 @@ const NavLogo = ({ styles }) => {
                     </g>
                 </g>
             </svg>
-        </div>
     );
 }
 export default NavLogo

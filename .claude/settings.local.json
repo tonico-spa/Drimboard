@@ -3,7 +3,12 @@
     "allow": [
       "Bash(npm audit *)",
       "Bash(npm uninstall *)",
-      "Bash(python -c \"import ast; ast.parse\\(open\\('app/app.py'\\).read\\(\\)\\); print\\('app.py: syntax OK'\\)\")"
+      "Bash(python -c \"import ast; ast.parse\\(open\\('app/app.py'\\).read\\(\\)\\); print\\('app.py: syntax OK'\\)\")",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(rm -rf /tmp/drim-design-2)",
+      "Bash(mkdir /tmp/drim-design-2)",
+      "Read(//tmp/**)",
+      "Bash(tar xzf *)"
     ]
   }
 }

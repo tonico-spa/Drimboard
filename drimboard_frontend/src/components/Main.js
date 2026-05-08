@@ -1,530 +1,400 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import styles from '../styles/Main.module.css';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import RightArrow from './svgs/RightArrows';
-import SquareCircle from './svgs/SquareCircle';
-import SectionTwoCards from './SectionTwoCards';
-import Tape from './svgs/tape/Tape';
-import SectionFive from './SectionFive';
-import { Suspense } from 'react';
 import useAppStore from '@/store/useAppStore';
 import LoginForm from './LoginForm';
-import VideoEmbed from "./VideoEmbed";
 import MainLogo from './svgs/MainLogo';
-import ActivitiesCarousel from './ActivitiesCarousel';
+import Tape from './svgs/tape/Tape';
 import { api } from '@/lib/api';
 
-// Three.js + GLTF loader is heavy; only load it on the client when this section mounts.
+// Three.js + GLTF loader is heavy; lazy-load on the client when this section mounts.
 const StepViewer = dynamic(() => import('./SetpViewer'), {
   ssr: false,
-  loading: () => <div>Cargando modelo 3D...</div>,
+  loading: () => <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: '#000' }}>Cargando modelo 3D…</div>,
 });
 
-
-gsap.registerPlugin(ScrollTrigger);
-
-
-const Main = () => {
-  const mainContainerRef = useRef(null);
-  const sectionThreeTriggerRef = useRef(null);
-  const scrollContentRef = useRef(null);
-  const scrollContainerRef = useRef(null);
-  const mainScrollContainerRef = useRef(null);
-  const sectionTwoTitleRef = useRef(null);
-  const sectionFiveBackgroundRef = useRef(null);
-  const sectionFiveContainerRef = useRef(null);
-  const sectionSixContainerRef = useRef(null);
-  const containerRef = useRef(null);
-  const activitiesTitleRef = useRef(null);
-
-
-  // --- REFS FOR SECTION FOUR CARDS ---
-  const cardsContainerRef = useRef(null);
-  const card1Ref = useRef(null);
-  const card2Ref = useRef(null);
-  const card3Ref = useRef(null);
-  const card4Ref = useRef(null);
-  // ------------------------------------
-  const openLoginForm = useAppStore((state) => state.openLoginForm);
-
-
-  const [activeCard, setActiveCard] = useState(0);
-  const [userDict, setUserDict] = useState({ "name": "", "email": "", "message": "" })
-  const [formStatus, setFormStatus] = useState({ kind: 'idle', message: '' })
-
-  const arrowStyles = `
-    .first_triangle {
-      fill: #f397c1;
-    }
-    .second_triangle {
-      fill: #f397c1;
-    }`;
-
-
-
-  const squareCircleStyles = `
-    .top_circle {
-      fill: #53C68E;
-    }
-    .bottom_circle {
-      fill: #53C68E;
-    }
-    .top_square {
-      fill: #53C68E;
-    }
-    .bottom_square {
-      fill: #53C68E;
-    }`;
-
-  const mainLogoStyles = `
-      .cls-1 {
-          fill: #1f150b;
-        }
-
-      .cls-2 {
-        fill: none;
-      }
-
-      .cls-3 {
-        fill: #ded900;
-      }
-
-      .cls-4 {
-        fill: #1f150b;
-      }
-
-      .cls-5 {
-        fill: #1f150b;
-      }
-    `
-  // Smooth scroll (Lenis) is initialized once at the layout level via <SmoothScroll />.
-
+// Reveal-on-scroll: adds .in to .reveal/.s4-panel elements when they enter viewport.
+function useReveal() {
   useEffect(() => {
-    console.log(openLoginForm)
-
-  }, [openLoginForm])
-
-  // Effect for Section Three (Split Scroll)
-  useEffect(() => {
-    let ctx = gsap.context(() => {
-      if (mainScrollContainerRef.current && scrollContentRef.current && scrollContainerRef.current) {
-        const scrollContent = scrollContentRef.current;
-        const scrollContainer = scrollContainerRef.current;
-        const sectionThreeContainer = mainScrollContainerRef.current;
-
-        const scrollDistance = scrollContent.scrollHeight - scrollContainer.clientHeight;
-
-        if (scrollDistance > 0) {
-          gsap.to(scrollContent, {
-            y: -scrollDistance,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionThreeContainer,
-              start: "top 5%",
-              end: `+=${scrollDistance}`,
-              scrub: 1,
-              pin: sectionThreeContainer,
-              pinSpacing: true,
-              invalidateOnRefresh: true,
-              enabled: true
-            }
-          });
-        }
-      }
-    }, mainContainerRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Effect for Section Two (Title Fade-in)
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: `.${styles.sectionTwoContainer}`,
-          start: 'top 80%',
-          toggleActions: 'play none none none',
+    const els = document.querySelectorAll('.reveal, .reveal-up, .s4-panel');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach((el) => el.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
         }
       });
-
-      tl.from(`.${styles.sectionTwoTitleLogo}`, {
-        opacity: 0,
-        y: 50,
-        duration: 1.2,
-        ease: 'power3.out'
-      })
-        .from(`.${styles.sectionTwoTitleText}`, {
-          opacity: 0,
-          y: 50,
-          duration: 0.8,
-          ease: 'power3.out'
-        }, '<');
-
-      tl.from(`.${styles.sectionTwoCards}`, {
-        opacity: 0,
-        y: 50,
-        duration: 1.2,
-        ease: 'power3.out'
-      }, '-=0.5');
-
-    }, mainContainerRef);
-
-    return () => ctx.revert();
+    }, { threshold: 0.18 });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
   }, []);
+}
 
-  // Effect for Section Four Video Container (Scale animation)
+const FEATURES = [
+  { color: 'pink',   tag: 'Bloques',  title: 'Código con bloques',     sub: '¡Arrastra, suelta y crea! Programa tu robot sin escribir una sola línea.', icon: 'blocks' },
+  { color: 'green',  tag: 'Código',   title: 'Código en texto',        sub: 'El siguiente paso para futuros innovadores. Del bloque a Python real.',     icon: 'code' },
+  { color: 'yellow', tag: 'Escalera', title: 'Aprendizaje escalonado', sub: 'Una aventura a tu propio ritmo. Cada actividad sube un peldaño más.',       icon: 'stairs' },
+  { color: 'sky',    tag: 'Manos',    title: 'Interviene tu entorno',  sub: 'La magia de lo físico y lo digital, juntas en un solo dispositivo.',         icon: 'hands' },
+];
+
+function FeatIcon({ kind }) {
+  if (kind === 'blocks') return (
+    <div className="ico ico-blocks"><div className="b b1" /><div className="b b2" /><div className="b b3" /><div className="b b4" /></div>
+  );
+  if (kind === 'code') return (
+    <div className="ico ico-code"><div className="line l1" /><div className="line l2" /><div className="line l3" /><div className="line l4" /><div className="caret" /></div>
+  );
+  if (kind === 'stairs') return (
+    <div className="ico ico-stairs"><div className="step" /><div className="step" /><div className="step" /><div className="step" /><div className="ball" /></div>
+  );
+  if (kind === 'hands') return (
+    <div className="ico ico-hands"><div className="pad"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div><div className="finger" /></div>
+  );
+  return null;
+}
+
+const POINTS = [
+  { n: '01', t: 'Crea tu primer robot sin saber programar.', d: 'drim elimina la barrera inicial de la programacion tradicional. Mientras que en otros microcontroladores se necesita descargar softwares y aprender sintaxis de programacion, drim ofrece una interfaz visual e intuitiva sin necesidad de saber escribir codigo.' },
+  { n: '02', t: 'Tu imaginación es el límite, no los cables.', d: 'Otros microcontroladores exponen al usuario a todos los componentes físicos desde el principio: la placa, los cables, la protoboard y los pines específicos. Al ocultar la placa y centralizar todo en una pantalla, drim reduce la complejidad y evita distracciones.' },
+  { n: '03', t: 'De los bloques al código real.', d: '   El sistema de programacion basado en bloques de drim es  el puente perfecto hacia la programacion real. Al permitir ver el codigo creado con bloques se crea una ruta de aprendizaje natural: un niño primero domina la lógica con los bloques y, cuando siente curiosidad, puede espiar el código subyacente, entendiendo cómo una estructura visual se traduce en una sintaxis textual.' },
+];
+
+const TESTIS = [
+  { name: 'Sofía',    meta: '9 años · Futura botánica',   q: 'Hice un sensor que avisa cuando mis plantas tienen sed. Mi mamá no lo podía creer.', videoUrl: 'https://youtu.be/DkfgSmyWFec' },
+  { name: 'Mateo',    meta: '10 años · Futuro músico',    q: 'Construí una guitarra que hace sonidos cuando tocas los botones. No tuve que programar casi nada.', videoUrl: 'https://youtu.be/DkfgSmyWFec' },
+  { name: 'Valentina',meta: '11 años · Futura geóloga',   q: 'Pude armar mi propio detector de movimientos sísmicos para mi proyecto de ciencias.', videoUrl: 'https://youtu.be/DkfgSmyWFec' },
+];
+
+const STEPS = [
+  { t: 'Paso 1',    d: 'Solo la drim es lo que necesitas para empezar. Conectala a tu computador y comienza a programar.', img: '/paso1.png' },
+  { t: 'Paso 2',  d: 'Conecta actuadores y sensores externos y ve como tu drim cobra vida con nuevas funcionalidades.',          img: '/paso2.png' },
+  { t: 'Paso 3',       d: 'Abre tu drim y trabaja directamente con el microcontroladorpara proyectos mas audaces..', img: '/paso3.png' },
+];
+
+const CAROUSEL_IMAGES = [
+  '/activities/IMG_0122.jpg',
+  '/activities/IMG_1445.jpg',
+  '/activities/IMG_3032.jpg',
+  '/activities/IMG_3072.jpg',
+  '/activities/IMG_3339.jpg',
+  '/activities/IMG_3345.jpg',
+  '/activities/IMG_3608.jpg',
+  '/activities/IMG_4173.jpg',
+  '/activities/IMG_4178.jpg',
+  '/activities/IMG_4179.jpg',
+  '/activities/IMG_4180.jpg',
+  '/activities/IMG_4181.jpg',
+  '/activities/IMG_4388.jpg',
+];
+
+function youtubeId(url) {
+  const m = (url || '').match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
+  return (m && m[2].length === 11) ? m[2] : null;
+}
+
+const Main = () => {
+  const openLoginForm = useAppStore((state) => state.openLoginForm);
+  const carouselRef = useRef(null);
+
+  const [userDict, setUserDict] = useState({ name: '', email: '', message: '' });
+  const [formStatus, setFormStatus] = useState({ kind: 'idle', message: '' });
+
+  useReveal();
+
+  // Carousel: auto-scroll with hover-pause + manual scroll buttons
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const background = document.querySelector(`.${styles.sectionFourBackground}`);
-      const container = document.querySelector(`.${styles.sectionFourVideoContainer}`);
-
-      if (background && container) {
-        gsap.set(background, {
-          scale: 0.93,
-        });
-
-        gsap.to(background, {
-          scale: 1,
-          duration: 1.2,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: container,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          }
-        });
+    const el = carouselRef.current;
+    if (!el) return;
+    let paused = false;
+    let raf;
+    const onEnter = () => { paused = true; };
+    const onLeave = () => { paused = false; };
+    el.addEventListener('mouseenter', onEnter);
+    el.addEventListener('mouseleave', onLeave);
+    const tick = () => {
+      if (!paused && el) {
+        if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 2) {
+          el.scrollLeft = 0;
+        } else {
+          el.scrollLeft += 0.3;
+        }
       }
-    }, mainContainerRef);
-
-    return () => ctx.revert();
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('mouseenter', onEnter);
+      el.removeEventListener('mouseleave', onLeave);
+    };
   }, []);
-
-  // useEffect(() => {
-  //   if (openMaterials === true) return; // Skip if materials page is open
-  //   const ctx = gsap.context(() => {
-
-
-  //     gsap.set([card2Ref.current, card3Ref.current, card4Ref.current], { yPercent: 100, opacity: 0 });
-
-  //     const tl = gsap.timeline({
-  //       scrollTrigger: {
-  //         trigger: cardsContainerRef.current, // Use the ref for the trigger element
-  //         pin: true,
-  //         pinSpacing: true,
-  //         start: "top 20%",
-  //         end: "+=5000", // A larger value gives more scroll room for the animation
-  //         scrub: 1,
-  //         invalidateOnRefresh: true,
-  //         enabled: true
-  //         // markers: true, // Uncomment for debugging
-  //       }
-  //     });
-
-  //     // Animate Card 2 into view
-  //     tl.addLabel("card2Enter")
-  //       .to(card1Ref.current, { scale: 1, yPercent: -10, opacity: 1 }, "card2Enter")
-  //       .to(card2Ref.current, { yPercent: 0, opacity: 1 }, "card2Enter")
-  //       .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 1 : 0));
-
-  //     // Animate Card 3 into view
-  //     tl.addLabel("card3Enter")
-  //       .to(card2Ref.current, { scale: 1, yPercent: -8, opacity: 1 }, "card3Enter")
-  //       .to(card3Ref.current, { yPercent: 0, opacity: 1 }, "card3Enter")
-  //       .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 2 : 1));
-
-  //     // Animate Card 4 into view
-  //     tl.addLabel("card4Enter")
-  //       .to(card3Ref.current, { scale: 1, yPercent: -6, opacity: 1 }, "card4Enter")
-  //       .to(card4Ref.current, { yPercent: 0, opacity: 1 }, "card4Enter")
-  //       .add(() => setActiveCard(tl.scrollTrigger.direction > 0 ? 3 : 2));
-
-  //   }, mainContainerRef);
-
-  //   return () => ctx.revert();
-  // }, [openMaterials]);
-
-
-  const squareSixCircleStyles = `
-    .top_circle {
-      fill: #F397C1;
-    }
-    .bottom_circle {
-      fill: #F397C1;
-    }
-    .top_square {
-      fill: #F397C1;
-    }
-    .bottom_square {
-      fill: #F397C1;
-    }`;
-
 
   const sendForm = async (e) => {
-    e.preventDefault()
-    setFormStatus({ kind: 'sending', message: 'Enviando...' })
+    e.preventDefault();
+    setFormStatus({ kind: 'sending', message: 'Enviando...' });
     try {
-      await api.post('/send_form', userDict)
-      setUserDict({ "name": "", "email": "", "message": "" })
-      setFormStatus({ kind: 'success', message: 'Mensaje enviado. Nos contactaremos contigo.' })
+      await api.post('/send_form', userDict);
+      setUserDict({ name: '', email: '', message: '' });
+      setFormStatus({ kind: 'success', message: '¡Recibido! Te escribimos en menos de 24h.' });
     } catch (err) {
-      setFormStatus({ kind: 'error', message: 'No pudimos enviar el mensaje. Inténtalo más tarde.' })
+      setFormStatus({ kind: 'error', message: 'No pudimos enviar el mensaje. Inténtalo más tarde.' });
     }
-  }
-
-  const handleChange = (e) => {
-    setUserDict({
-      ...userDict,
-      [e.target.name]: e.target.value
-    });
   };
 
-  // Effect for Section Six Info Background (Scale animation)
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const background = document.querySelector(`.${styles.sectionSixBackground}`);
-      const container = document.querySelector(`.${styles.sectionSixContainer}`);
+  const handleChange = (e) => {
+    setUserDict({ ...userDict, [e.target.name]: e.target.value });
+  };
 
-      if (background && container) {
-        gsap.set(background, {
-          scale: 0.95,
-        });
+  const arrowStyles = `
+    .first_triangle { fill: #f397c1; }
+    .second_triangle { fill: #f397c1; }
+  `;
 
-        gsap.to(background, {
-          scale: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: container,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          }
-        });
-      }
-    }, mainContainerRef);
-
-    return () => ctx.revert();
-  }, []);
-
+  const mainLogoStyles = `
+    .cls-1 { fill: #000000; }
+    .cls-2 { fill: none; }
+    .cls-3 { fill: #ded900; }
+    .cls-4 { fill: #000000; }
+    .cls-5 { fill: #000000; }
+  `;
 
   return (
-      <div className={styles.mainContainer} ref={mainContainerRef}>
+    <div className={styles.mainContainer}>
 
-        <div id="coverContainer" className={styles.coverContainer}>
-          <img
-            src="/auto.png"
-            alt="cover image"
-            className={styles.coverImg}
-          />
+      {/* ===== Cover (unchanged) ===== */}
+      <div id="coverContainer" className={styles.coverContainer}>
+        <img
+          src="/auto.png"
+          alt="cover image"
+          className={styles.coverImg}
+        />
 
-          <div className={styles.coverLogo}>
-            <MainLogo styles={mainLogoStyles} />
-          </div>
-
-          <div className={styles.coverSubtitleContainer}>
-
-            <div className={styles.coverSubtitleLogo}>
-              <RightArrow styles={arrowStyles} />
-            </div>
-            <div className={styles.coverSubtitleText}>
-              Preparate para el futuro
-            </div>
-
-          </div>
-
-
+        <div className={styles.coverLogo}>
+          <MainLogo styles={mainLogoStyles} />
         </div>
-        <div className={styles.separator}></div>
-        <div id="sectionTwoContainer" className={styles.sectionTwoContainer}>
 
-          <div ref={sectionTwoTitleRef} className={styles.sectionTwoTitleContainer}>
-            <div className={styles.sectionTwoTitleLogo}>
-              <SquareCircle styles={squareCircleStyles} />
-            </div>
-            <div className={styles.sectionTwoTitleText}>
-              Tu Mundo, Tus Reglas
-              <br />
-              Crea Sin Límites
-            </div>
+        <div className={styles.coverSubtitleContainer}>
+          <div className={styles.coverSubtitleLogo}>
+            <RightArrow styles={arrowStyles} />
           </div>
-          <div className={styles.sectionTwoCards}>
-            <SectionTwoCards triggerRef={sectionTwoTitleRef} />
+          <div className={styles.coverSubtitleText}>
+            Prepárate para el futuro
           </div>
-          <div className={styles.separator}></div>
-
         </div>
-        <div className={styles.sectionThreeContainer} ref={mainScrollContainerRef}>
+      </div>
+     {/* ===== Tape divider ===== */}
+      <Tape />
+      {/* ===== Section 2 — Por qué drim ===== */}
+      <section className="dsec s2" id="sectionTwoContainer">
+        <div className="reveal">
+          <div className="dsec-eyebrow">
+            <span className="glyph">
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <rect x="1" y="1" width="7" height="7" rx="1.5" fill="#53C68E" />
+                <circle cx="13.5" cy="13.5" r="3.5" fill="#F397C1" />
+              </svg>
+            </span>
+            Tu mundo, tus reglas
+          </div>
+          <h2 className="dsec-title">Crea sin <em>límites.</em></h2>
+          <p className="dsec-sub">Cuatro maneras de jugar con drim — desde arrastrar bloques hasta intervenir el mundo real.</p>
+        </div>
+        <div className="s2-grid">
+          {FEATURES.map((f, i) => (
+            <article key={f.tag} className="feat reveal" data-color={f.color} style={{ transitionDelay: `${i * 90}ms` }}>
+              <span className="feat-tag">{f.tag}</span>
+              <div className="feat-icon"><FeatIcon kind={f.icon} /></div>
+              <h3>{f.title}</h3>
+              <p>{f.sub}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+           {/* ===== Tape divider ===== */}
+      <Tape />
 
-          <div className={styles.splitScrollTitle}>
+      {/* ===== Section 3 — Comparison ===== */}
+      <section className="dsec s3">
+        <div className="reveal">
+          <div className="dsec-eyebrow">
+            <span className="glyph">
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <circle cx="6" cy="9" r="4" fill="#F397C1" />
+                <circle cx="12" cy="9" r="4" fill="#53C68E" opacity=".75" />
+              </svg>
+            </span>
             drim v/s otros microcontroladores
           </div>
-          <div className={styles.splitScrollContainer} ref={sectionThreeTriggerRef}>
-            <div ref={scrollContainerRef} className={styles.scrollContainer}>
-              <div ref={scrollContentRef} className={styles.scrollContent}>
-                <div className={styles.scrollSectionTextContainer}>
-                  <div>
-                    <div className={styles.scrollSectionTitle}>
-                      Crea tu <br /> primer robot <br /> sin saber <br />programas
-                    </div>
-                    <div className={styles.scrollSectionText}>
-                      drim elimina la barrera inicial de la programacion tradicional.
-                      Mientras que en otros microcontroladores se necesita descargar
-                      softwares y aprender sintaxis de programacion, drim ofrece una
-                      interfaz visual e intuitiva sin necesidad de saber escribir codigo.
-                    </div>
-                  </div>
-                </div>
-
-                <div className={styles.scrollSectionTextContainer}>
-                  <div>
-                    <div className={styles.scrollSectionTitle}>
-                      Tu imaginacion <br /> es el limite, <br /> no los cables
-                    </div>
-                    <div className={styles.scrollSectionText}>
-                      Otros microcontroladores exponen al usuario a todos los
-                      componentes físicos desde el principio: la placa, los cables,
-                      la protoboard y los pines específicos. Al ocultar la placa y
-                      centralizar todo en una pantalla, drim reduce la complejidad y
-                      evita distracciones.
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.scrollSectionTextContainer}>
-                  <div>
-                    <div className={styles.scrollSectionTitle}>
-                      De los <br /> bloques al <br /> codigo real
-                    </div>
-
-                    <div className={styles.scrollSectionText}>
-                      El sistema de programacion basado en bloques de drim es
-                      el puente perfecto hacia la programacion real.
-                      Al permitir ver el codigo creado con bloques se crea una
-                      ruta de aprendizaje natural: un niño primero domina la lógica
-                      con los bloques y, cuando siente curiosidad, puede espiar el
-                      código subyacente, entendiendo cómo una estructura visual se
-                      traduce en una sintaxis textual.
-                    </div>
-                  </div>
-                </div>
+          <h2 className="dsec-title">No es Arduino. Es una <em>aventura.</em></h2>
+        </div>
+        <div className="s3-grid">
+          <div className="points">
+            {POINTS.map((p, i) => (
+              <div className="point reveal" key={p.n} style={{ transitionDelay: `${i * 80}ms` }}>
+                <span className="num">{p.n} · selling point</span>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
               </div>
-            </div>
-
-
-
-            {/* The right column that stays fixed */}
-
-            <div className={styles.videoContainer}>
-
-
-              <Suspense fallback={<div>Loading 3D model...</div>}>
-                <StepViewer fileUrl="/models/kit_sim_trans.glb" initialAngle={-Math.PI / 2} />
-              </Suspense>
-
-            </div>
-
+            ))}
           </div>
-
-        </div>
-        <div className={styles.separator}></div>
-
-        <div className={styles.separator}></div>
-        {/* --- UPDATED JSX FOR SECTION FOUR --- */}
-        <Tape />
-
-        
-
-       
-        <div className={styles.separator}></div>
-        <div id="sectionFiveContainer" className={styles.sectionFiveContainer} ref={sectionFiveContainerRef}>
-          <SectionFive triggerRef={sectionFiveContainerRef} />
-        </div>
-        <div className={styles.sectionBigSixContainer}>
-          <div id="sectionSixContainer" className={styles.sectionSixContainer} >
-            <div className={styles.sectionSixContainerTitle}>
-              <div className={styles.sectionSixTitleLogo}>
-                <SquareCircle styles={squareSixCircleStyles} />
-              </div>
-              Quiero <br></br> mi taller
-            </div>
-            <div className={styles.sectionSixContainerInfo}>
-              <div className={styles.sectionSixInfoBackground}></div>
-              <div className={`${styles.sectionSixContainerInfoCard}`}>
-                <div className={styles.sectionSixBackground}></div>
-                <div className={styles.sectionSixTitle}>
-                  Quieres que vayamos a hacerte un taller? <br />
-
-                  <span className={styles.highlightText}>Contáctanos</span>
-
-                </div>
-                <form className={styles.form} >
-                  <div className={styles.contactFirstWrap}>
-                    <div className={styles.formGroup}>
-                      <label htmlFor="name">Nombre</label>
-                      <input value={userDict.name} onChange={(e) => handleChange(e)} type="text" id="name" name="name" required className={styles.inputStyle} />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                      <label htmlFor="email">Email</label>
-                      <input value={userDict.email} onChange={(e) => handleChange(e)} type="email" id="email" name="email" required className={styles.inputStyle} />
-                    </div>
-                  </div>
-
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="message">Escribenos un mensaje</label>
-                    <textarea value={userDict.message} onChange={(e) => handleChange(e)} id="message" name="message" rows="4" required className={styles.inputStyle} ></textarea>
-                  </div>
-
-
-                  <button type="submit" className={styles.submitBtn} onClick={(e) => sendForm(e)} disabled={formStatus.kind === 'sending'}>
-                    {formStatus.kind === 'sending' ? 'Enviando...' : 'Enviar'}
-                  </button>
-
-                  {formStatus.kind !== 'idle' && formStatus.kind !== 'sending' && (
-                    <div role="status" aria-live="polite" style={{ marginTop: '0.6em', fontSize: 14, color: formStatus.kind === 'success' ? '#1f7a4d' : '#b91c1c' }}>
-                      {formStatus.message}
-                    </div>
-                  )}
-
-                </form>
-
-
-              </div>
-            </div>
-
+          <div className="kit-stage reveal">
+            <Suspense fallback={<div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: '#000' }}>Cargando modelo 3D…</div>}>
+              <StepViewer fileUrl="/models/kit_sim_trans.glb" initialAngle={-Math.PI / 2} />
+            </Suspense>
           </div>
         </div>
-        <div className={styles.sectionActivities} id="sectionActividades">
-          <div className={styles.activitiesHeader}>
-            <div ref={activitiesTitleRef} className={styles.sectionTwoTitleContainer}>
-              <div className={styles.sectionTwoTitleLogo}>
-                <SquareCircle styles={squareCircleStyles} />
-              </div>
-              <div className={styles.sectionTwoTitleText}>
-                Nuestras
-                <br />
-                Actividades
-              </div>
+      </section>
 
-            </div>
-            <div className={styles.activitiesSubtitle}>
-              Desde capacitación docente y talleres para estudiantes hasta competencias interactivas,
-              hemos llevado a cabo diversas actividades diseñadas para despertar la curiosidad y fomentar
-              la creatividad. Únete a nosotros en la exploración de robótica, programación y mucho más
-              a través de nuestros programas inmersivos.
+      {/* ===== Tape divider ===== */}
+      <Tape />
+
+      {/* ===== Section 4 — Testimonios ===== */}
+      {/* <section className="dsec s4">
+        <div className="s4-panel">
+          <div className="s4-head">
+            <div className="reveal">
+              <div className="dsec-eyebrow">
+                <span className="glyph">
+                  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                    <path d="M2 4h6v6H4l-2 3V4z M10 4h6v6h-4l-2 3V4z" fill="#1f150b" />
+                  </svg>
+                </span>
+                Testimonios
+              </div>
+              <h2 className="dsec-title">Niños que <em>ya construyen</em> el futuro.</h2>
             </div>
           </div>
-          <ActivitiesCarousel />
+          <div className="s4-grid">
+            {TESTIS.map((t, i) => {
+              const id = youtubeId(t.videoUrl);
+              return (
+                <article key={t.name} className="testi reveal" style={{ transitionDelay: `${i * 100}ms` }}>
+                  <div className="testi-video">
+                    {id ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${id}`}
+                        title={`Testimonio de ${t.name}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <div className="play">▶</div>
+                    )}
+                  </div>
+                  <div className="testi-body">
+                    <div className="testi-name">{t.name}</div>
+                    <div className="testi-meta">{t.meta}</div>
+                    <p className="testi-quote">{t.q}</p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
-        {
-          openLoginForm &&
-          <div className={styles.loginFormContainer}>
-            <LoginForm />
+      </section>*/}
+
+ 
+
+      {/* ===== Section 5 — Steps ===== */}
+      <section className="dsec s5" id="sectionFiveContainer">
+        <div className="reveal">
+          <div className="dsec-eyebrow">Usa tu drim</div>
+          <h2 className="dsec-title">Lo que puedes soñar, lo puedes crear. Te mostramos cómo darle vida a tu drim en tres simples pasos.</h2>
+        </div>
+        <div className="s5-grid">
+          <h3 className="s5-words reveal">
+            <span className="word">Juega<span className="dot">.</span></span>
+            <span className="word">Aprende<span className="dot">.</span></span>
+            <span className="word">Repite<span className="dot">.</span></span>
+          </h3>
+          <div className="steps">
+            {STEPS.map((s, i) => (
+              <div className="step-card reveal" key={s.t} style={{ transitionDelay: `${i * 100}ms` }}>
+                <div className="step-num">{String(i + 1).padStart(2, '0')}</div>
+                <div className="step-text"><h4>{s.t}</h4><p>{s.d}</p></div>
+                <div className="step-pic" style={{ backgroundImage: `url(${s.img})` }} aria-hidden="true" />
+              </div>
+            ))}
           </div>
-        }
-      </div>
-  )
-}
+        </div>
+      </section>
+
+      {/* ===== Section 6 — Form ===== */}
+      <section className="dsec s6" id="sectionSixContainer">
+        <div className="reveal" style={{ textAlign: 'center' }}>
+          <div className="dsec-eyebrow" style={{ justifyContent: 'center' }}>Quiero mi taller</div>
+          <h2 className="dsec-title">¿Lo traemos a tu <em>colegio</em> o casa?</h2>
+          <p className="dsec-sub" style={{ marginInline: 'auto' }}>
+            Talleres presenciales, kits para grupos y planes de implementación escolar.
+          </p>
+        </div>
+        <form className="s6-card reveal" onSubmit={sendForm}>
+          <div className="s6-row">
+            <div className="field">
+              <label htmlFor="name">Nombre</label>
+              <input id="name" name="name" type="text" placeholder="Tu nombre" required value={userDict.name} onChange={handleChange} />
+            </div>
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="hola@ejemplo.com" required value={userDict.email} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="s6-row" style={{ marginTop: 16 }}>
+            <div className="field full">
+              <label htmlFor="message">Cuéntanos</label>
+              <textarea id="message" name="message" placeholder="¿Para qué edad? ¿Cuántos niños? ¿Cuándo lo necesitas?" value={userDict.message} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="s6-foot">
+            <span className={`s6-status ${formStatus.kind === 'error' ? 'error' : ''} ${formStatus.kind === 'success' ? 'success' : ''}`} aria-live="polite">
+              {formStatus.message}
+            </span>
+            <button type="submit" className="dbtn" disabled={formStatus.kind === 'sending'}>
+              {formStatus.kind === 'sending' ? 'Enviando…' : 'Quiero mi taller'} <span className="arr">→</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {/* ===== Section 7 — Activities carousel ===== */}
+      <section className="dsec s7" id="sectionActividades">
+        <div className="carousel-head">
+          <div className="reveal">
+            <div className="dsec-eyebrow">Nuestras actividades</div>
+            <h2 className="dsec-title">Salimos a la calle. <em>Mucho.</em></h2>
+          </div>
+        </div>
+        <div className="carousel" ref={carouselRef}>
+          {[...CAROUSEL_IMAGES, ...CAROUSEL_IMAGES].map((src, i) => (
+            <div
+              className="carousel-card"
+              key={i}
+              style={{ backgroundImage: `url(${src})` }}
+              role="img"
+              aria-label={`Actividad drim ${(i % CAROUSEL_IMAGES.length) + 1}`}
+            >
+              <div className="label">
+                <span>{String((i % CAROUSEL_IMAGES.length) + 1).padStart(2, '0')} · Taller</span>
+                <span className="pill">2025</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {openLoginForm &&
+        <div className={styles.loginFormContainer}>
+          <LoginForm />
+        </div>
+      }
+    </div>
+  );
+};
+
 export default Main;
