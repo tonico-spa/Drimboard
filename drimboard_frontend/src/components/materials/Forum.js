@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import useAppStore from '@/store/useAppStore';
 import styles from "../../styles/Forum.module.css";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+import { api } from '@/lib/api';
 
 export default function Forum() {
     const logged = useAppStore((s) => s.logged || {});
@@ -33,8 +31,8 @@ export default function Forum() {
     const fetchIssues = async (tag = null) => {
         setLoading(true);
         try {
-            const url = tag ? `${API_URL}/issues?tag=${encodeURIComponent(tag)}` : `${API_URL}/issues`;
-            const res = await axios.get(url);
+            const path = tag ? `/issues?tag=${encodeURIComponent(tag)}` : '/issues';
+            const res = await api.get(path);
             setIssues(res.data || []);
             // cache full list in store when not filtering
             if (!tag) setStoreIssues(res.data || []);
@@ -62,7 +60,7 @@ export default function Forum() {
                 author_name: logged.user_name || 'Anon',
                 author_email: logged.user_email || 'anon@example.com'
             };
-            const res = await axios.post(`${API_URL}/issues`, payload);
+            const res = await api.post('/issues', payload);
             setShowCreate(false);
             const created = res.data;
             // update store cache by prepending new issue
@@ -78,7 +76,7 @@ export default function Forum() {
 
     const fetchIssueDetail = async (id) => {
         try {
-            const res = await axios.get(`${API_URL}/issues/${id}`);
+            const res = await api.get(`/issues/${id}`);
             setSelectedIssue(res.data.issue);
             setComments(res.data.comments || []);
         } catch (err) {
@@ -94,7 +92,7 @@ export default function Forum() {
                 user_email: logged.user_email || 'anon@example.com',
                 comment: newComment
             };
-            const res = await axios.post(`${API_URL}/issues/${selectedIssue.id}/comments`, payload);
+            const res = await api.post(`/issues/${selectedIssue.id}/comments`, payload);
             setComments([...comments, res.data]);
             setNewComment("");
         } catch (err) {

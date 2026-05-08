@@ -2,42 +2,33 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "../styles/LoginForm.module.css";
-import { useAuth } from '../context/AuthContext';
 import useAppStore from '@/store/useAppStore';
+import { api } from '@/lib/api';
 
 const LoginForm = () => {
 
 
     const [email, setEmail] = useState('');
     const [kitCode, setKitCode] = useState('');
-    const { login } = useAuth();
-        // State for handling loading and error messages
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const { setOpenLoginForm } = useAppStore((state) => state);
-    const { setLogged } = useAppStore((state) => state);
+    const setOpenLoginForm = useAppStore((s) => s.setOpenLoginForm);
+    const setLogged = useAppStore((s) => s.setLogged);
+
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent the browser from reloading the page
-        setError('');       // Clear previous errors
-        setIsLoading(true); // Show a loading state
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
 
         try {
-            console.log("logging")
-            const result = await login({ email: email, kit_code: kitCode });
-
-            if (result.success) {
-                console.log('Login successful! Welcome', result.data.user);
-                setOpenLoginForm(false); // Close the modal on success
-                setLogged({ user_email: email, kit_code: kitCode, user_name: result.data.name })
-            } else {
-                // If the login function returns an error, display it
-                setError(result.message || 'An unknown error occurred.');
-            }
+            const response = await api.post('/login', { email, kit_code: kitCode });
+            setOpenLoginForm(false);
+            setLogged({ user_email: email, kit_code: kitCode, user_name: response.data.name });
         } catch (err) {
-            // Catch any unexpected errors during the API call
-            setError('Could not connect to the server.');
+            const message = err.response?.data?.detail || err.response?.data?.message || 'Credenciales inválidas';
+            setError(message);
         } finally {
-            setIsLoading(false); // Stop the loading state
+            setIsLoading(false);
         }
     };
     const closeLoginForm = (e) => {
@@ -50,9 +41,9 @@ const LoginForm = () => {
     return (
 
         <div className={styles.loginFormContainer}>
-            <div className={styles.loginFormClose} onClick={(e) => closeLoginForm(e)}>
+            <button type="button" className={styles.loginFormClose} onClick={closeLoginForm} aria-label="Cerrar">
                 x
-            </div>
+            </button>
             <div className={styles.loginFormTitle}>
                 Login
             </div>

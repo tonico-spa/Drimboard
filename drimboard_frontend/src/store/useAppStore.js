@@ -47,10 +47,6 @@ const useAppStore = create(
             issues: [],
             setIssues: (issues) => set({issues: issues}),
 
-            
-            openMaterialsPage: false,
-            setOpenMaterialsPage: (open) => set({openMaterialsPage: open})
-
         }),
        {
           

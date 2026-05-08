@@ -19,20 +19,14 @@ authors = [
 # --- Project Dependencies ---
 # These are the libraries required for the project to run.
 dependencies = [
-    "Flask",
-    "Flask-Bcrypt",
-    "Flask-Cors",
     "psycopg2-binary", # Use "PyMySQL" if you have a MySQL database
-    "PyJWT",
     "python-dotenv",
     "sqlalchemy",
     "boto3",
     "gunicorn",
     "uvicorn",
     "fastapi",
-    "passlib",
     "pydantic",
-    "typing"
 ]
 
 [tool.setuptools.packages.find]

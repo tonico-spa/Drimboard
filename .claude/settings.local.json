@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm audit *)",
-      "Bash(npm uninstall *)"
+      "Bash(npm uninstall *)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('app/app.py'\\).read\\(\\)\\); print\\('app.py: syntax OK'\\)\")"
     ]
   }
 }

@@ -25,15 +25,21 @@
 }
 
 .navbarLink {
+    appearance: none;
+    -webkit-appearance: none;
     padding: 10px;
     color: black;
     font-family: "Geist Mono", monospace !important;
-    border: 0px;
+    border: 0;
     font-size: 15px;
     font-weight: 500;
     background-color: transparent;
     cursor: pointer;
     text-align: center;
+    line-height: 1;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
 }
 
 .navbarLink:hover {
@@ -73,18 +79,28 @@
     width: 60%;
 }
 
+.logoUserButton {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 1em;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.logoUserButton:hover {
+    background-color: #f4ede5ab;
+}
+
 .logoUser {
     width: 30%;
     background-color: transparent;
     align-items: center;
     justify-self: center;
-    margin-left: 1em;
-    cursor: pointer;
-}
-
-.logoUser:hover {
-    background-color: #f4ede5ab;
-    border-radius: 5px;
 }
 
 .userLink {
@@ -108,14 +124,19 @@
 }
 
 .openUserLink {
+    appearance: none;
+    -webkit-appearance: none;
     padding: 20px;
     color: black;
     font-family: "Geist Mono", monospace !important;
-    border: 0px;
+    border: 0;
     font-size: 15px;
     font-weight: 500;
     background-color: transparent;
     cursor: pointer;
+    text-align: left;
+    text-decoration: none;
+    display: block;
 }
 
 .openUserLink:hover {

@@ -43,6 +43,12 @@
 }
 
 .materiasMainSectionOneMaterial {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    padding: 0;
     font-family: "Geist", sans-serif;
     border: 3px solid #53C68E;
     border-radius: 15px;
@@ -119,6 +125,12 @@
 }
 
 .materiasMainSectionTwoMaterial {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    padding: 0;
     border: 3px solid #F397C1;
     border-radius: 15px;
     display: flex;

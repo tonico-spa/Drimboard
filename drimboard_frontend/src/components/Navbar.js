@@ -1,17 +1,19 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from "next/link";
+import { usePathname, useRouter } from 'next/navigation';
 import styles from "../styles/Navbar.module.css";
 import useAppStore from '@/store/useAppStore';
 import NavLogo from './svgs/NavLogo';
 
 const Navbar = () => {
 
-    const { setOpenLoginForm } = useAppStore((state) => state);
-    const logged = useAppStore((state) => state.logged);
+    const setOpenLoginForm = useAppStore((s) => s.setOpenLoginForm);
+    const logged = useAppStore((s) => s.logged);
+    const setLogged = useAppStore((s) => s.setLogged);
     const [openUser, setOpenUser] = useState(false)
-    const { setLogged } = useAppStore((state) => state);
-    const { setOpenMaterialsPage } = useAppStore((state) => state);
+    const pathname = usePathname();
+    const router = useRouter();
 
 
     const navLogoStyles = `
@@ -24,31 +26,24 @@ const Navbar = () => {
         setOpenLoginForm(true)
     }
 
-    const logout = (e) => {
-        e.preventDefault()
+    const logout = () => {
         setLogged({ user_email: null, kit_code: null, user_name: null })
-        setOpenMaterialsPage(false)
         setOpenUser(false)
+        if (pathname !== '/') router.push('/')
     }
 
-    const openMaterials = (e) => {
-        e.preventDefault()
-        setOpenMaterialsPage(true)
-        setOpenUser(false)
-    }
-
-    const closeMaterials = (e) => {
-        e.preventDefault()
-        setOpenMaterialsPage(false)
-        setOpenUser(false)
-    }
-
-    const scrollToSection = (sectionId) => {
+    // Section anchors only exist on `/`. From any other route, navigate home with the hash
+    // and let the browser scroll. From `/`, do a smooth scroll with a top offset.
+    const goToSection = (sectionId) => {
+        if (pathname !== '/') {
+            router.push(`/#${sectionId}`)
+            return
+        }
         const element = document.getElementById(sectionId);
         if (element) {
             const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
             const offsetPosition = elementPosition - (window.innerHeight * 0.2);
-            
+
             window.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
@@ -62,46 +57,54 @@ const Navbar = () => {
         <nav className={styles.navContainer}>
             <div className={styles.navbarContainer}>
                 <div className={styles.logoContainer}>
-                    <div href="/" onClick={(e) => closeMaterials(e)} className={styles.navbarLink}>
+                    <Link href="/" onClick={() => setOpenUser(false)} className={styles.navbarLink} aria-label="Inicio">
                         <NavLogo styles={navLogoStyles} />
-                    </div>
+                    </Link>
                 </div>
                 <div className={styles.linksContainer}>
-                    <div onClick={() => scrollToSection('sectionTwoContainer')} className={styles.navbarLink}>
+                    <button type="button" onClick={() => goToSection('sectionTwoContainer')} className={styles.navbarLink}>
                         Por que drim
-                    </div>
-                    <div onClick={() => scrollToSection('sectionFourContainer')} className={styles.navbarLink}>
-                        Testimonios
-                    </div>
-                    <div onClick={() => scrollToSection('sectionFiveContainer')} className={styles.navbarLink}>
+                    </button>
+                    <button type="button" onClick={() => goToSection('sectionFiveContainer')} className={styles.navbarLink}>
                         Usa tu drim
-                    </div>
-                    <div onClick={() => scrollToSection('sectionSixContainer')} className={styles.navbarLink}>
+                    </button>
+                    <button type="button" onClick={() => goToSection('sectionSixContainer')} className={styles.navbarLink}>
                         Quiero mi taller
-                    </div>
-                    <div onClick={() => scrollToSection('sectionActividades')} className={styles.navbarLink}>
+                    </button>
+                    <button type="button" onClick={() => goToSection('sectionActividades')} className={styles.navbarLink}>
                         Nuestras Actividades
-                    </div>
+                    </button>
+                    <Link href="/programacion" className={styles.navbarLink}>
+                        Prueba tu drim
+                    </Link>
 
 
 
                     {
                         logged["user_email"] &&
                         <div className={styles.userMenuContainer}>
-                            <img
-                                src="/user.png"
-                                alt="User"
-                                className={styles.logoUser}
+                            <button
+                                type="button"
+                                className={styles.logoUserButton}
                                 onClick={() => setOpenUser(!openUser)}
-                            />
+                                aria-haspopup="menu"
+                                aria-expanded={openUser}
+                                aria-label="Menú de usuario"
+                            >
+                                <img
+                                    src="/user.png"
+                                    alt=""
+                                    className={styles.logoUser}
+                                />
+                            </button>
                             {openUser &&
-                                <div className={styles.navbarOpenUser}>
-                                    <div onClick={(e) => openMaterials(e)} className={styles.openUserLink}>
+                                <div className={styles.navbarOpenUser} role="menu">
+                                    <Link href="/materiales" onClick={() => setOpenUser(false)} className={styles.openUserLink} role="menuitem">
                                         Ver material
-                                    </div>
-                                    <div onClick={(e) => logout(e)} className={styles.openUserLink}>
+                                    </Link>
+                                    <button type="button" onClick={logout} className={styles.openUserLink} role="menuitem">
                                         Logout
-                                    </div>
+                                    </button>
                                 </div>
                             }
                         </div>
@@ -109,7 +112,7 @@ const Navbar = () => {
 
                     {
                         !logged["user_email"] &&
-                        <button className={styles.navbarLoginLink} onClick={(e) => openLoginForm(e)}>
+                        <button className={styles.navbarLoginLink} onClick={openLoginForm}>
                             Login
                         </button>
                     }

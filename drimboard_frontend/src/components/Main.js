@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import styles from '../styles/Main.module.css';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,16 +8,20 @@ import RightArrow from './svgs/RightArrows';
 import SquareCircle from './svgs/SquareCircle';
 import SectionTwoCards from './SectionTwoCards';
 import Tape from './svgs/tape/Tape';
-import Lenis from '@studio-freight/lenis'; // Import Lenis
 import SectionFive from './SectionFive';
 import { Suspense } from 'react';
 import useAppStore from '@/store/useAppStore';
 import LoginForm from './LoginForm';
-import StepViewer from './SetpViewer';
 import VideoEmbed from "./VideoEmbed";
-import Materials from './materials/Materials';
 import MainLogo from './svgs/MainLogo';
 import ActivitiesCarousel from './ActivitiesCarousel';
+import { api } from '@/lib/api';
+
+// Three.js + GLTF loader is heavy; only load it on the client when this section mounts.
+const StepViewer = dynamic(() => import('./SetpViewer'), {
+  ssr: false,
+  loading: () => <div>Cargando modelo 3D...</div>,
+});
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -44,18 +49,11 @@ const Main = () => {
   const card4Ref = useRef(null);
   // ------------------------------------
   const openLoginForm = useAppStore((state) => state.openLoginForm);
-  const open_materials = useAppStore((state) => state.openMaterialsPage);
 
 
   const [activeCard, setActiveCard] = useState(0);
-  const [openMaterials, setOpenMaterials] = useState(false);
   const [userDict, setUserDict] = useState({ "name": "", "email": "", "message": "" })
-
-
-
-  useEffect(() => {
-    setOpenMaterials(open_materials)
-  }, [open_materials])
+  const [formStatus, setFormStatus] = useState({ kind: 'idle', message: '' })
 
   const arrowStyles = `
     .first_triangle {
@@ -102,34 +100,7 @@ const Main = () => {
         fill: #1f150b;
       }
     `
-  useEffect(() => {
-    // Initialize Lenis
-    const lenis = new Lenis({
-      duration: 1.2, // How fast the smooth scroll is
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing function
-    });
-
-    // Sync GSAP ScrollTrigger with Lenis
-    lenis.on('scroll', ScrollTrigger.update);
-
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    gsap.ticker.lagSmoothing(0);
-
-    // Function to run on each animation frame
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    // Cleanup function to destroy the Lenis instance when the component unmounts
-    return () => {
-      lenis.destroy();
-    };
-  }, []); // Empty dependency array ensures this runs only once
+  // Smooth scroll (Lenis) is initialized once at the layout level via <SmoothScroll />.
 
   useEffect(() => {
     console.log(openLoginForm)
@@ -138,9 +109,6 @@ const Main = () => {
 
   // Effect for Section Three (Split Scroll)
   useEffect(() => {
-    console.log(openMaterials)
-
-    if (openMaterials === true) return;
     let ctx = gsap.context(() => {
       if (mainScrollContainerRef.current && scrollContentRef.current && scrollContainerRef.current) {
         const scrollContent = scrollContentRef.current;
@@ -169,13 +137,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
   // Effect for Section Two (Title Fade-in)
   useEffect(() => {
-    console.log(openMaterials)
-
-    if (openMaterials === true) return; // Skip if materials page is open
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -208,12 +173,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
   // Effect for Section Four Video Container (Scale animation)
   useEffect(() => {
-    if (openMaterials === true) return;
-
     const ctx = gsap.context(() => {
       const background = document.querySelector(`.${styles.sectionFourBackground}`);
       const container = document.querySelector(`.${styles.sectionFourVideoContainer}`);
@@ -237,7 +200,7 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
   // useEffect(() => {
   //   if (openMaterials === true) return; // Skip if materials page is open
@@ -301,10 +264,13 @@ const Main = () => {
 
   const sendForm = async (e) => {
     e.preventDefault()
-    const response = await axios.post(`${API_URL}/send_form`, userDict)
-    if (response.status === 200) {
+    setFormStatus({ kind: 'sending', message: 'Enviando...' })
+    try {
+      await api.post('/send_form', userDict)
       setUserDict({ "name": "", "email": "", "message": "" })
-      window.alert("Mensaje enviado! Nos contactaremos contigo")
+      setFormStatus({ kind: 'success', message: 'Mensaje enviado. Nos contactaremos contigo.' })
+    } catch (err) {
+      setFormStatus({ kind: 'error', message: 'No pudimos enviar el mensaje. Inténtalo más tarde.' })
     }
   }
 
@@ -317,8 +283,6 @@ const Main = () => {
 
   // Effect for Section Six Info Background (Scale animation)
   useEffect(() => {
-    if (openMaterials === true) return;
-
     const ctx = gsap.context(() => {
       const background = document.querySelector(`.${styles.sectionSixBackground}`);
       const container = document.querySelector(`.${styles.sectionSixContainer}`);
@@ -342,11 +306,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
 
   return (
-    !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
 
         <div id="coverContainer" className={styles.coverContainer}>
@@ -480,7 +443,7 @@ const Main = () => {
         <div className={styles.sectionBigSixContainer}>
           <div id="sectionSixContainer" className={styles.sectionSixContainer} >
             <div className={styles.sectionSixContainerTitle}>
-              <div className={styles.sectionTwoTitleLogo}>
+              <div className={styles.sectionSixTitleLogo}>
                 <SquareCircle styles={squareSixCircleStyles} />
               </div>
               Quiero <br></br> mi taller
@@ -515,8 +478,15 @@ const Main = () => {
                   </div>
 
 
-                  <button type="submit" className={styles.submitBtn} onClick={(e) => sendForm(e)}>Enviar</button>
+                  <button type="submit" className={styles.submitBtn} onClick={(e) => sendForm(e)} disabled={formStatus.kind === 'sending'}>
+                    {formStatus.kind === 'sending' ? 'Enviando...' : 'Enviar'}
+                  </button>
 
+                  {formStatus.kind !== 'idle' && formStatus.kind !== 'sending' && (
+                    <div role="status" aria-live="polite" style={{ marginTop: '0.6em', fontSize: 14, color: formStatus.kind === 'success' ? '#1f7a4d' : '#b91c1c' }}>
+                      {formStatus.message}
+                    </div>
+                  )}
 
                 </form>
 
@@ -554,12 +524,7 @@ const Main = () => {
             <LoginForm />
           </div>
         }
-      </div >) : (
-      <Materials />
-    )
-
-
-
+      </div>
   )
 }
 export default Main;

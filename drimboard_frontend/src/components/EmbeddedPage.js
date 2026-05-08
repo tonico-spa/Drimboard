@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from "../styles/EmbeddedPage.module.css"
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 import useAppStore from '@/store/useAppStore';
+import { API_URL } from '@/lib/api';
 // Serial Helper Class for ESP32 Communication
 class SerialHelper {
     constructor() {

@@ -65,10 +65,12 @@ const ActivitiesCarousel = () => {
         >
           {duplicatedImages.map((image, index) => (
             <div key={index} className={styles.carouselSlide}>
-              <img 
-                src={image} 
-                alt={`Activity ${(index % images.length) + 1}`}
+              <img
+                src={image}
+                alt={`Actividad drim ${(index % images.length) + 1}`}
                 className={styles.carouselImage}
+                loading="lazy"
+                decoding="async"
               />
             </div>
           ))}

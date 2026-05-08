@@ -13,6 +13,8 @@ const MaterialsMain = () => {
     const documents = useAppStore((state) => state.documents);
     const { setOpenMaterialCourse } = useAppStore((state) => state);
 
+    const byPublishedDesc = (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt);
+
     // Get the latest 3 posts from all categories combined
     const recentMaterials = useMemo(() => {
         const allMaterials = [
@@ -21,18 +23,17 @@ const MaterialsMain = () => {
             ...documents.map(item => ({ ...item, contentType: 'documents', color: '#FFB71A' }))
         ];
 
-        // Sort by publishedAt date (newest first) and take the first 3
-        return allMaterials
-            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-            .slice(0, 3);
+        return [...allMaterials].sort(byPublishedDesc).slice(0, 3);
     }, [actividades, videos, documents]);
 
-    // Get the latest 5 actividades
+    // Get the latest 5 actividades, excluding any already shown in "Material reciente"
     const recentActividades = useMemo(() => {
-        return actividades
-            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+        const shownIds = new Set(recentMaterials.map((m) => m._id));
+        return [...actividades]
+            .sort(byPublishedDesc)
+            .filter((a) => !shownIds.has(a._id))
             .slice(0, 5);
-    }, [actividades]);
+    }, [actividades, recentMaterials]);
 
     const openCourse = (e, element, contentType) => {
         e.preventDefault();
@@ -61,7 +62,8 @@ const MaterialsMain = () => {
                     <div className={styles.materiasMainSectionOneContent}>
                         {recentMaterials.length > 0 ? (
                             recentMaterials.map((element) => (
-                                <div
+                                <button
+                                    type="button"
                                     key={element._id}
                                     className={styles.materiasMainSectionOneMaterial}
                                     onClick={(e) => openCourse(e, element, element.contentType)}
@@ -73,7 +75,7 @@ const MaterialsMain = () => {
                                     <div className={styles.materiasMainSectionOneMaterialTitle}>
                                         {element.title}
                                     </div>
-                                </div>
+                                </button>
                             ))
                         ) : (
                             <>
@@ -115,7 +117,8 @@ const MaterialsMain = () => {
                     <div className={styles.materiasMainSectionTwoContent}>
                         {recentActividades.length > 0 ? (
                             recentActividades.map((element) => (
-                                <div
+                                <button
+                                    type="button"
                                     key={element._id}
                                     className={styles.materiasMainSectionTwoMaterial}
                                     onClick={(e) => openCourse(e, element, 'actividades')}
@@ -127,7 +130,7 @@ const MaterialsMain = () => {
                                     <div className={styles.materiasMainSectionTwoMaterialTitle}>
                                         {element.title}
                                     </div>
-                                </div>
+                                </button>
                             ))
                         ) : (
                             <>

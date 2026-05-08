@@ -1,9 +1,7 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
 import styles from "../../styles/MaterialsCourses.module.css";
 import useAppStore from '@/store/useAppStore';
-import { capitalizeWords } from "@/utils/utils";
 import MaterialsSingleCourse from "./MaterialSingleCourse";
 
 
@@ -46,7 +44,8 @@ const MaterialsCourses = () => {
                             <div className={styles.materiasMainSectionOneContent}>
 
                                 {actividades.length > 0 && actividades.slice(0, 5).map((element) => (
-                                    <div
+                                    <button
+                                        type="button"
                                         key={element._id}
                                         className={styles.materiasMainSectionOneMaterial}
                                         onClick={(e) => openCourse(e, element, 'actividades')}
@@ -57,7 +56,7 @@ const MaterialsCourses = () => {
                                     >
                                         <div className={styles.materiasMainSectionOneMaterialTitle}>{element.title}</div>
 
-                                    </div>
+                                    </button>
                                 ))}
 
                             </div>
@@ -78,7 +77,8 @@ const MaterialsCourses = () => {
                             </div>
                             <div className={styles.materiasMainSectionTwoContent}>
                                 {documents.length > 0 && documents.slice(0, 5).map((element) => (
-                                    <div
+                                    <button
+                                        type="button"
                                         key={element._id}
                                         className={styles.materiasMainSectionOneMaterial}
                                         onClick={(e) => openCourse(e, element, 'documents')}
@@ -88,7 +88,7 @@ const MaterialsCourses = () => {
                                         }}
                                     >
                                         <div className={styles.materiasMainSectionOneMaterialTitle}>{element.title}</div>
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
                             {documents.length > 5 && (
@@ -108,7 +108,8 @@ const MaterialsCourses = () => {
                             </div>
                             <div className={styles.materiasMainSectionThreeContent}>
                                 {videos.length > 0 && videos.slice(0, 5).map((element) => (
-                                    <div
+                                    <button
+                                        type="button"
                                         key={element._id}
                                         className={styles.materiasMainSectionOneMaterial}
                                         onClick={(e) => openCourse(e, element, 'videos')}
@@ -117,7 +118,7 @@ const MaterialsCourses = () => {
                                         }}
                                     >
                                         <div className={styles.materiasMainSectionOneMaterialTitle}>{element.title}</div>
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
                             {videos.length > 5 && (
@@ -150,7 +151,8 @@ const MaterialsCourses = () => {
                         </div>
                         <div className={styles.modalGrid}>
                             {modalSection.data.map((element) => (
-                                <div
+                                <button
+                                    type="button"
                                     key={element._id}
                                     className={styles.modalCard}
                                     onClick={(e) => {
@@ -163,7 +165,7 @@ const MaterialsCourses = () => {
                                     }}
                                 >
                                     <div className={styles.modalCardTitle}>{element.title}</div>
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </div>

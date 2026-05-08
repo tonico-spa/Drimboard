@@ -6,9 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { capitalizeWords, getRelativeTime } from "@/utils/utils";
 import VideoEmbed from "../VideoEmbed";
 import PdfViewer from '../PdfViewer';
-import axios from 'axios';
 import EmbeddedPage from "../EmbeddedPage";
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+import { api } from '@/lib/api';
 import { getUrl } from "@/utils/utils";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
@@ -53,7 +52,7 @@ const MaterialsSingleCourse = () => {
     
     const fetchSavedProjects = async () => {
         try {
-            const response = await axios.get(`${API_URL}/blocks/user/${encodeURIComponent(logged.user_email)}`);
+            const response = await api.get(`/blocks/user/${encodeURIComponent(logged.user_email)}`);
             setSavedProjects(response.data);
             console.log('Saved projects:', response.data);
         } catch (error) {
@@ -78,17 +77,19 @@ const MaterialsSingleCourse = () => {
     }
 
     const commentCourse = async () => {
-
         const send_dd = {
             "course_id": openMaterialCourse["_id"],
             "user_email": logged["user_email"],
             "message": comment,
             "user_name": logged["user_name"]
         }
-        const response = await axios.post(`${API_URL}/create_course_message`, send_dd)
-        setMaterialCourseChat([...materialCourseChat, send_dd])
-        setComment("")
-
+        try {
+            const response = await api.post('/create_course_message', send_dd)
+            setMaterialCourseChat([...materialCourseChat, response.data])
+            setComment("")
+        } catch (err) {
+            console.error("Error posting comment", err)
+        }
     }
     const openCourseContent = () => {
         setCourseContent(!courseContent)
@@ -109,10 +110,9 @@ const MaterialsSingleCourse = () => {
     return (
 
         <div className={styles.materialsSingleCourseContainer}>
-            <div className={styles.closeButton} onClick={(e) => openCourse(e)}>
-
+            <button type="button" className={styles.closeButton} onClick={openCourse}>
                 Volver
-            </div>
+            </button>
 
             {/* Show embedded page only for Actividades */}
             {contentType === 'actividades' && (
@@ -285,7 +285,7 @@ const MaterialsSingleCourse = () => {
                     }
                 </div>
                 {messages.length > 0 && messages.map((element) => (
-                    <div className={styles.materialCourseMessage} key={element["_id"]}>
+                    <div className={styles.materialCourseMessage} key={element.id ?? element.created_time}>
                         <div  className={styles.materialCourseTitleContainer}>
                             <div className={styles.materialCourseMessageTitle}>
                                 {capitalizeWords(element["user_name"])}

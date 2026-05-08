@@ -2,36 +2,50 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "../../styles/Materials.module.css";
-import { useAuth } from '../../context/AuthContext';
 import useAppStore from '@/store/useAppStore';
 import MaterialsMain from "@/components/materials/MaterialsMain";
 import MaterialsCourses from "@/components/materials/MaterialsCourses";
 import MaterialsSingleCourse from "@/components/materials/MaterialSingleCourse";
-import axios from 'axios';
 import Forum from "./Forum";
+import { api } from '@/lib/api';
 const groq = String.raw;
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 import { client } from '../../lib/sanity.js'; // Your Sanity client
 
 const Materials = () => {
     const [tab, setTab] = useState("inicio");
     const openMaterialCourse = useAppStore((state) => state.openMaterialCourse);
-    const { setMaterialCourseChat, setActividades, setVideos, setDocuments } = useAppStore((state) => state);
+    const setMaterialCourseChat = useAppStore((s) => s.setMaterialCourseChat);
+    const setActividades = useAppStore((s) => s.setActividades);
+    const setVideos = useAppStore((s) => s.setVideos);
+    const setDocuments = useAppStore((s) => s.setDocuments);
 
     useEffect(() => {
+        // Read latest store snapshot — selectors above don't reflect updates from this same effect.
+        const store = useAppStore.getState();
 
-        const getMessages = async () => {
-            console.log("fetching messages")
-            const response = await axios.get(`${API_URL}/get_course_messages`);
-            console.log("messages fetched", response.data)
-            setMaterialCourseChat(response.data)
+        // Defensive: dedupe by _id in case Sanity returns the same doc twice (drafts, etc.)
+        const dedupById = (items) => {
+            const seen = new Set();
+            return (items || []).filter((it) => {
+                if (!it?._id || seen.has(it._id)) return false;
+                seen.add(it._id);
+                return true;
+            });
+        };
+
+        if (!store.materialCourseChat || store.materialCourseChat.length === 0) {
+            api.get('/get_course_messages')
+                .then((res) => setMaterialCourseChat(res.data))
+                .catch((err) => console.error('Error fetching messages', err));
         }
 
-        const getActividades = async () => {
+        // Token-authed Sanity reads include drafts; filter them out at the GROQ level.
+        const notDraft = `!(_id in path("drafts.**"))`;
+
+        if (!store.actividades || store.actividades.length === 0) {
             const actividadesQuery = groq`
-                *[_type == "actividades"]{
+                *[_type == "actividades" && ${notDraft}]{
                     _id,
                     title,
                     "pdfFile": pdfFile.asset->url,
@@ -41,14 +55,17 @@ const Materials = () => {
                     publishedAt
                 } | order(publishedAt desc)
             `;
-            const data = await client.fetch(actividadesQuery);
-            console.log("actividades fetched", data);
-            setActividades(data);
+            client.fetch(actividadesQuery)
+                .then((data) => {
+                    console.log('[sanity] actividades raw:', data);
+                    setActividades(dedupById(data));
+                })
+                .catch((err) => console.error('Error fetching actividades', err));
         }
 
-        const getVideos = async () => {
+        if (!store.videos || store.videos.length === 0) {
             const videosQuery = groq`
-                *[_type == "videos"]{
+                *[_type == "videos" && ${notDraft}]{
                     _id,
                     title,
                     youtubeUrls,
@@ -57,14 +74,17 @@ const Materials = () => {
                     publishedAt
                 } | order(publishedAt desc)
             `;
-            const data = await client.fetch(videosQuery);
-            console.log("videos fetched", data);
-            setVideos(data);
+            client.fetch(videosQuery)
+                .then((data) => {
+                    console.log('[sanity] videos raw:', data);
+                    setVideos(dedupById(data));
+                })
+                .catch((err) => console.error('Error fetching videos', err));
         }
 
-        const getDocuments = async () => {
+        if (!store.documents || store.documents.length === 0) {
             const documentsQuery = groq`
-                *[_type == "pdf_document"]{
+                *[_type == "pdf_document" && ${notDraft}]{
                     _id,
                     title,
                     "pdfFile": pdfFile.asset->url,
@@ -73,17 +93,14 @@ const Materials = () => {
                     publishedAt
                 } | order(publishedAt desc)
             `;
-            const data = await client.fetch(documentsQuery);
-            console.log("documents fetched", data);
-            setDocuments(data);
+            client.fetch(documentsQuery)
+                .then((data) => {
+                    console.log('[sanity] documents raw:', data);
+                    setDocuments(dedupById(data));
+                })
+                .catch((err) => console.error('Error fetching documents', err));
         }
-
-        getMessages()
-        getActividades()
-        getVideos()
-        getDocuments()
-
-    }, [])
+    }, [setMaterialCourseChat, setActividades, setVideos, setDocuments])
 
 
 

@@ -12,7 +12,8 @@ if not SQLALCHEMY_DATABASE_URL:
     raise ValueError("No DATABASE_URL found in environment variables")
 
 # The engine is the entry point to the database.
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# pool_pre_ping recycles dead connections so first requests after idle don't 500.
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True, pool_recycle=300)
 
 # Each instance of SessionLocal will be a new database session.
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

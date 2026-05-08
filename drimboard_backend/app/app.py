@@ -1,6 +1,5 @@
 # app.py (FastAPI version with if __name__ == "__main__": and Depends fix)
 import os
-import jwt
 import uvicorn
 import app.utils as utils
 #import aws_utils as aws_utils
@@ -12,10 +11,9 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy.orm import Session  # <--- ADD THIS IMPORT
-from fastapi import FastAPI, Depends, HTTPException, status, Response, Cookie, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from passlib.context import CryptContext
 from dotenv import load_dotenv
 
 # from database import models, database
@@ -27,7 +25,6 @@ load_dotenv()
 
 # --- App Initialization ---
 app = FastAPI()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ENV = os.getenv("FLASK_ENV")
 
 origins = [
@@ -71,10 +68,6 @@ async def cors_logger(request: Request, call_next):
         print(f"CORS_LOG: {request.method} {request.url.path} Origin: {origin}")
     response = await call_next(request)
     return response
-# --- Configuration ---
-SECRET_KEY = os.getenv("JWT_SECRET")
-if not SECRET_KEY:
-    raise ValueError("JWT_SECRET environment variable not set.")
 
 
 # --- Database Dependency ---
@@ -115,6 +108,7 @@ class CourseMessageCreate(BaseModel):
 
 
 class CourseMessageResponse(BaseModel):
+    id: int
     user_name: str
     user_email: str
     message: str
@@ -215,8 +209,8 @@ class UserBlocksResponse(BaseModel):
         orm_mode = True
 
 
-@app.post("/create_course_message", response_model=MessageResponse)
-def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)):  # <--- FIXED HERE
+@app.post("/create_course_message", response_model=CourseMessageResponse)
+def create_course_message(message: CourseMessageCreate, db: Session = Depends(get_db)):
     try:
         new_message = models.CourseMessage(
             user_name=message.user_name,
@@ -228,9 +222,7 @@ def create_course_message(message: CourseMessageCreate, db: Session = Depends(ge
         db.add(new_message)
         db.commit()
         db.refresh(new_message)
-
-        print(f"Message inserted with ID: {new_message.id}")
-        return {"message": f"Message inserted with ID: {new_message.id}"}
+        return new_message
 
     except Exception as e:
         db.rollback()
@@ -421,52 +413,21 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     return {"user": email, "name": user.user_name, "message": "Login successful"}
 
 
-@app.get("/profile", response_model=MessageResponse)
-def profile(token: Optional[str] = Cookie(None)):
-    if not token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authorized, no token provided"
-        )
-
-    try:
-        data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        return {"email": data["email"], "message": "This is your profile."}
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token has expired"
-        )
-    except jwt.InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token"
-        )
-
-
-@app.post("/logout", response_model=MessageResponse)
-def logout(response: Response):
-    response.set_cookie(key="token", value="", expires=0, httponly=True)
-    return {"message": "Logout successful"}
-
-
 @app.post("/send_form", response_model=MessageResponse)
 def send_form(payload: ContactForm):
     try:
-        name = payload.name
-        email = payload.email
-        message = payload.message
-
-        data_dd = {
-            "name": name,
-            "email": email,
-            "message": message
-        }
-        utils.handle_contact_form(data_dd)
-
-        return {"message": "Logout successful"}
+        utils.handle_contact_form({
+            "name": payload.name,
+            "email": payload.email,
+            "message": payload.message,
+        })
+        return {"message": "Mensaje enviado"}
     except Exception as exc:
-        return {"result": exc}
+        print(f"Error sending contact form: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="No se pudo enviar el mensaje",
+        )
 
 
 # --- User Blocks Workspace endpoints ---
