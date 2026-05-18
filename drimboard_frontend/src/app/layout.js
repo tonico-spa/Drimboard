@@ -5,7 +5,7 @@ import { ToastProvider } from '../context/ToastContext';
 
 
 export const metadata = {
-  title: "drimboard",
+  title: "Drimboard",
 };
 
 export const viewport = {
