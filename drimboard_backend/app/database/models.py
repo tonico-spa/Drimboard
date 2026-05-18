@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ForeignKey
 from sqlalchemy.sql import func
 # from database.database import Base
 from app.database.database import Base
@@ -43,7 +43,7 @@ class IssueComment(Base):
     __tablename__ = "issue_comments"
 
     id = Column(Integer, primary_key=True, index=True)
-    issue_id = Column(Integer, nullable=False, index=True)
+    issue_id = Column(Integer, ForeignKey("issues.id", ondelete="CASCADE"), nullable=False, index=True)
     user_name = Column(String(100), nullable=False)
     user_email = Column(String(255), nullable=False)
     comment = Column(Text)

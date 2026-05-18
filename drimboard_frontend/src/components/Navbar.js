@@ -1,17 +1,20 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
-import Link from "next/link";
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from "../styles/Navbar.module.css";
 import useAppStore from '@/store/useAppStore';
 import NavLogo from './svgs/NavLogo';
 
 const Navbar = () => {
+    const router = useRouter();
+    const pathname = usePathname();
 
     const { setOpenLoginForm } = useAppStore((state) => state);
     const logged = useAppStore((state) => state.logged);
     const [openUser, setOpenUser] = useState(false)
+    const [menuOpen, setMenuOpen] = useState(false);
     const { setLogged } = useAppStore((state) => state);
-    const { setOpenMaterialsPage } = useAppStore((state) => state);
 
 
     const navLogoStyles = `
@@ -22,37 +25,32 @@ const Navbar = () => {
     const openLoginForm = (e) => {
         e.preventDefault()
         setOpenLoginForm(true)
+        setMenuOpen(false)
     }
 
     const logout = (e) => {
         e.preventDefault()
         setLogged({ user_email: null, kit_code: null, user_name: null })
-        setOpenMaterialsPage(false)
         setOpenUser(false)
+        setMenuOpen(false)
     }
 
-    const openMaterials = (e) => {
-        e.preventDefault()
-        setOpenMaterialsPage(true)
+    const closeNavOverlays = () => {
         setOpenUser(false)
-    }
-
-    const closeMaterials = (e) => {
-        e.preventDefault()
-        setOpenMaterialsPage(false)
-        setOpenUser(false)
+        setMenuOpen(false)
     }
 
     const scrollToSection = (sectionId) => {
+        setMenuOpen(false)
+        if (pathname !== '/') {
+            router.push(`/#${sectionId}`)
+            return
+        }
         const element = document.getElementById(sectionId);
         if (element) {
             const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
             const offsetPosition = elementPosition - (window.innerHeight * 0.2);
-            
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         }
     }
 
@@ -62,26 +60,43 @@ const Navbar = () => {
         <nav className={styles.navContainer}>
             <div className={styles.navbarContainer}>
                 <div className={styles.logoContainer}>
-                    <div href="/" onClick={(e) => closeMaterials(e)} className={styles.navbarLink}>
+                    <Link href="/" onClick={closeNavOverlays} className={styles.navbarLink}>
                         <NavLogo styles={navLogoStyles} />
-                    </div>
+                    </Link>
                 </div>
-                <div className={styles.linksContainer}>
-                    <div onClick={() => scrollToSection('sectionTwoContainer')} className={styles.navbarLink}>
+
+                <button
+                    type="button"
+                    className={styles.hamburger}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    aria-label="Toggle menu"
+                    aria-expanded={menuOpen}
+                >
+                    <span className={menuOpen ? styles.barTop : ''}></span>
+                    <span className={menuOpen ? styles.barMid : ''}></span>
+                    <span className={menuOpen ? styles.barBot : ''}></span>
+                </button>
+
+                <div className={`${styles.linksContainer} ${menuOpen ? styles.menuOpen : ''}`}>
+                    <button type="button" onClick={() => scrollToSection('sectionTwoContainer')} className={styles.navbarLink}>
                         Por que drim
-                    </div>
-                    <div onClick={() => scrollToSection('sectionFourContainer')} className={styles.navbarLink}>
-                        Testimonios
-                    </div>
-                    <div onClick={() => scrollToSection('sectionFiveContainer')} className={styles.navbarLink}>
+                    </button>
+                    <button type="button" onClick={() => scrollToSection('sectionFiveContainer')} className={styles.navbarLink}>
                         Usa tu drim
-                    </div>
-                    <div onClick={() => scrollToSection('sectionSixContainer')} className={styles.navbarLink}>
+                    </button>
+                    <button type="button" onClick={() => scrollToSection('sectionSixContainer')} className={styles.navbarLink}>
                         Quiero mi taller
-                    </div>
-                    <div onClick={() => scrollToSection('sectionActividades')} className={styles.navbarLink}>
+                    </button>
+                    <button type="button" onClick={() => scrollToSection('sectionActividades')} className={styles.navbarLink}>
                         Nuestras Actividades
-                    </div>
+                    </button>
+                    <Link
+                        href="/playground"
+                        onClick={() => setMenuOpen(false)}
+                        className={styles.navbarLink}
+                    >
+                        Prueba tu drim
+                    </Link>
 
 
 
@@ -96,12 +111,16 @@ const Navbar = () => {
                             />
                             {openUser &&
                                 <div className={styles.navbarOpenUser}>
-                                    <div onClick={(e) => openMaterials(e)} className={styles.openUserLink}>
+                                    <Link
+                                        href="/materials/inicio"
+                                        onClick={closeNavOverlays}
+                                        className={styles.openUserLink}
+                                    >
                                         Ver material
-                                    </div>
-                                    <div onClick={(e) => logout(e)} className={styles.openUserLink}>
+                                    </Link>
+                                    <button type="button" onClick={(e) => logout(e)} className={styles.openUserLink}>
                                         Logout
-                                    </div>
+                                    </button>
                                 </div>
                             }
                         </div>

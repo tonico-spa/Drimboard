@@ -8,10 +8,12 @@ import app.utils as utils
 import app.aws_utils as aws_utils
 
 
-from datetime import datetime
+from collections import defaultdict
+from datetime import datetime, timedelta
 from typing import Optional
 
-from sqlalchemy.orm import Session  # <--- ADD THIS IMPORT
+from sqlalchemy import func as sqlfunc
+from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException, status, Response, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -71,6 +73,23 @@ async def cors_logger(request: Request, call_next):
         print(f"CORS_LOG: {request.method} {request.url.path} Origin: {origin}")
     response = await call_next(request)
     return response
+# --- Simple in-memory rate limiter for login ---
+_login_attempts: dict = defaultdict(list)
+_LOGIN_MAX = 10
+_LOGIN_WINDOW = 300  # seconds
+
+
+def _check_login_rate(identifier: str) -> bool:
+    now = datetime.utcnow()
+    cutoff = now - timedelta(seconds=_LOGIN_WINDOW)
+    attempts = [t for t in _login_attempts[identifier] if t > cutoff]
+    _login_attempts[identifier] = attempts
+    if len(attempts) >= _LOGIN_MAX:
+        return False
+    _login_attempts[identifier].append(now)
+    return True
+
+
 # --- Configuration ---
 SECRET_KEY = os.getenv("JWT_SECRET")
 if not SECRET_KEY:
@@ -239,9 +258,11 @@ def create_course_message(message: CourseMessageCreate, db: Session = Depends(ge
 
 
 @app.get("/get_course_messages", response_model=list[CourseMessageResponse])
-def get_course_messages(db: Session = Depends(get_db)):  # <--- FIXED HERE
-    message_ls = db.query(models.CourseMessage).all()
-    return message_ls
+def get_course_messages(course_id: Optional[str] = None, db: Session = Depends(get_db)):
+    q = db.query(models.CourseMessage).order_by(models.CourseMessage.created_time.asc())
+    if course_id:
+        q = q.filter(models.CourseMessage.course_id == course_id)
+    return q.all()
 
 
 # --- Issue endpoints (Forum) ---
@@ -279,22 +300,19 @@ def create_issue(payload: IssueCreate, db: Session = Depends(get_db)):
         return resp
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        print(f"Error creating issue: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error creating discussion")
 
 
 @app.get("/issues")
-def list_issues(tag: Optional[str] = None, db: Session = Depends(get_db)):
+def list_issues(tag: Optional[str] = None, skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
     q = db.query(models.Issue).order_by(models.Issue.created_time.desc())
-    issues = q.all()
+    if tag:
+        q = q.filter(sqlfunc.lower(models.Issue.tags).contains(tag.strip().lower()))
+    issues = q.offset(skip).limit(limit).all()
 
-    result = []
-    for it in issues:
-        tags_list = it.tags.split(",") if it.tags else []
-        if tag:
-            # filter by tag (case-insensitive)
-            if tag.lower() not in [t.lower() for t in tags_list]:
-                continue
-        result.append({
+    return [
+        {
             "id": it.id,
             "title": it.title,
             "description": it.description,
@@ -302,10 +320,10 @@ def list_issues(tag: Optional[str] = None, db: Session = Depends(get_db)):
             "author_email": it.author_email,
             "status": it.status,
             "created_time": it.created_time,
-            "tags": tags_list
-        })
-
-    return result
+            "tags": it.tags.split(",") if it.tags else []
+        }
+        for it in issues
+    ]
 
 
 @app.get("/issues/{issue_id}")
@@ -346,7 +364,8 @@ def add_issue_comment(issue_id: int, payload: CommentCreate, db: Session = Depen
         return new_comment
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        print(f"Error adding comment: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error adding comment")
 
 
 @app.post("/get_single_pdf")
@@ -403,22 +422,26 @@ def generate_presigned_url(data: PresignedUrlRequest):
 
 
 @app.post("/login", response_model=MessageResponse)
-def login(payload: LoginRequest, db: Session = Depends(get_db)):
-    email = payload.email
-    kit_code = payload.kit_code
+def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)):
+    client_ip = request.client.host if request.client else "unknown"
+    if not _check_login_rate(client_ip):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Demasiados intentos. Por favor espera unos minutos."
+        )
 
     user = db.query(models.Kits).filter(
-        models.Kits.user_email == email,
-        models.Kits.kit_code == kit_code
+        models.Kits.user_email == payload.email,
+        models.Kits.kit_code == payload.kit_code
     ).first()
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials"
+            detail="Email o código de kit incorrecto"
         )
 
-    return {"user": email, "name": user.user_name, "message": "Login successful"}
+    return {"user": payload.email, "name": user.user_name, "message": "Login successful"}
 
 
 @app.get("/profile", response_model=MessageResponse)
@@ -453,20 +476,11 @@ def logout(response: Response):
 @app.post("/send_form", response_model=MessageResponse)
 def send_form(payload: ContactForm):
     try:
-        name = payload.name
-        email = payload.email
-        message = payload.message
-
-        data_dd = {
-            "name": name,
-            "email": email,
-            "message": message
-        }
-        utils.handle_contact_form(data_dd)
-
-        return {"message": "Logout successful"}
-    except Exception as exc:
-        return {"result": exc}
+        utils.handle_contact_form({"name": payload.name, "email": payload.email, "message": payload.message})
+        return {"message": "Mensaje enviado exitosamente"}
+    except Exception as e:
+        print(f"Error sending contact form: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error al enviar el mensaje")
 
 
 # --- User Blocks Workspace endpoints ---
@@ -503,10 +517,7 @@ def save_user_blocks(payload: UserBlocksCreate, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         print(f"Error saving user blocks: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error saving blocks: {str(e)}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error saving workspace")
 
 
 @app.get("/blocks/user/{user_email}", response_model=list[UserBlocksResponse])
@@ -521,10 +532,7 @@ def get_user_blocks(user_email: str, db: Session = Depends(get_db)):
 
     except Exception as e:
         print(f"Error retrieving user blocks: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error retrieving blocks: {str(e)}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving workspaces")
 
 
 @app.get("/blocks/{block_id}", response_model=UserBlocksResponse)
@@ -547,10 +555,7 @@ def get_block_workspace(block_id: int, db: Session = Depends(get_db)):
         raise
     except Exception as e:
         print(f"Error retrieving block workspace: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error retrieving workspace: {str(e)}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error retrieving workspace")
 
 
 @app.delete("/blocks/{block_id}", response_model=MessageResponse)
@@ -577,10 +582,7 @@ def delete_block_workspace(block_id: int, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         print(f"Error deleting block workspace: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error deleting workspace: {str(e)}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error deleting workspace")
 
 
 @app.get("/", response_model=MessageResponse)

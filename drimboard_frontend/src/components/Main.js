@@ -14,7 +14,6 @@ import useAppStore from '@/store/useAppStore';
 import LoginForm from './LoginForm';
 import StepViewer from './SetpViewer';
 import VideoEmbed from "./VideoEmbed";
-import Materials from './materials/Materials';
 import MainLogo from './svgs/MainLogo';
 import ActivitiesCarousel from './ActivitiesCarousel';
 
@@ -44,18 +43,10 @@ const Main = () => {
   const card4Ref = useRef(null);
   // ------------------------------------
   const openLoginForm = useAppStore((state) => state.openLoginForm);
-  const open_materials = useAppStore((state) => state.openMaterialsPage);
 
 
   const [activeCard, setActiveCard] = useState(0);
-  const [openMaterials, setOpenMaterials] = useState(false);
   const [userDict, setUserDict] = useState({ "name": "", "email": "", "message": "" })
-
-
-
-  useEffect(() => {
-    setOpenMaterials(open_materials)
-  }, [open_materials])
 
   const arrowStyles = `
     .first_triangle {
@@ -138,9 +129,6 @@ const Main = () => {
 
   // Effect for Section Three (Split Scroll)
   useEffect(() => {
-    console.log(openMaterials)
-
-    if (openMaterials === true) return;
     let ctx = gsap.context(() => {
       if (mainScrollContainerRef.current && scrollContentRef.current && scrollContainerRef.current) {
         const scrollContent = scrollContentRef.current;
@@ -169,13 +157,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
   // Effect for Section Two (Title Fade-in)
   useEffect(() => {
-    console.log(openMaterials)
-
-    if (openMaterials === true) return; // Skip if materials page is open
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -208,12 +193,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
   // Effect for Section Four Video Container (Scale animation)
   useEffect(() => {
-    if (openMaterials === true) return;
-
     const ctx = gsap.context(() => {
       const background = document.querySelector(`.${styles.sectionFourBackground}`);
       const container = document.querySelector(`.${styles.sectionFourVideoContainer}`);
@@ -237,7 +220,7 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
   // useEffect(() => {
   //   if (openMaterials === true) return; // Skip if materials page is open
@@ -317,8 +300,6 @@ const Main = () => {
 
   // Effect for Section Six Info Background (Scale animation)
   useEffect(() => {
-    if (openMaterials === true) return;
-
     const ctx = gsap.context(() => {
       const background = document.querySelector(`.${styles.sectionSixBackground}`);
       const container = document.querySelector(`.${styles.sectionSixContainer}`);
@@ -342,11 +323,10 @@ const Main = () => {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, [openMaterials]);
+  }, []);
 
 
   return (
-    !openMaterials ? (
       <div className={styles.mainContainer} ref={mainContainerRef}>
 
         <div id="coverContainer" className={styles.coverContainer}>
@@ -528,6 +508,7 @@ const Main = () => {
         </div>
         <div className={styles.sectionActivities} id="sectionActividades">
           <div className={styles.activitiesHeader}>
+            <span className={styles.activitiesEyebrow}>Nuestras actividades</span>
             <div ref={activitiesTitleRef} className={styles.sectionTwoTitleContainer}>
               <div className={styles.sectionTwoTitleLogo}>
                 <SquareCircle styles={squareCircleStyles} />
@@ -554,9 +535,7 @@ const Main = () => {
             <LoginForm />
           </div>
         }
-      </div >) : (
-      <Materials />
-    )
+      </div >
 
 
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import styles from "../styles/EmbeddedPage.module.css"
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 import useAppStore from '@/store/useAppStore';
+import { useToast } from '@/context/ToastContext';
 // Serial Helper Class for ESP32 Communication
 class SerialHelper {
     constructor() {
@@ -137,10 +138,13 @@ export default function EmbeddedPage({ url, allowedOrigins = [],  savedProjects 
     const iframeRef = useRef(null);
     const serialHelperRef = useRef(null);
     const logged = useAppStore((state) => state.logged);
+    const { showToast } = useToast();
     const [isConnected, setIsConnected] = useState(false);
     const [currentBlocksData, setCurrentBlocksData] = useState(null);
     const [showProjectModal, setShowProjectModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [filenameModal, setFilenameModal] = useState({ open: false, pendingData: null });
+    const [filenameInput, setFilenameInput] = useState('my_workspace.json');
 
     // Initialize serial helper
     useEffect(() => {
@@ -421,12 +425,11 @@ export default function EmbeddedPage({ url, allowedOrigins = [],  savedProjects 
             if (event.data.type === 'BLOCKLY_SAVE_CODE') {
                 const code = event.data.code || '';
                 const name = event.data.suggestedName || 'code.py';
-                console.log('Received save request from iframe with code length:', code.length);
                 const result = await saveCodeToFile(code, name);
                 if (result.success) {
-                    alert('Code saved successfully!');
-                } else {
-                    alert('Error saving: ' + result.error);
+                    showToast('Código guardado exitosamente', 'success');
+                } else if (result.error !== 'No file selected') {
+                    showToast('Error al guardar: ' + result.error, 'error');
                 }
                 sendMessageToIframe({
                     type: 'BLOCKLY_SAVE_RESULT',
@@ -458,35 +461,10 @@ export default function EmbeddedPage({ url, allowedOrigins = [],  savedProjects 
                 console.log('Blockly iframe is ready');
             }
 
-            // Handle SAVE_BLOCKS_DB request from iframe -> save to database
+            // Handle SAVE_BLOCKS_DB request from iframe -> open filename modal
             if (event.data.type === 'BLOCKLY_SAVE_BLOCKS_DB') {
-                const blocksData = event.data.blocksData;
-                const filename = prompt('Enter a filename for this workspace:', 'my_workspace.json');
-                
-                if (!filename) {
-                    alert('Save cancelled - no filename provided');
-                    return;
-                }
-                console.log(blocksData)
-                
-                console.log('Received save blocks to DB request from iframe');
-                const result = await saveBlocksToDatabase(blocksData, filename);
-                
-                if (result.success) {
-                    alert('Blocks saved to database successfully!');
-                    // Refresh the projects list
-                    if (onProjectsChange) {
-                        onProjectsChange();
-                    }
-                } else {
-                    alert('Error saving blocks to database: ' + result.error);
-                }
-                
-                sendMessageToIframe({
-                    type: 'BLOCKLY_SAVE_BLOCKS_DB_RESULT',
-                    success: result.success,
-                    error: result.error
-                });
+                setFilenameInput('my_workspace.json');
+                setFilenameModal({ open: true, pendingData: event.data.blocksData });
             }
 
             // Handle LOAD_BLOCKS_JSON request from iframe -> show modal to select from saved projects
@@ -499,7 +477,7 @@ export default function EmbeddedPage({ url, allowedOrigins = [],  savedProjects 
 
         window.addEventListener('message', handleMessage);
         return () => window.removeEventListener('message', handleMessage);
-    }, [allowedOrigins, url, logged, onProjectsChange, savedProjects]);
+    }, [allowedOrigins, url, logged, onProjectsChange, savedProjects, showToast]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -509,6 +487,26 @@ export default function EmbeddedPage({ url, allowedOrigins = [],  savedProjects 
             }
         };
     }, []);
+
+    const handleFilenameSave = async () => {
+        const name = filenameInput.trim();
+        if (!name) return;
+        const pendingData = filenameModal.pendingData;
+        setFilenameModal({ open: false, pendingData: null });
+        const result = await saveBlocksToDatabase(pendingData, name);
+        if (result.success) {
+            showToast('Workspace guardado exitosamente', 'success');
+            if (onProjectsChange) onProjectsChange();
+        } else {
+            showToast('Error guardando workspace: ' + result.error, 'error');
+        }
+        sendMessageToIframe({ type: 'BLOCKLY_SAVE_BLOCKS_DB_RESULT', success: result.success, error: result.error });
+    };
+
+    const handleFilenameCancel = () => {
+        setFilenameModal({ open: false, pendingData: null });
+        sendMessageToIframe({ type: 'BLOCKLY_SAVE_BLOCKS_DB_RESULT', success: false, error: 'Cancelled by user' });
+    };
 
     if (!url) {
         return <div className="w-full h-screen flex items-center justify-center">
@@ -596,6 +594,42 @@ export default function EmbeddedPage({ url, allowedOrigins = [],  savedProjects 
                 </div>
             )}
             
+            {/* Filename input modal for saving workspace to DB */}
+            {filenameModal.open && (
+                <div className={styles.modalOverlay} onClick={handleFilenameCancel}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.modalHeader}>
+                            <h2>Guardar workspace</h2>
+                            <button className={styles.closeButton} onClick={handleFilenameCancel}>×</button>
+                        </div>
+                        <div className={styles.modalBody}>
+                            <label htmlFor="ws-filename" style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                                Nombre del archivo
+                            </label>
+                            <input
+                                id="ws-filename"
+                                type="text"
+                                value={filenameInput}
+                                onChange={(e) => setFilenameInput(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleFilenameSave()}
+                                style={{ width: '100%', padding: '0.5rem', borderRadius: 6, border: '1px solid #ddd', fontFamily: 'inherit' }}
+                                autoFocus
+                            />
+                        </div>
+                        <div className={styles.modalFooter}>
+                            <button className={styles.cancelButton} onClick={handleFilenameCancel}>Cancelar</button>
+                            <button
+                                className={styles.loadButton}
+                                onClick={handleFilenameSave}
+                                disabled={!filenameInput.trim()}
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Iframe */}
             <iframe
                     ref={iframeRef}

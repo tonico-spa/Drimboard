@@ -118,5 +118,22 @@
 
 .tabPanel {
     padding: 16px 0;
-    /* You can add more styles specific to the panel content */
+}
+
+@media (max-width: 768px) {
+    .materialsContainer {
+        padding: 70px 16px 24px;
+    }
+
+    .tabButton {
+        font-size: 0.85rem;
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tabButton {
+        font-size: 0.78rem;
+        padding: 8px 10px;
+    }
 }

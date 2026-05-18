@@ -1,19 +1,27 @@
 import "./globals.css";
 import Navbar from '@/components/Navbar';
 import { AuthProvider } from '../context/AuthContext';
+import { ToastProvider } from '../context/ToastContext';
 
 
 export const metadata = {
   title: "drimboard",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body >
+      <body>
         <AuthProvider>
-         <Navbar />
-        <main>{children}</main>
+          <ToastProvider>
+            <Navbar />
+            <main>{children}</main>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

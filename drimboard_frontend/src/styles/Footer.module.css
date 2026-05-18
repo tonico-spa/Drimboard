@@ -69,3 +69,34 @@
     justify-content: left;
     text-align: left;
 }
+
+@media (max-width: 640px) {
+    .footerContainer {
+        grid-template-columns: 1fr;
+        margin: 0.5em;
+    }
+
+    .footerContent {
+        justify-content: flex-start;
+        align-content: flex-start;
+        padding: 16px;
+    }
+
+    .footerTitle {
+        text-align: left;
+        font-size: clamp(1.25rem, 6vw, 2rem);
+    }
+
+    .footerContactInfo {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .footerEmail {
+        text-align: left;
+    }
+
+    .coverLogo {
+        width: clamp(140px, 40vw, 260px);
+    }
+}

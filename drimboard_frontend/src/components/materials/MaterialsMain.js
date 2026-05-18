@@ -1,147 +1,155 @@
-
 "use client";
-import Link from "next/link";
+
 import { useMemo } from "react";
-import styles from "../../styles/MaterialsMain.module.css";
-import useAppStore from '@/store/useAppStore';
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import styles from "../../styles/Materiales.module.css";
+import useAppStore from "@/store/useAppStore";
 import { capitalizeWords } from "@/utils/utils";
+import Glyph from "./Glyph";
+import CourseCard from "./CourseCard";
 
 const MaterialsMain = () => {
-    const logged = useAppStore((state) => state.logged);
-    const actividades = useAppStore((state) => state.actividades);
-    const videos = useAppStore((state) => state.videos);
-    const documents = useAppStore((state) => state.documents);
-    const { setOpenMaterialCourse } = useAppStore((state) => state);
+  const router = useRouter();
+  const logged = useAppStore((s) => s.logged);
+  const actividades = useAppStore((s) => s.actividades);
+  const videos = useAppStore((s) => s.videos);
+  const documents = useAppStore((s) => s.documents);
 
-    // Get the latest 3 posts from all categories combined
-    const recentMaterials = useMemo(() => {
-        const allMaterials = [
-            ...actividades.map(item => ({ ...item, contentType: 'actividades', color: '#F397C1' })),
-            ...videos.map(item => ({ ...item, contentType: 'videos', color: '#53C68E' })),
-            ...documents.map(item => ({ ...item, contentType: 'documents', color: '#FFB71A' }))
-        ];
+  const recentMaterials = useMemo(() => {
+    const all = [
+      ...actividades.map((a) => ({ ...a, contentType: "actividades" })),
+      ...videos.map((v) => ({ ...v, contentType: "videos" })),
+      ...documents.map((d) => ({ ...d, contentType: "documents" })),
+    ];
+    return all
+      .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+      .slice(0, 4);
+  }, [actividades, videos, documents]);
 
-        // Sort by publishedAt date (newest first) and take the first 3
-        return allMaterials
-            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-            .slice(0, 3);
-    }, [actividades, videos, documents]);
+  const featured = useMemo(() => {
+    const pool = [
+      ...actividades.slice(0, 2).map((a) => ({ ...a, contentType: "actividades" })),
+      ...documents.slice(0, 1).map((d) => ({ ...d, contentType: "documents" })),
+      ...videos.slice(0, 1).map((v) => ({ ...v, contentType: "videos" })),
+    ];
+    return pool.slice(0, 4);
+  }, [actividades, videos, documents]);
 
-    // Get the latest 5 actividades
-    const recentActividades = useMemo(() => {
-        return actividades
-            .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-            .slice(0, 5);
-    }, [actividades]);
+  const continueCourse = actividades[0];
+  const userName = logged?.user_name ? capitalizeWords(logged.user_name).split(" ")[0] : "Maker";
 
-    const openCourse = (e, element, contentType) => {
-        e.preventDefault();
-        setOpenMaterialCourse({ ...element, "open": true, "contentType": contentType });
-    }
-
-    return (
-
-        <div className={styles.materialsMainContainer}>
-            <div className={styles.materiasMainTitleContainer}>
-                <div className={styles.materiasMainTitle}>
-                    Bienvenid@ {capitalizeWords(logged["user_name"])}
-
-                </div>
-                <div className={styles.materiasMainSubtitle}>
-                    Encuentra todo el material que necesitas para empezar a usar tu drim
-                </div>
-
-            </div>
-
-            <div className={styles.materiasMainContentContainer}>
-                <div className={styles.materiasMainSectionOne}>
-                    <div className={styles.materiasMainSectionOneTitle}>
-                        Material reciente
-                    </div>
-                    <div className={styles.materiasMainSectionOneContent}>
-                        {recentMaterials.length > 0 ? (
-                            recentMaterials.map((element) => (
-                                <div
-                                    key={element._id}
-                                    className={styles.materiasMainSectionOneMaterial}
-                                    onClick={(e) => openCourse(e, element, element.contentType)}
-                                    style={{
-                                        backgroundImage: `url(${element.coverImage || '/pdf.png'})`,
-                                        border: `3px solid ${element.color}`
-                                    }}
-                                >
-                                    <div className={styles.materiasMainSectionOneMaterialTitle}>
-                                        {element.title}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <>
-                                <div className={styles.materiasMainSectionOneMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.coverLogo}
-                                    />
-                                    Documento
-                                </div>
-                                <div className={styles.materiasMainSectionOneMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.coverLogo}
-                                    />
-                                    Documento
-                                </div>
-                                <div className={styles.materiasMainSectionOneMaterial}>
-                                    <img
-                                        src="/pdf.png"
-                                        alt="Duolab Logo"
-                                        className={styles.coverLogo}
-                                    />
-                                    Documento
-                                </div>
-                            </>
-                        )}
-                    </div>
-
-                </div>
-            </div>
-            <div className={styles.materiasMainContentContainer}>
-                <div className={styles.materiasMainSectionTwo}>
-                    <div className={styles.materiasMainSectionTwoTitle}>
-                        Cursos recientes
-                    </div>
-                    <div className={styles.materiasMainSectionTwoContent}>
-                        {recentActividades.length > 0 ? (
-                            recentActividades.map((element) => (
-                                <div
-                                    key={element._id}
-                                    className={styles.materiasMainSectionTwoMaterial}
-                                    onClick={(e) => openCourse(e, element, 'actividades')}
-                                    style={{
-                                        backgroundImage: `url(${element.coverImage || '/pdf.png'})`,
-                                        border: "3px solid #F397C1"
-                                    }}
-                                >
-                                    <div className={styles.materiasMainSectionTwoMaterialTitle}>
-                                        {element.title}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <>
-                               
-                            </>
-                        )}
-                    </div>
-
-                </div>
-            </div>
-             
-
+  return (
+    <>
+      <div className={styles.welcome}>
+        <div>
+          <h1 className={styles.matGreet}>
+            Bienvenid@ <span className={styles.you}>{userName}</span>{" "}
+            <span className={styles.wave} role="img" aria-label="hola">👋</span>
+          </h1>
+          <p className={styles.matSub}>
+            Tu mundo, tus reglas. Hay <b>{actividades.length}</b> actividades,{" "}
+            <b>{documents.length}</b> documentos y <b>{videos.length}</b> videos esperándote.
+          </p>
         </div>
-    )
-}
+        <div className={styles.statCluster}>
+          <div className={`${styles.stat} ${styles.statPink}`}>
+            <span className={styles.k}>Actividades</span>
+            <span className={styles.v}>{actividades.length}</span>
+          </div>
+          <div className={`${styles.stat} ${styles.statYellow}`}>
+            <span className={styles.k}>Documentos</span>
+            <span className={styles.v}>{documents.length}</span>
+          </div>
+          <div className={`${styles.stat} ${styles.statGreen}`}>
+            <span className={styles.k}>Videos</span>
+            <span className={styles.v}>{videos.length}</span>
+          </div>
+        </div>
+      </div>
 
-export default MaterialsMain
+      {continueCourse && (
+        <button
+          type="button"
+          className={styles.continue}
+          onClick={() => router.push(`/materials/curso/${continueCourse._id}`)}
+          aria-label={`Abrir ${continueCourse.title}`}
+        >
+          <div
+            className={styles.continueCover}
+            style={continueCourse.coverImage ? { backgroundImage: `url(${continueCourse.coverImage})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+          >
+            {!continueCourse.coverImage && (
+              <div className={styles.continueGlyph}>
+                <Glyph type="actividad" />
+              </div>
+            )}
+          </div>
+          <div className={styles.continueBody}>
+            <span className={styles.eyebrow}>Empezá por aquí</span>
+            <h2>{continueCourse.title}</h2>
+            <p>
+              {continueCourse.description?.slice(0, 180) ||
+                "Programá tu drim y desbloqueá tu primer proyecto. Sin instalar nada, sin cables: solo tu drim y tus ideas."}
+            </p>
+            <div className={styles.continueMeta}>
+              <span>Actividad</span>
+              {continueCourse.publishedAt && (
+                <span>
+                  · {new Date(continueCourse.publishedAt).toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" })}
+                </span>
+              )}
+            </div>
+          </div>
+          <span
+            className={styles.continueCta}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/materials/curso/${continueCourse._id}`);
+            }}
+          >
+            Abrir →
+          </span>
+        </button>
+      )}
+
+      <section className={styles.matSection}>
+        <div className={styles.matSectionHead}>
+          <h3>
+            <span className={styles.swatch} style={{ background: "#1f150b" }} />
+            Visto recientemente
+          </h3>
+          <Link href="/materials/cursos" className={styles.more}>
+            Ver todo →
+          </Link>
+        </div>
+        <div className={styles.matGrid}>
+          {recentMaterials.map((c) => (
+            <CourseCard key={c._id} course={c} contentType={c.contentType} />
+          ))}
+        </div>
+      </section>
+
+      {featured.length > 0 && (
+        <section className={styles.matSection}>
+          <div className={styles.matSectionHead}>
+            <h3>
+              <span className={styles.swatch} style={{ background: "#F397C1" }} />
+              Sugeridas para vos
+            </h3>
+            <Link href="/materials/cursos" className={styles.more}>
+              Ver todas →
+            </Link>
+          </div>
+          <div className={styles.matGrid}>
+            {featured.map((c) => (
+              <CourseCard key={c._id} course={c} contentType={c.contentType} />
+            ))}
+          </div>
+        </section>
+      )}
+    </>
+  );
+};
+
+export default MaterialsMain;

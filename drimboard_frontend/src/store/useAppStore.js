@@ -16,11 +16,6 @@ const useAppStore = create(
 
 
 
-            openMaterialCourse: {course_name: null, open: false, pdf_url: null, video_url: null},
-            setOpenMaterialCourse: (open) => set({openMaterialCourse: open}),
-            
-
-
             materialCourseChat: [],
             setMaterialCourseChat: (chat) => set({materialCourseChat: chat}),
 
@@ -47,15 +42,13 @@ const useAppStore = create(
             issues: [],
             setIssues: (issues) => set({issues: issues}),
 
-            
-            openMaterialsPage: false,
-            setOpenMaterialsPage: (open) => set({openMaterialsPage: open})
-
         }),
-       {
-          
-            partialize: (state) => ({ 
-                logged: state.logged 
+        {
+            partialize: (state) => ({
+                logged: {
+                    user_email: state.logged?.user_email ?? null,
+                    user_name: state.logged?.user_name ?? null,
+                }
             }),
         }
     )
