@@ -57,7 +57,7 @@ export default function MaterialsCursoPage() {
   const wrapStyle = {
     minHeight: "100vh",
     background: "var(--paper)",
-    paddingTop: 92,
+    paddingTop: 116,
   };
   const innerStyle = {
     maxWidth: 1240,

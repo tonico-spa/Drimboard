@@ -3,7 +3,7 @@
     position: fixed;
     top: 0;
     z-index: 1000;
-    height: 72px;
+    height: 96px;
     background: rgba(247, 244, 241, 0.72);
     backdrop-filter: saturate(180%) blur(12px);
     -webkit-backdrop-filter: saturate(180%) blur(12px);
@@ -71,7 +71,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: clamp(48px, 6vw, 64px);
+    height: clamp(64px, 8.5vw, 88px);
     aspect-ratio: 69.59 / 46.1;
 }
 

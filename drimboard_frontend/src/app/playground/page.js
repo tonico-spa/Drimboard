@@ -8,7 +8,7 @@ export default function PlaygroundPage() {
       style={{
         width: "100%",
         height: "100vh",
-        paddingTop: 72,
+        paddingTop: 96,
         boxSizing: "border-box",
       }}
     >

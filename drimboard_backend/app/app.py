@@ -37,6 +37,7 @@ origins = [
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://192.168.1.7:3000",
+    "https://testeo.profestem.com/",
     "https://develop.d17k1lr65yqfqv.amplifyapp.com",
     "https://main.d1piqc5khvpkwq.amplifyapp.com",
     "https://www.drim.cl"

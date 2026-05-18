@@ -70,7 +70,7 @@ export default function MaterialsTabsLayout({ children }) {
   }, [pathname, loadingData, actividades.length, videos.length, documents.length, issues?.length]);
 
   return (
-    <div className={styles.matRoot} style={{ minHeight: "100vh", background: "var(--paper)", paddingTop: 92 }}>
+    <div className={styles.matRoot} style={{ minHeight: "100vh", background: "var(--paper)", paddingTop: 116 }}>
       <div style={{ maxWidth: 1240, margin: "0 auto", padding: "clamp(24px,4vw,44px) clamp(20px,5vw,40px) 96px" }}>
         <div className={styles.tabs} ref={tabsRef}>
           {tabs.map((t) => (
