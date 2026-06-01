@@ -1,0 +1,51 @@
+.termsContainer {
+    max-width: 90%;
+    margin: 2em 2em 2em auto;
+    padding: 8em 1.5em 4em;
+    box-sizing: border-box;
+    color: #1f150b;
+    font-family: "Geist Mono", monospace;
+}
+
+.termsTitle {
+    font-family: "Geist Mono", monospace;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-weight: 700;
+    margin-bottom: 1.5em;
+    line-height: 1.2;
+}
+
+.section {
+    margin-bottom: 2em;
+}
+
+.sectionTitle {
+    font-family: "Geist Mono", monospace;
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-weight: 600;
+    margin-bottom: 0.6em;
+}
+
+.paragraph {
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    line-height: 1.7;
+    margin-bottom: 0.9em;
+}
+
+.list {
+    margin: 0 0 0.9em 1.2em;
+    padding: 0;
+}
+
+.list li {
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    line-height: 1.7;
+    margin-bottom: 0.4em;
+}
+
+@media (max-width: 640px) {
+    .termsContainer {
+        margin: 1em auto;
+        padding: 1em 1em 3em;
+    }
+}

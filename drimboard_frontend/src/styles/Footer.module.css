@@ -65,6 +65,20 @@
     text-align: right;
 }
 
+.footerLink {
+    margin-top: 1em;
+    font-family: "Geist Mono", monospace !important;
+    color: black;
+    font-weight: 600;
+    text-align: right;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.footerLink:hover {
+    opacity: 0.7;
+}
+
 .footerLogin {
     justify-content: left;
     text-align: left;

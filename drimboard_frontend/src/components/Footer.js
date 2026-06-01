@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import styles from "../styles/Footer.module.css";
 import MainLogo from './svgs/MainLogo';
 const Footer = () => {
@@ -49,6 +50,9 @@ const Footer = () => {
                         hola@duolab.com
                     </div>
                 </div>
+                <Link href="/terminos" className={styles.footerLink}>
+                    Términos y condiciones
+                </Link>
             </div>
         </div>
     )
