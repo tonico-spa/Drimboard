@@ -1,7 +1,6 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    height: 100%;
     width: 100%;
     background: #1e1e1e;
     border-radius: 10px;
@@ -47,8 +46,9 @@
 }
 
 .pdfFrame {
-    flex: 1;
     width: 100%;
+    /* show roughly the height of one A4 page at full width */
+    aspect-ratio: 1 / 1.414;
     border: none;
     display: block;
 }
