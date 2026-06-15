@@ -1,7 +1,7 @@
 .footerContainer {
     background-color: #F397C1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 2fr;
     margin: 1em;
     border-radius: 10px;
 }
@@ -44,7 +44,10 @@
 }
 
 .footerEmailLogo {
-    height: 30%;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .footerContactInfo {
@@ -53,12 +56,22 @@
     text-align: right;
     justify-content: flex-end;
     align-items: center;
+    gap: 0.5em;
+    margin-top: 0.75em;
+    color: inherit;
+    text-decoration: none;
+}
 
+a.footerContactInfo {
+    cursor: pointer;
+}
 
+a.footerContactInfo:hover {
+    opacity: 0.7;
 }
 
 .footerEmail {
-    margin: 0.5em;
+    margin: 0;
     font-family: "Geist Mono", monospace !important;
     color: black;
     font-weight: 600;

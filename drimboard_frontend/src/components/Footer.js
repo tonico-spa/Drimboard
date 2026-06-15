@@ -28,34 +28,49 @@ const Footer = () => {
       }
     `
 
-    return (
+  return (
 
-        <div className={styles.footerContainer}>
-            <div className={styles.footerLogin}>
-                <div className={styles.coverLogo}>
-            <MainLogo styles={mainLogoStyles} />
-          </div>
-            </div>
-            <div className={styles.footerContent}>
-                <div className={styles.footerTitle}>
-                    Contacto
-                </div>
-                <div className={styles.footerContactInfo}>
-                    <img
-                        src="/email.png"
-                        alt="Duolab Logo"
-                        className={styles.footerEmailLogo}
-                    />
-                    <div className={styles.footerEmail}>
-                        hola@duolab.com
-                    </div>
-                </div>
-                <Link href="/terminos" className={styles.footerLink}>
-                    Términos y condiciones
-                </Link>
-            </div>
+    <div className={styles.footerContainer}>
+      <div className={styles.footerLogin}>
+        <div className={styles.coverLogo}>
+          <MainLogo styles={mainLogoStyles} />
         </div>
-    )
+      </div>
+      <div className={styles.footerContent}>
+        <div className={styles.footerTitle}>
+          Contacto
+        </div>
+        <div className={styles.footerContactInfo}>
+          <img
+            src="/email.png"
+            alt="Duolab Logo"
+            className={styles.footerEmailLogo}
+          />
+          <div className={styles.footerEmail}>
+            hola@duolab.com
+          </div>
+        </div>
+        <a
+          href="https://www.instagram.com/duolab.cl?igsh=ODUwNzVubmpuZm9o"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.footerContactInfo}
+        >
+          <img
+            src="/IG.png"
+            alt="Instagram Logo"
+            className={styles.footerEmailLogo}
+          />
+          <div className={styles.footerEmail}>
+            @duolab.cl
+          </div>
+        </a>
+        <Link href="/terminos" className={styles.footerLink}>
+          Términos y condiciones
+        </Link>
+      </div>
+    </div>
+  )
 }
 
 export default Footer

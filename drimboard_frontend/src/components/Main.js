@@ -331,7 +331,7 @@ const Main = () => {
 
         <div id="coverContainer" className={styles.coverContainer}>
           <img
-            src="/auto.png"
+            src="/main_photo.png"
             alt="cover image"
             className={styles.coverImg}
           />
@@ -470,7 +470,7 @@ const Main = () => {
               <div className={`${styles.sectionSixContainerInfoCard}`}>
                 <div className={styles.sectionSixBackground}></div>
                 <div className={styles.sectionSixTitle}>
-                  Quieres que vayamos a hacerte un taller? <br />
+                  ¿Tienes dudas o necesitas un taller? <br />
 
                   <span className={styles.highlightText}>Contáctanos</span>
 

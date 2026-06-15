@@ -81,9 +81,7 @@ const Navbar = () => {
                     <button type="button" onClick={() => scrollToSection('sectionTwoContainer')} className={styles.navbarLink}>
                         Por que drim
                     </button>
-                    <button type="button" onClick={() => scrollToSection('sectionFiveContainer')} className={styles.navbarLink}>
-                        Usa tu drim
-                    </button>
+
                     <button type="button" onClick={() => scrollToSection('sectionSixContainer')} className={styles.navbarLink}>
                         Quiero mi taller
                     </button>
